@@ -1,0 +1,2105 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="format-detection" content="telephone=no">
+<title>數字偵探社｜六年級數學 最大公因數與最小公倍數</title>
+<style>
+:root{--u:min(4.4vw,2.7vh,23px);--ink:#2b2a33;--ink2:#5b5a66;--sky1:#b9e3ff;--sky2:#eaf8ff;--brick:#d96c4a;--brick2:#b5502f;--y:#ffd54f;--b:#4fa3ff;--r:#ff6b6b;--g:#7bd389;--card:#fff;--line:#e3e6ee;--ok:#2fb86b;--bad:#e5484d}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;-webkit-touch-callout:none;user-select:none;-webkit-user-select:none}
+html,body{margin:0;height:100%;overflow:hidden;background:#cfeaff;color:var(--ink);font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei","Heiti TC",system-ui,sans-serif;font-size:var(--u);touch-action:manipulation;overscroll-behavior:none}
+button{font:inherit;color:inherit;border:0;cursor:pointer;touch-action:manipulation}
+#app{position:fixed;inset:0;display:flex;flex-direction:column;background:linear-gradient(#b9e3ff 0%,#eaf8ff 60%,#fff6e0 100%)}
+.scr{position:absolute;inset:0;display:none;flex-direction:column;padding:calc(var(--u)*.6) calc(var(--u)*.8) calc(var(--u)*.6)}
+.scr.on{display:flex}
+.cloud{position:absolute;font-size:calc(var(--u)*3);opacity:.8;animation:drift 40s linear infinite;pointer-events:none}
+@keyframes drift{from{transform:translateX(-20vw)}to{transform:translateX(120vw)}}
+/* buttons */
+.btn{background:#fff;border-radius:calc(var(--u)*1.2);padding:calc(var(--u)*.7) calc(var(--u)*1.1);font-weight:700;box-shadow:0 .25em 0 #c9d3e6;font-size:calc(var(--u)*1.05);min-height:calc(var(--u)*2.9)}
+.btn:active{transform:translateY(.15em);box-shadow:0 .1em 0 #c9d3e6}
+.btn.y{background:var(--y);box-shadow:0 .25em 0 #d7a91c}
+.btn.g{background:var(--g);box-shadow:0 .25em 0 #4fa95f;color:#0b3d1b}
+.btn.r{background:#ffb3b3;box-shadow:0 .25em 0 #d98080}
+.btn.b{background:#9ccbff;box-shadow:0 .25em 0 #6aa2e0}
+.btn.big{font-size:calc(var(--u)*1.5);padding:calc(var(--u)*1)}
+.bar{display:flex;gap:calc(var(--u)*.5);align-items:center;flex:none}
+.bar .btn{padding:calc(var(--u)*.4) calc(var(--u)*.8);font-size:calc(var(--u)*.95);min-height:calc(var(--u)*2.4);white-space:nowrap}
+.bar .sp{flex:1}
+.ttl{font-weight:900;font-size:calc(var(--u)*1.3);line-height:1.15}
+.sub{font-size:calc(var(--u)*.85);color:var(--ink2)}
+/* cover */
+#cover{align-items:center;justify-content:center;text-align:center;gap:calc(var(--u)*1.2);background:linear-gradient(#8fd0ff,#eaf8ff 70%,#ffe9b0)}
+#cover h1{margin:0;font-size:calc(var(--u)*2.4);line-height:1.15;text-shadow:0 .08em 0 #fff}
+#cover .big-city{font-size:calc(var(--u)*5);filter:drop-shadow(0 .1em 0 #fff8)}
+/* home */
+#home{gap:calc(var(--u)*.4)}
+#bldg{flex:1;min-height:0;display:flex;flex-direction:column;align-items:center;position:relative}
+.roof{flex:none;display:flex;align-items:flex-end;justify-content:center;height:calc(var(--u)*2.4);font-size:calc(var(--u)*2);line-height:1}
+.tower{flex:1;min-height:0;width:min(100%,calc(var(--u)*28));display:flex;flex-direction:column;gap:calc(var(--u)*.3);background:linear-gradient(90deg,var(--brick2),var(--brick) 12%,var(--brick) 88%,var(--brick2));padding:calc(var(--u)*.5);border-radius:calc(var(--u)*.6) calc(var(--u)*.6) 0 0;box-shadow:0 0 0 .2em #8f3d22 inset}
+.floor{flex:1;min-height:0;display:flex;align-items:center;gap:calc(var(--u)*.6);background:#fff4d6;border-radius:calc(var(--u)*.5);padding:0 calc(var(--u)*.7);text-align:left;box-shadow:0 .18em 0 #c99d5a;position:relative;overflow:hidden}
+.floor.done{background:#fff0a8}
+.floor.next{animation:pulse 1.4s ease-in-out infinite;outline:.22em solid #fff}
+.floor.boss{background:#ffd6e8;box-shadow:0 .18em 0 #d77aa7}
+.floor .no{font-weight:900;font-size:calc(var(--u)*1.05);width:calc(var(--u)*2.2);height:calc(var(--u)*2.2);display:grid;place-items:center;background:var(--brick);color:#fff;border-radius:50%;flex:none}
+.floor .ic{font-size:calc(var(--u)*1.5);flex:none}
+.floor .nm{flex:1;min-width:0;font-weight:800;font-size:calc(var(--u)*1.05);line-height:1.1}
+.floor .nm small{display:block;font-weight:500;font-size:calc(var(--u)*.72);color:var(--ink2)}
+.floor .st{font-size:calc(var(--u)*.95);letter-spacing:-.1em;flex:none}
+.floor:active{transform:translateY(.12em)}
+@keyframes pulse{50%{transform:scale(1.02)}}
+.ground{flex:none;height:calc(var(--u)*.7);width:100%;background:#7bc36b;border-radius:.3em}
+.dock{flex:none;display:grid;grid-template-columns:repeat(4,1fr);gap:calc(var(--u)*.5)}
+.dock .btn{padding:calc(var(--u)*.5) calc(var(--u)*.2);font-size:calc(var(--u)*.92);line-height:1.15;display:flex;flex-direction:column;align-items:center;gap:.1em}
+.dock .btn span{font-size:calc(var(--u)*1.5)}
+/* level */
+.prog{display:flex;gap:calc(var(--u)*.3);flex:1;min-width:0;align-items:center}
+.prog i{flex:1;height:calc(var(--u)*.8);border-radius:99px;background:#fff;box-shadow:0 0 0 .12em #c9d3e6 inset}
+.prog i.ok{background:var(--ok)}.prog i.bad{background:#ffb347}.prog i.cur{background:var(--y);animation:pulse 1s infinite}
+#qwrap{flex:1;min-height:0;display:flex;flex-direction:column;gap:calc(var(--u)*.5);margin-top:calc(var(--u)*.5)}
+.card{background:var(--card);border-radius:calc(var(--u)*1);box-shadow:0 .2em 0 #c9d3e6;padding:calc(var(--u)*.7) calc(var(--u)*.9)}
+.instr{font-size:calc(var(--u)*.8);color:#fff;background:#4a90e2;border-radius:99px;padding:.15em .8em;align-self:flex-start;font-weight:700}
+.stem{font-size:calc(var(--u)*1.35);font-weight:800;line-height:1.35;text-align:center;flex:none}
+.stem .num{font-family:"Noto Sans TC",system-ui,sans-serif;color:#d1432d;white-space:nowrap}
+.fig{flex:0 1 auto;min-height:0;display:flex;justify-content:center;align-items:center;overflow:hidden}
+.fig svg{max-width:100%;max-height:100%}
+.fig .tbl{border-collapse:collapse;font-weight:700;font-size:calc(var(--u)*1.05)}
+.fig .tbl td,.fig .tbl th{border:.1em solid #9db3d9;padding:.15em .6em;text-align:center;background:#fff}
+.fig .tbl th{background:#e4efff}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:calc(var(--u)*.55);flex:none;margin-top:auto}
+.opts.one{grid-template-columns:1fr}
+.opts.three{grid-template-columns:1fr 1fr 1fr}
+.opt{position:relative;border-radius:calc(var(--u)*1);padding:calc(var(--u)*.6) calc(var(--u)*.6);font-weight:800;font-size:calc(var(--u)*1.45);min-height:calc(var(--u)*3.6);box-shadow:0 .22em 0 rgba(0,0,0,.18);color:#1d2b3a;line-height:1.2;transition:transform .12s}
+.opt.long{font-size:calc(var(--u)*1.1)}
+.opt.c0{background:#ffe27a}.opt.c1{background:#9fd0ff}.opt.c2{background:#ffb1b1}.opt.c3{background:#a8e6b2}
+.opt:active{transform:translateY(.15em)}
+.opt.hot{outline:.25em solid #fff;transform:scale(1.04);z-index:2}
+.opt.off{opacity:.35;pointer-events:none;filter:grayscale(.7)}
+.opt.ok{background:var(--ok);color:#fff;animation:pop .5s}
+.opt.no{animation:shake .4s}
+.opt .nb{position:absolute;left:.35em;top:.25em;width:1.3em;height:1.3em;border-radius:50%;background:#fff9;font-size:.6em;display:grid;place-items:center;font-weight:900}
+@keyframes pop{40%{transform:scale(1.12)}}
+@keyframes shake{20%{transform:translateX(-.3em)}60%{transform:translateX(.3em)}}
+.fb{flex:none;min-height:calc(var(--u)*2.3);text-align:center;font-weight:800;font-size:calc(var(--u)*1.05);color:var(--ink2);display:flex;align-items:center;justify-content:center}
+.fb.ok{color:var(--ok)}.fb.bad{color:#c2410c}
+/* numpad */
+.pad{display:grid;grid-template-columns:repeat(3,1fr);gap:calc(var(--u)*.45);flex:none;margin-top:auto}
+.pad .k{background:#fff;border-radius:calc(var(--u)*.9);font-weight:900;font-size:calc(var(--u)*1.7);min-height:calc(var(--u)*3.3);box-shadow:0 .2em 0 #b8c4dc}
+.pad .k:active{transform:translateY(.15em)}
+.pad .k.del{background:#ffd0d0;font-size:calc(var(--u)*1.1)}
+.pad .k.go{background:var(--g);font-size:calc(var(--u)*1.2)}
+.ansbox{display:flex;justify-content:center;gap:calc(var(--u)*.4);flex-wrap:wrap}
+.blank{min-width:calc(var(--u)*4.6);height:calc(var(--u)*2.6);border-radius:calc(var(--u)*.6);background:#fff;border:.15em dashed #8aa;display:grid;place-items:center;font-weight:900;font-size:calc(var(--u)*1.5);padding:0 .4em}
+.blank.cur{border-color:#ff9f1c;background:#fff6dc;box-shadow:0 0 0 .2em #ffd66b;animation:pulse 1s infinite}
+.blank.fix{background:#e8f9ee;border:.15em solid var(--ok);color:#0b6b36}
+.blank.rev{background:#fff1d0;border:.15em solid #ff9f1c}
+/* chain */
+.chain{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:calc(var(--u)*.3) calc(var(--u)*.2)}
+.chain .nd{min-width:calc(var(--u)*3.6);padding:.2em .5em;border-radius:99px;background:#eaf5ff;border:.12em solid #86b4e8;font-weight:800;font-size:calc(var(--u)*1.25);text-align:center}
+.chain .ar{color:#6a89b5;font-weight:900}
+/* cards */
+.slots{display:flex;gap:calc(var(--u)*.4);justify-content:center;flex-wrap:wrap}
+.slot{min-width:calc(var(--u)*3);height:calc(var(--u)*3.2);border-radius:calc(var(--u)*.6);background:#fff;border:.15em dashed #8aa;display:grid;place-items:center;font-weight:900;font-size:calc(var(--u)*1.6);padding:0 .3em}
+.slot.f{background:#fff3c4;border-style:solid;border-color:#ffb400}
+.hand{display:flex;gap:calc(var(--u)*.5);justify-content:center;flex-wrap:wrap;margin-top:auto}
+.cardk{min-width:calc(var(--u)*3.6);height:calc(var(--u)*4.2);padding:0 .35em;border-radius:calc(var(--u)*.7);background:linear-gradient(#fff,#f0f6ff);font-weight:900;font-size:calc(var(--u)*1.8);box-shadow:0 .22em 0 #9fb3d6;border:.12em solid #bcd0ee}
+.cardk.used{opacity:.25;pointer-events:none}
+.cardk.sm{font-size:calc(var(--u)*1.2)}
+/* compare */
+.cmpbox{display:flex;gap:calc(var(--u)*.8);justify-content:center;align-items:stretch}
+.cmpbox .side{flex:1;background:#fff;border-radius:calc(var(--u)*.9);box-shadow:0 .2em 0 #c9d3e6;display:grid;place-items:center;padding:calc(var(--u)*.7);font-weight:900;font-size:calc(var(--u)*1.7);text-align:center;line-height:1.2}
+.cmpbox .side.l{background:#e6f1ff}.cmpbox .side.r{background:#ffeadf}
+.cmpbox .side small{display:block;font-size:.5em;color:var(--ink2);font-weight:700}
+/* board */
+.board{display:grid;grid-template-columns:repeat(4,1fr);gap:calc(var(--u)*.3);width:min(100%,calc(var(--u)*22));margin:0 auto}
+.board .h{background:#e3ecff;border-radius:.6em .6em 0 0;text-align:center;font-weight:800;font-size:calc(var(--u)*.95);padding:.15em 0}
+.board .d{background:#fff;text-align:center;font-weight:900;font-size:calc(var(--u)*2.4);border-radius:0 0 .6em .6em;border:.1em solid #c8d6f0;padding:.05em 0}
+.board .pm{display:flex;justify-content:center}
+.board .pm button{width:100%;margin:0;background:#9ccbff;border-radius:.6em;font-weight:900;font-size:calc(var(--u)*1.3);min-height:calc(var(--u)*2.3);box-shadow:0 .15em 0 #6aa2e0}
+.read{text-align:center;font-weight:800;color:#c2410c;font-size:calc(var(--u)*1.1);min-height:1.3em}
+/* match */
+.mt{display:grid;grid-template-columns:1fr 1fr;gap:calc(var(--u)*.5) calc(var(--u)*1.2)}
+.mt button{background:#fff;border-radius:calc(var(--u)*.8);font-weight:800;font-size:calc(var(--u)*1.15);min-height:calc(var(--u)*3);box-shadow:0 .18em 0 #b8c4dc;padding:.2em .4em}
+.mt button.sel{background:#fff3b0;outline:.2em solid #ffb400}
+.mt button.done{background:var(--ok);color:#fff;pointer-events:none}
+/* overlays */
+.ov{position:absolute;inset:0;background:rgba(20,40,80,.55);display:none;align-items:center;justify-content:center;z-index:50;padding:calc(var(--u)*1)}
+.ov.on{display:flex}
+.panel{background:#fff;border-radius:calc(var(--u)*1.2);padding:calc(var(--u)*1.1);width:min(100%,calc(var(--u)*26));display:flex;flex-direction:column;gap:calc(var(--u)*.6);box-shadow:0 .4em 0 #0003;max-height:100%;overflow:hidden}
+.panel h2{margin:0;text-align:center;font-size:calc(var(--u)*1.5)}
+.seg{display:flex;gap:calc(var(--u)*.4)}
+.seg .btn{flex:1;padding:calc(var(--u)*.4) calc(var(--u)*.2);font-size:calc(var(--u)*.95)}
+.seg .btn.sel{background:var(--y);box-shadow:0 .25em 0 #d7a91c}
+.row{display:flex;align-items:center;gap:calc(var(--u)*.5);justify-content:space-between;font-weight:700;font-size:calc(var(--u)*1)}
+/* teaching class */
+#class .stage{flex:1;min-height:0;display:flex;flex-direction:column;gap:calc(var(--u)*.5)}
+.blkarea{flex:1;min-height:0;display:flex;flex-wrap:wrap;gap:calc(var(--u)*.4);align-content:center;justify-content:center;overflow:hidden}
+.say{font-size:calc(var(--u)*1.25);font-weight:800;text-align:center;min-height:2.6em}
+/* group */
+.teams{display:grid;gap:calc(var(--u)*.5);flex:none}
+.team{border-radius:calc(var(--u)*.8);padding:calc(var(--u)*.4) calc(var(--u)*.6);color:#222;font-weight:800;display:flex;align-items:flex-end;gap:calc(var(--u)*.5);min-height:calc(var(--u)*4)}
+.team.cur{outline:.25em solid #fff;box-shadow:0 0 0 .45em #ff9f1c;transform:scale(1.03)}
+.team .tw{display:flex;flex-direction:column-reverse;gap:1px;margin-left:auto;height:calc(var(--u)*3.4);justify-content:flex-start;flex-wrap:wrap-reverse;align-content:flex-start;width:50%}
+.team .tw i{width:calc(var(--u)*.9);height:calc(var(--u)*.55);background:#fff8;border-radius:2px;box-shadow:0 0 0 1px #0003}
+.team b{font-size:calc(var(--u)*1.5)}
+/* effects */
+.confe{position:fixed;top:-3em;z-index:90;pointer-events:none;font-size:calc(var(--u)*1.8);animation:fall 2.4s linear forwards}
+@keyframes fall{to{transform:translateY(115vh) rotate(360deg)}}
+.toast{position:fixed;left:50%;top:38%;transform:translate(-50%,-50%);z-index:95;background:#fff;border-radius:calc(var(--u)*1.2);padding:calc(var(--u)*.8) calc(var(--u)*1.4);font-weight:900;font-size:calc(var(--u)*2);box-shadow:0 .3em 0 #0003;animation:toast 1.4s forwards;pointer-events:none;text-align:center}
+@keyframes toast{0%{transform:translate(-50%,-30%) scale(.5);opacity:0}15%{transform:translate(-50%,-50%) scale(1.1);opacity:1}80%{opacity:1}100%{transform:translate(-50%,-70%) scale(1);opacity:0}}
+.hide{display:none!important}
+/* landscape */
+@media (min-aspect-ratio:13/10){
+ :root{--u:min(2.2vw,3.4vh)}
+ #qwrap.land{display:grid;grid-template-columns:1.1fr 1fr;grid-template-rows:auto auto 1fr auto;column-gap:calc(var(--u)*1);row-gap:calc(var(--u)*.4)}
+ #qwrap.land .opts,#qwrap.land .pad,#qwrap.land .hand{grid-column:2;grid-row:1/-1;margin-top:0;align-self:center}
+ #qwrap.land>:not(.opts):not(.pad):not(.hand):not(.bdbox){grid-column:1}
+ #qwrap.land>.instr{grid-row:1}
+ #qwrap.land>.fb{min-height:0}
+}
+@media (min-aspect-ratio:13/10){
+ .tower{display:grid;grid-template-columns:1fr 1fr;grid-auto-flow:column;grid-template-rows:repeat(5,1fr)}
+ .dock .btn span{font-size:calc(var(--u)*1.2)}
+}
+
+.instr.ghost{display:none}
+@media (min-aspect-ratio:13/10){.instr.ghost{display:block;height:0;padding:0;margin:0;overflow:hidden;visibility:hidden}}
+
+/* ===== extra ===== */
+.vbtn{white-space:nowrap}
+.row2{display:flex;align-items:center;gap:calc(var(--u)*.6);flex:none;margin-top:calc(var(--u)*.4)}
+.hud{font-weight:900;font-size:calc(var(--u)*1.1);white-space:nowrap;flex:none}
+.hud .bump{display:inline-block;animation:bump .5s}
+.hud .hp{letter-spacing:-.05em;font-size:calc(var(--u)*.95)}
+@keyframes bump{40%{transform:scale(1.5)}}
+.intro{margin:auto;text-align:center;display:flex;flex-direction:column;gap:calc(var(--u)*.6);padding:calc(var(--u)*2) calc(var(--u)*1.5);width:min(100%,calc(var(--u)*24));animation:pop .6s}
+.bigic{font-size:calc(var(--u)*5);line-height:1}
+.bigic.sad{filter:grayscale(.4)}
+.floor.lock{opacity:.55;filter:grayscale(.6)}
+#cover .hint{font-weight:900;font-size:calc(var(--u)*1.6);background:#fff;border-radius:99px;padding:.4em 1.4em;box-shadow:0 .2em 0 #c9d3e6;animation:pulse 1.4s infinite}
+#cover .vb{position:absolute;top:calc(var(--u)*.6);right:calc(var(--u)*.8)}
+#result{align-items:center;gap:calc(var(--u)*.7)}
+#result .bar{align-self:stretch}
+#rbody{flex:1;min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:calc(var(--u)*.6);text-align:center;width:min(100%,calc(var(--u)*28))}
+#rbody .ttl{font-size:calc(var(--u)*1.9)}
+.rsub{font-weight:700;font-size:calc(var(--u)*1.15);color:var(--ink2);line-height:1.4}
+.rstars{display:flex;gap:calc(var(--u)*.4);font-size:calc(var(--u)*3.2);line-height:1}
+.rstars span{color:#d4d9e4;transform:scale(.3);opacity:0;animation:starin .5s forwards}
+.rstars span.on{color:#ffb400;text-shadow:0 .06em 0 #c98a00}
+@keyframes starin{60%{transform:scale(1.35);opacity:1}100%{transform:scale(1);opacity:1}}
+.pile{display:flex;flex-direction:column-reverse;gap:2px;width:calc(var(--u)*9);max-height:calc(var(--u)*7);overflow:hidden;align-items:stretch}
+.pile i{height:calc(var(--u)*.55);border-radius:3px;box-shadow:0 0 0 1px #0003 inset;opacity:0;animation:drop .5s forwards}
+@keyframes drop{0%{transform:translateY(-160%);opacity:0}70%{transform:translateY(8%);opacity:1}100%{transform:none;opacity:1}}
+#rbtns{flex:none;display:flex;gap:calc(var(--u)*.6);flex-wrap:wrap;justify-content:center;width:100%;padding-bottom:calc(var(--u)*.4)}
+#rbtns .btn{min-width:calc(var(--u)*8)}
+.teams .team .tw{width:45%}
+#class .stage{gap:calc(var(--u)*.4)}
+.bignum{text-align:center;font-weight:900;font-size:calc(var(--u)*3);line-height:1;color:#d1432d;flex:none}
+.cbtns{display:flex;gap:calc(var(--u)*.5);justify-content:center;flex-wrap:wrap;flex:none}
+.cbtns .btn{flex:1;min-width:calc(var(--u)*5)}
+.blkarea.flash{animation:flashb .7s}
+@keyframes flashb{30%{background:#fff3b0;box-shadow:0 0 0 .3em #ffb400}}
+#clsNl{flex:none;min-height:calc(var(--u)*6)}
+#clsStage .seg .btn{font-size:calc(var(--u)*.8)}
+#clsStage .blkarea{background:#ffffff88;border-radius:calc(var(--u)*.8)}
+#clsStage .board{width:min(100%,calc(var(--u)*20))}
+.ov .panel .btn.big{margin-top:calc(var(--u)*.2)}
+.panel{max-height:96%;overflow:auto}
+.ov .row .btn{padding:calc(var(--u)*.4) calc(var(--u)*.8)}
+.ov .sub{line-height:1.4}
+@media (min-aspect-ratio:13/10){
+ #rbody{flex-direction:column}
+ .bigic{font-size:calc(var(--u)*4)}
+ .rstars{font-size:calc(var(--u)*2.6)}
+ .pile{max-height:calc(var(--u)*4)}
+ .intro{padding:calc(var(--u)*1) calc(var(--u)*1.5)}
+}
+/* ===== layout tuning ===== */
+#qwrap>.fig{flex:1 1 auto}
+#qwrap>.ansbox,#qwrap>.chain,#qwrap>.slots{flex:1 1 auto;align-content:center;align-items:center}
+#qwrap>.cmpbox{flex:1 1 auto;max-height:calc(var(--u)*12);align-self:stretch;margin:auto 0}
+.cmpbox .side{font-size:calc(var(--u)*2)}
+.opt{padding-left:calc(var(--u)*1.6);padding-right:calc(var(--u)*1.6)}
+.opt .nb{left:.45em;top:50%;transform:translateY(-50%);width:1.5em;height:1.5em;font-size:.62em}
+.chain .nd{font-size:calc(var(--u)*1.5);min-width:calc(var(--u)*4.2)}
+.chain .ar{font-size:calc(var(--u)*1.3)}
+.ansbox.many .blank,.chain.many .blank{min-width:calc(var(--u)*3.6);height:calc(var(--u)*2.4);font-size:calc(var(--u)*1.3)}
+.ansbox.many{gap:calc(var(--u)*.3)}
+.ansbox.many>span:not(.blank){font-size:calc(var(--u)*.95)!important}
+.stem{font-size:calc(var(--u)*1.45)}
+
+.cl-a,.cl-b{display:contents}
+#clsStage .blkarea{flex:1 1 0}
+@media (min-aspect-ratio:13/10){
+ #clsStage{display:grid!important;grid-template-columns:1fr 1fr;gap:calc(var(--u)*.8);align-items:stretch}
+ .cl-a,.cl-b{display:flex;flex-direction:column;gap:calc(var(--u)*.5);min-height:0;justify-content:center}
+ .cl-b .blkarea,.cl-b .fig{flex:1 1 0}
+ .bignum{font-size:calc(var(--u)*2.4)}
+ #clsStage .say{min-height:0;font-size:calc(var(--u)*1.05)}
+ .cbtns .btn{padding:calc(var(--u)*.3) calc(var(--u)*.4);min-height:calc(var(--u)*2.3)}
+}
+
+.teams.compact .tw{display:none}
+.teams.compact .team{min-height:calc(var(--u)*2.6);justify-content:center;align-items:center}
+.teams.compact .team b{font-size:calc(var(--u)*1.3)}
+@media (min-aspect-ratio:13/10){
+ .teams .team{min-height:calc(var(--u)*2.6);padding:calc(var(--u)*.2) calc(var(--u)*.5)}
+ .teams .team .tw{height:calc(var(--u)*2)}
+ .team b{font-size:calc(var(--u)*1.2)}
+}
+
+#qwrap.tight .money .mn-b{width:calc(var(--u)*3.1)}
+#qwrap.tight .money .mn-c{width:calc(var(--u)*1.6)}
+#qwrap.tight .money .mg.mb{max-width:calc(var(--u)*10)}
+#qwrap.tight .money .mg.mc{max-width:calc(var(--u)*7)}
+#qwrap.tight .blocks{--bs:calc(var(--u)*1.7)}
+#qwrap.tight .blocks.xs{--bs:calc(var(--u)*1.2)}
+#qwrap.tight .stem{font-size:calc(var(--u)*1.25)}
+
+#qwrap{max-width:calc(var(--u)*30);margin-left:auto;margin-right:auto;width:100%}
+@media (min-aspect-ratio:13/10){#qwrap{max-width:none}}
+#qwrap.tight .money .mn-b{width:calc(var(--u)*2.7)}
+#qwrap.tight .money .mn-c{width:calc(var(--u)*1.4)}
+
+#qwrap .fig.fitfig{flex:1 1 0;min-height:0}
+
+.bdbox{display:contents}
+@media (min-aspect-ratio:13/10){
+ #qwrap.land>.bdbox{display:flex;flex-direction:column;gap:calc(var(--u)*.4);grid-column:2;grid-row:1/-1;align-self:center;justify-content:center}
+ #qwrap.land>.bdbox .btn.big{margin-top:calc(var(--u)*.3)!important;font-size:calc(var(--u)*1.3);padding:calc(var(--u)*.5)}
+}
+#qwrap>.fig~.ansbox,#qwrap>.fig~.chain,#qwrap>.fig~.slots{flex:none}
+
+/* ===== 開場教學 ===== */
+.les{flex:1;min-height:0;display:flex;flex-direction:column;gap:calc(var(--u)*.45);width:100%}
+.les-dots{display:flex;gap:calc(var(--u)*.35);justify-content:center;flex:none}
+.les-dots i{width:calc(var(--u)*.7);height:calc(var(--u)*.7);border-radius:50%;background:#fff8;display:block}
+.les-dots i.ok{background:var(--ok)}.les-dots i.cur{background:var(--y);animation:pulse 1s infinite}
+.les-say{flex:none;font-size:calc(var(--u)*1.3);font-weight:800;text-align:center;line-height:1.35;min-height:2.7em;display:flex;align-items:center;justify-content:center}
+.les-stage{flex:1 1 0;min-height:calc(var(--u)*8);display:flex;align-items:center;justify-content:center;background:#ffffff88;border-radius:calc(var(--u)*.8);overflow:hidden;position:relative}
+.les-eq{flex:none;font-size:calc(var(--u)*1.35);font-weight:800;text-align:center;min-height:calc(var(--u)*2.4);color:#1d2b3a;line-height:1.3}
+.les-eq b{color:#d6453d}
+.les-eq .addl{font-size:calc(var(--u)*1.05);font-weight:700;word-break:keep-all}
+.les-eq .mulq{font-size:calc(var(--u)*1.9);animation:pop .5s}
+.les-q{flex:none}
+.les-q .opts{margin-top:0}
+.les-btns{flex:none;display:flex;gap:calc(var(--u)*.6)}
+.les-btns .btn{flex:1}.les-btns .btn.big{flex:2}
+.les-btns .btn:disabled{opacity:.45;filter:grayscale(.6)}
+.les-btns .btn.pulse{animation:pulse 1s ease-in-out infinite}
+.cubes{display:flex;align-items:flex-end;justify-content:center;gap:calc(var(--u)*.3)}
+.cubes.wrap{flex-wrap:wrap;align-content:center;gap:calc(var(--u)*.3)}
+.cubes.col{flex-direction:column;flex-wrap:nowrap;gap:0;align-items:center}
+.cu{display:block;flex:none;position:relative;cursor:pointer;transition:filter 1s}
+.cu .bk{width:100%;height:100%;display:block}
+.cu.cnt{filter:drop-shadow(0 0 .35em #fff) brightness(1.08)}
+.cu.cnt::after{content:attr(data-n);position:absolute;left:50%;top:55%;transform:translate(-50%,-50%);font-weight:900;font-size:.62em;font-size:calc(var(--u)*1.1);color:#0b3d1b;text-shadow:0 0 3px #fff,0 0 3px #fff}
+.cubes.col .cu{margin:0}
+.cubes.red .cu{filter:hue-rotate(220deg) saturate(1.3)}
+.rod,.flatb{display:block;flex:none;box-sizing:border-box;border:2px solid #c23b3b;border-radius:3px;background:repeating-linear-gradient(to bottom,#ff6b6b 0 calc(10% - 1px),#c23b3b calc(10% - 1px) 10%);transition:filter 1s}
+.rod.hl{filter:brightness(1.25) drop-shadow(0 0 .3em #fff);transform:translateY(-.3em)}
+.rodrow{display:flex;align-items:flex-end;justify-content:center;gap:calc(var(--u)*.35)}
+.rodrow.tight{gap:0}
+.rodrow.blue .rod{filter:hue-rotate(220deg)}
+.rods{display:flex;gap:calc(var(--u)*.6);align-items:flex-end;justify-content:center}
+.rw{display:flex;flex-direction:column;align-items:center;gap:.2em}
+.rw em{font-style:normal;font-weight:900;font-size:calc(var(--u)*1.1);background:#fff;border-radius:99px;padding:0 .5em}
+.flatb{border-color:#2f6fc0;background:linear-gradient(to bottom,transparent calc(10% - 1px),#2f6fc055 0) 0 0/100% 10%,linear-gradient(to right,transparent calc(10% - 1px),#2f6fc055 0) 0 0/10% 100%,#6aa8f0}
+.flatb.mini{background:#6aa8f0;border-radius:3px}
+.popin{animation:popin .7s cubic-bezier(.3,1.5,.5,1)}
+@keyframes popin{0%{transform:scale(.2);opacity:0}100%{transform:scale(1);opacity:1}}
+.grow{display:flex;align-items:center;justify-content:center;gap:calc(var(--u)*.8)}
+.flats{display:flex;flex-direction:column;gap:3px;transition:gap 1s,filter 1s}
+.flats.go{gap:0;filter:hue-rotate(185deg)}
+.grow .arr{font-size:calc(var(--u)*2);font-weight:900}
+.big1k .bk{width:100%;height:100%}
+.sumb{display:grid;grid-template-columns:1fr 1fr;gap:calc(var(--u)*.6);width:100%;padding:calc(var(--u)*.5)}
+.sbi{display:flex;flex-direction:column;align-items:center;gap:.1em;background:#fffc;border-radius:calc(var(--u)*.7);padding:.3em}
+.sbi b{font-size:calc(var(--u)*1.5)}.sbi small{font-size:calc(var(--u)*.95);font-weight:700}
+#clsStage .les{grid-column:1/-1}
+@media (min-aspect-ratio:13/10){
+ .les{display:grid;grid-template-columns:1.1fr 1fr;grid-template-rows:auto 1fr auto auto;column-gap:calc(var(--u)*.8);row-gap:calc(var(--u)*.4)}
+ .les>.les-dots{grid-column:1;grid-row:1}
+ .les>.les-stage{grid-column:1;grid-row:2/4}
+ .les>.les-eq{grid-column:1;grid-row:4}
+ .les>.les-say{grid-column:2;grid-row:1/3;min-height:0;align-self:end}
+ .les>.les-q{grid-column:2;grid-row:3;align-self:center}
+ .les>.les-btns{grid-column:2;grid-row:4}
+}
+.sumb.w4{grid-template-columns:repeat(4,1fr)}
+
+/* ===== 點數與角色 ===== */
+.av{position:relative;display:inline-flex;align-items:flex-end;line-height:1}
+.av-c{font-size:1.5em}.av-w{font-size:.85em;margin-left:-.35em;margin-bottom:-.1em}
+.av.big{font-size:calc(var(--u)*2.2)}
+.av.jump{animation:avj .6s}
+@keyframes avj{30%{transform:translateY(-.5em) scale(1.2)}60%{transform:translateY(0) scale(.95)}}
+.ptchip{display:flex;align-items:center;gap:.3em;padding:calc(var(--u)*.25) calc(var(--u)*.6)!important;font-size:calc(var(--u)*.95)!important;background:#fff8d6!important;box-shadow:0 .25em 0 #e2c04d!important}
+.ptchip .pc-p{color:#c27c00;font-weight:900}
+.ptchip .pc-n{max-width:4.5em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+@media (max-width:430px){.ptchip .pc-n{display:none}}
+#avBox{position:relative;display:flex;align-items:center;gap:.25em;flex:none;font-size:calc(var(--u)*.85);background:#fff;border-radius:99px;padding:.05em .55em .05em .35em;box-shadow:0 .15em 0 #0002}
+#avBox b{color:#c27c00;font-size:calc(var(--u)*.95)}
+.ptfly{position:absolute;left:50%;top:-.2em;transform:translateX(-50%);font-weight:900;color:#e8590c;font-size:calc(var(--u)*1.2);white-space:nowrap;pointer-events:none;animation:ptfly 1.3s ease-out forwards;text-shadow:0 0 4px #fff,0 0 4px #fff;z-index:20}
+@keyframes ptfly{0%{opacity:0;transform:translate(-50%,.6em)}20%{opacity:1}100%{opacity:0;transform:translate(-50%,-2.6em)}}
+.ptgain{display:flex;align-items:center;gap:calc(var(--u)*.7);background:#fff8d6;border-radius:calc(var(--u)*1);padding:calc(var(--u)*.4) calc(var(--u)*1);box-shadow:0 .2em 0 #e2c04d}
+.pg-t{font-size:calc(var(--u)*.9);font-weight:700;color:#7a5a00}.pg-n{font-size:calc(var(--u)*1.7);font-weight:900;color:#c27c00}.pg-s{font-size:calc(var(--u)*.8);color:#7a5a00}
+.ptpanel{width:min(100%,calc(var(--u)*28));gap:calc(var(--u)*.5)}
+.ptabs{display:flex;gap:calc(var(--u)*.4)}.ptabs .btn{flex:1;padding:calc(var(--u)*.4) calc(var(--u)*.2);font-size:calc(var(--u)*.95)}.ptabs .btn.sel{background:var(--y);box-shadow:0 .25em 0 #d7a91c}
+.ptbody{overflow:auto;min-height:0;flex:1 1 auto}
+.chgrid,.shopg{display:grid;grid-template-columns:repeat(4,1fr);gap:calc(var(--u)*.4)}
+.chb,.shb{background:#f4f6fb;border-radius:calc(var(--u)*.7);padding:calc(var(--u)*.3) 0;display:flex;flex-direction:column;align-items:center;box-shadow:0 .15em 0 #c9d3e6;font-weight:800}
+.chb span,.shb span{font-size:calc(var(--u)*2)}.chb small,.shb small{font-size:calc(var(--u)*.75)}.shb em{font-style:normal;font-size:calc(var(--u)*.75);color:#c27c00}
+.chb.sel,.shb.sel{background:#fff3b0;outline:.2em solid #ffb400}
+.shb.own{background:#e6f7d9}.shb.own em{color:#2f9e44}
+.shb.no{animation:shake .4s}
+.nmrow input{font:inherit;font-weight:700;border:.12em solid #c9d3e6;border-radius:.5em;padding:.2em .5em;width:7em;user-select:text;-webkit-user-select:text}
+.ptnow{display:flex;align-items:center;justify-content:center;gap:.6em;font-size:calc(var(--u)*1.2);margin-bottom:.4em;color:#c27c00}
+.ptempty{text-align:center;font-weight:700;color:var(--ink2);padding:1.5em .5em;line-height:1.6}
+@media (max-height:520px){.chb span,.shb span{font-size:calc(var(--u)*1.4)}.chgrid,.shopg{grid-template-columns:repeat(6,1fr)}}
+/* ===== 數字偵探社主題 ===== */
+#app{background:linear-gradient(#eef6ff,#dcebff)}
+#cover{background:radial-gradient(circle at 50% 38%,#fff9db 0,#ffe066 16%,#1c7ed6 52%,#0b2545 100%);overflow:hidden}
+#cover::before{content:'';position:absolute;left:0;right:0;bottom:0;height:16%;background:repeating-linear-gradient(90deg,#ffd43b 0 30px,#212529 30px 60px);opacity:.85}
+#cover h1{color:#fff;text-shadow:0 .08em 0 #061a33}
+#cover .sub{color:#fff4d6;font-weight:800}
+#cover .big-city{animation:mag 3s ease-in-out infinite}
+@keyframes mag{0%,100%{transform:translate(-.3em,0) rotate(-10deg)}50%{transform:translate(.3em,-.2em) rotate(10deg)}}
+@keyframes pzspin{to{transform:rotate(360deg)}}
+#home{background:repeating-linear-gradient(0deg,#00000010 0 2px,transparent 2px 26px),repeating-linear-gradient(90deg,#00000010 0 2px,transparent 2px 52px),linear-gradient(#0b2545,#13315c 50%,#1d4e89)}
+#home .bar .ttl{color:#ffe066;white-space:nowrap;font-size:min(calc(var(--u)*1.45),6vw);text-shadow:0 .06em 0 #0005}
+#home .bar .sub{color:#fff4e0}
+#home .tower{background:linear-gradient(90deg,#a5b4c8,#e7eef8 15%,#f8fbff 50%,#e7eef8 85%,#a5b4c8);box-shadow:0 0 0 .25em #0b2545 inset;border-radius:calc(var(--u)*1) calc(var(--u)*1) .3em .3em}
+#home .floor{background:#fff;border-radius:calc(var(--u)*.4);box-shadow:0 .2em 0 #a9bdd6;border-left:.45em solid #1c7ed6}
+#home .floor.done{background:#fff3bf;border-left-color:#2f9e44}
+#home .floor.boss{background:#ffe3e3;border-left-color:#ae3ec9}
+#home .floor .no{background:#1c7ed6}
+#home .floor.next{outline:.22em solid #ffd43b}
+#home .ground{background:#061a33;height:calc(var(--u)*.5)}
+#home .floor .nm,#home .floor .nm small{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#home .floor .tp{font-size:calc(var(--u)*1.1);flex:none}
+@media (min-aspect-ratio:13/10){#home .floor{gap:calc(var(--u)*.4);padding:0 calc(var(--u)*.5)}#home .floor .nm{font-size:calc(var(--u)*1)}#home .floor .nm small{font-size:calc(var(--u)*.7)}#home .floor .no{width:calc(var(--u)*1.9);height:calc(var(--u)*1.9);font-size:calc(var(--u)*.9)}#home .floor .ic{font-size:calc(var(--u)*1.3)}}
+@media (max-height:480px){#home .floor .nm small{display:none}}
+.awning{flex:none;width:min(100%,calc(var(--u)*28));height:calc(var(--u)*1.1);background:repeating-linear-gradient(90deg,#ffd43b 0 calc(var(--u)*1.4),#212529 0 calc(var(--u)*2.8));border-radius:0 0 .6em .6em;box-shadow:0 .15em 0 #0002;margin-bottom:calc(var(--u)*.25)}
+.roof{height:auto!important;margin-bottom:calc(var(--u)*.2)}
+.pzroof{position:relative;width:calc(var(--u)*4.6);height:calc(var(--u)*4.6);border-radius:50%;background:radial-gradient(circle,#ffd86b 0 58%,#f4a340 60% 70%,#c9822b 72%);box-shadow:0 .2em 0 #0003}
+.pzroof i{position:absolute;font-style:normal;font-size:calc(var(--u)*1.05);transform:translate(-50%,-50%);animation:popin .6s}
+.pzroof b{position:absolute;inset:0;display:grid;place-items:center;font-size:calc(var(--u)*.7);color:#8a4b14;font-weight:900}
+.prize{display:flex;align-items:center;gap:.4em;font-weight:900;font-size:calc(var(--u)*1.2);background:#fff3c4;border-radius:calc(var(--u)*.8);padding:.2em .8em;box-shadow:0 .2em 0 #e8b04a}
+.prize span{font-size:1.8em;animation:prizein .8s .5s both}
+@keyframes prizein{0%{transform:scale(0) rotate(-40deg)}70%{transform:scale(1.3) rotate(10deg)}100%{transform:scale(1)}}
+.intro .btns2{display:flex;gap:calc(var(--u)*.5);justify-content:center;flex-wrap:wrap;margin-top:calc(var(--u)*.4)}
+.intro .btns2 .btn{flex:1;min-width:calc(var(--u)*7)}
+
+/* ===== 幾何圖 ===== */
+.gf{display:block;width:100%;height:100%;overflow:visible}
+.fig svg.gf{height:100%;max-height:calc(var(--u)*16);max-width:100%;width:100%}
+#qwrap>.fig{flex:1 1 0;min-height:calc(var(--u)*6.5)}
+@media (min-aspect-ratio:13/10){#qwrap.land>.fig{min-height:0;height:100%}}
+.gf .sd{stroke:#7a4b10;stroke-width:2.6;stroke-linecap:round;transition:stroke .3s,stroke-width .3s}
+.gf .hl{stroke:#ff4d00!important;stroke-width:5!important}
+.gf text{font-weight:900;font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;paint-order:stroke;stroke:#fff;stroke-width:3px;stroke-linejoin:round}
+.gf text.hl{fill:#d9480f!important;stroke:#fff!important;stroke-width:3px!important;font-size:19px}
+.gf .exh{opacity:0;transition:opacity .4s}
+.gf .exh.on{opacity:1}
+.gf .tr.on{opacity:.8}
+.gf .pulse{animation:svgp 1s ease-in-out infinite}
+@keyframes svgp{50%{opacity:.35}}
+.gf .mv{transition:transform 1.4s cubic-bezier(.4,1.3,.6,1)}
+.gf .fadeout{opacity:.18;transition:opacity .5s}
+.opt .ofig{display:flex;justify-content:center;pointer-events:none}
+.opt .ofig .gf{height:calc(var(--u)*4.3);width:auto;max-width:100%}
+.opt.pic{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.05em;padding:calc(var(--u)*.3) calc(var(--u)*.3)!important}
+.opt.pic b{font-size:calc(var(--u)*1.1)}
+.opts.pk{grid-template-columns:1fr 1fr}
+.opts.pk.three{grid-template-columns:1fr 1fr 1fr}
+.opt.sel{outline:.28em solid #e8590c;transform:scale(1.03)}
+.opt.sel::after{content:'✔';position:absolute;right:.35em;top:.15em;font-size:.8em;color:#e8590c}
+.pkgo{grid-column:1/-1}
+.frac{display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;line-height:1;margin:0 .12em;font-size:.82em}
+.frac i{font-style:normal;padding:0 .15em}
+.frac i:first-child{border-bottom:.09em solid currentColor;padding-bottom:.05em}
+.frac i:last-child{padding-top:.05em}
+
+/* ===== 師傅教你（講解視窗）===== */
+.exppanel{width:min(100%,calc(var(--u)*34));max-height:100%;gap:calc(var(--u)*.4)}
+.exbody{overflow:auto;min-height:0;display:flex;flex-direction:column;align-items:center;gap:calc(var(--u)*.5);width:100%}
+.exfig{width:100%;display:flex;justify-content:center;flex:none}
+.exfig .gf{height:calc(var(--u)*10);max-width:calc(var(--u)*20)}
+.exl{margin:0;padding-left:1.4em;display:flex;flex-direction:column;gap:calc(var(--u)*.3);font-weight:800;font-size:calc(var(--u)*1.05);line-height:1.4;width:100%}
+.exl li{opacity:.18;transition:opacity .3s}
+.exl li.on{opacity:1}
+.exl li.cur{color:#c2410c}
+.ex-ans{font-weight:900;font-size:calc(var(--u)*1.3);color:#2b8a3e;min-height:1.4em;text-align:center;width:100%}
+@media (min-aspect-ratio:13/10){
+ .exppanel{width:min(100%,calc(var(--u)*46))}
+ .exbody{display:grid;grid-template-columns:1fr 1fr;align-items:center;column-gap:calc(var(--u)*.8)}
+ .exfig .gf{height:min(calc(var(--u)*15),52vh)}
+}
+.expbtn{align-self:center;padding:calc(var(--u)*.35) calc(var(--u)*1.2)!important;font-size:calc(var(--u)*1.05)!important;flex:none}
+#ovExp{z-index:120}
+
+/* ===== 師傅上課 ===== */
+.les-say{background:#fff;border-radius:calc(var(--u)*.9);padding:.35em .7em;box-shadow:0 .18em 0 #b9cde6;position:relative}
+.les-say .tch{font-size:1.4em;margin-right:.3em;flex:none}
+.les-stage{background:#fbfdff!important;box-shadow:0 0 0 .15em #c5d8ee inset}
+.les-stage .gf{height:100%;max-height:calc(var(--u)*16);width:100%}
+.les-stage .row3{display:flex;gap:calc(var(--u)*.4);justify-content:center;align-items:flex-end;flex-wrap:wrap;padding:.3em}
+.les-stage .row3>div{display:flex;flex-direction:column;align-items:center;font-weight:800;font-size:calc(var(--u)*.85)}
+.les-stage .row3 .gf{height:calc(var(--u)*5.2);width:calc(var(--u)*6)}
+.les-stage .bad{color:#c92a2a}.les-stage .good{color:#2b8a3e}
+.les-q .opts{grid-template-columns:repeat(auto-fit,minmax(calc(var(--u)*5),1fr))}
+.les-q .opt{min-height:calc(var(--u)*2.8);font-size:calc(var(--u)*1.25)}
+.les-eq{background:#fff8e1;border-radius:calc(var(--u)*.7);padding:.15em .5em}
+.les-eq:empty{background:none}
+.tbl2{border-collapse:collapse;font-weight:800;font-size:calc(var(--u)*1)}
+.tbl2 td,.tbl2 th{border:.1em solid #e0b97a;padding:.15em .5em;text-align:center;background:#fff}
+.tbl2 th{background:#fff1d0}
+
+/* ===== 披薩教室 ===== */
+#class{background:linear-gradient(#eaf4ff,#d0e6ff)}
+#clsStage .say{font-size:calc(var(--u)*1.1)}
+.clsfig{flex:1 1 0;min-height:calc(var(--u)*9);display:flex;align-items:center;justify-content:center;background:#ffffffaa;border-radius:calc(var(--u)*.8)}
+.clsfig .gf{height:100%;max-height:calc(var(--u)*17);width:100%}
+.stw{display:flex;flex-direction:column;gap:calc(var(--u)*.3)}
+.stw .srow{display:flex;align-items:center;gap:calc(var(--u)*.4);justify-content:center;font-weight:900}
+.stw .srow .btn{min-height:calc(var(--u)*2.2);padding:0 calc(var(--u)*.8)}
+.stw .srow span{min-width:5.5em;text-align:center;border-radius:99px;padding:.15em .4em}
+.lesgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:calc(var(--u)*.5);width:100%;align-content:center;flex:1}
+.lesgrid .btn{display:flex;flex-direction:column;align-items:center;font-size:calc(var(--u)*.9);padding:calc(var(--u)*.4)}
+.lesgrid .btn span{font-size:calc(var(--u)*1.6)}
+#clsStage.lesmode{display:flex!important;flex-direction:column}
+.pz-sl{cursor:pointer;transition:transform .35s}
+
+.les-stage .exh{opacity:0;transition:opacity .4s}.les-stage .exh.on{opacity:1}
+.exgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:calc(var(--u)*.3);width:100%}
+.exgrid>div{display:flex;flex-direction:column;align-items:center;font-weight:900;border-radius:.5em;padding:.15em;transition:background .3s}
+.exgrid .gf{height:calc(var(--u)*4);width:100%}
+.exgrid>div.hl{background:#fff3bf;outline:.15em solid #ff9f1c}
+
+.pad .k{min-height:calc(var(--u)*2.85)}
+@media (min-aspect-ratio:13/10){.pad .k{min-height:calc(var(--u)*3.1)}}
+@media (min-aspect-ratio:13/10){#home .tower,#home .awning{width:min(100%,calc(var(--u)*48))}}
+#clsTabs .btn{font-size:min(calc(var(--u)*.95),3.6vw);white-space:nowrap}
+.gf text[stroke="none"]{stroke:none}
+
+/* ===== 偵探社：線索板、數字圖 ===== */
+.pzroof{border-radius:calc(var(--u)*.6)!important;width:calc(var(--u)*13)!important;height:calc(var(--u)*3.2)!important;background:#c49a6c!important;box-shadow:0 0 0 .2em #7a5230 inset,0 .2em 0 #0004!important;display:grid;grid-template-columns:repeat(9,1fr);align-items:center;justify-items:center;padding:0 .3em}
+.pzroof i{position:static!important;transform:none!important;font-size:calc(var(--u)*1.05);background:#fff8;border-radius:.3em;width:1.35em;height:1.35em;display:grid;place-items:center}
+.pzroof i.no{opacity:.35;filter:grayscale(1)}
+.pzroof b{position:absolute;inset:auto 0 -1.3em 0!important;font-size:calc(var(--u)*.8)!important;color:#ffe066!important}
+.exh{opacity:0;transition:opacity .4s}.exh.on{opacity:1}
+.chips{display:flex;flex-wrap:wrap;gap:.25em;align-items:center;justify-content:center;font-weight:900;font-size:calc(var(--u)*1.05);margin:.15em 0}
+.chips>b{margin-right:.3em;color:#1864ab;white-space:nowrap}
+.ch{min-width:1.8em;text-align:center;background:#fff;border:.1em solid #a5c4e6;border-radius:.5em;padding:.05em .3em;transition:all .3s}
+.ch.hl{background:#ffe066;border-color:#f08c00;transform:scale(1.12)}
+.ch.x{opacity:.3;text-decoration:line-through}
+.pairs{display:flex;flex-wrap:wrap;gap:.35em;justify-content:center;font-weight:900;font-size:calc(var(--u)*1.2)}
+.pairs span{background:#e7f5ff;border-radius:.5em;padding:.1em .5em;border:.1em solid #74c0fc}
+.sd{display:inline-grid;grid-template-columns:auto repeat(var(--c),minmax(2.4em,auto));font-weight:900;font-size:calc(var(--u)*1.55);line-height:1.5;margin:0 auto}
+.sd i{font-style:normal;text-align:center;padding:0 .35em}
+.sd i.dv{color:#e03131;text-align:right}
+.sd i.n{border-bottom:.1em solid #1d2b3a}
+.sd i.n.f{border-left:.1em solid #1d2b3a}
+.sd i.bt{color:#1971c2}
+.sd i.hl{background:#ffe066;border-radius:.2em}
+.sdwrap{display:flex;justify-content:center;width:100%}
+.fig .sdwrap,.fig .chips,.fig .pairs{align-self:center}
+.ngrid{display:grid;grid-template-columns:repeat(10,1fr);gap:2px;width:100%;max-width:calc(var(--u)*22);font-weight:900;font-size:calc(var(--u)*.85)}
+.ngrid span{background:#fff;border-radius:.3em;text-align:center;padding:.15em 0;transition:all .3s;cursor:pointer}
+.ngrid span.pr{background:#ffe066;color:#c2410c}
+.ngrid span.cx{background:#dee2e6;color:#adb5bd;text-decoration:line-through}
+.ngrid span.one{background:#f1f3f5;color:#868e96}
+.ngrid span.hl{outline:.15em solid #e03131}
+.bigeq{font-weight:900;font-size:calc(var(--u)*1.6);text-align:center;line-height:1.5}
+.bigeq .r{color:#e03131}.bigeq .b{color:#1971c2}
+.fig .bigeq{align-self:center}
+.case{display:flex;flex-direction:column;align-items:center;justify-content:center;background:#fff;border:.18em dashed #1c7ed6;border-radius:.8em;padding:.3em 1.2em;box-shadow:0 .2em 0 #b9cde6;align-self:center}
+.cs-t{font-size:calc(var(--u)*.85);color:#868e96;font-weight:800}
+.cs-n{font-size:calc(var(--u)*2.6);font-weight:900;color:#1864ab;letter-spacing:.04em;line-height:1.2}
+.cs-n span{color:#adb5bd;font-size:.6em}
+.exfig .sd{font-size:calc(var(--u)*1.25)}
+.les-stage .row3 .gf{height:calc(var(--u)*7.5);width:calc(var(--u)*9)}
+.whybox{display:flex;flex-direction:column;gap:calc(var(--u)*.3);width:100%;height:100%;align-items:center;justify-content:center;padding:.3em}
+.whybox .wsd{flex:none}
+.whybox .wsd .sd{font-size:calc(var(--u)*1.15)}
+.whybox .wfig{flex:1 1 0;min-height:0;width:100%;display:flex;align-items:center;justify-content:center}
+.whybox .wfig .gf{height:100%;max-height:calc(var(--u)*13);width:100%}
+.whybox .wfig .bigeq{font-size:calc(var(--u)*2)}
+
+.les-btns{flex-wrap:wrap}
+.spbar{flex:1 1 100%;display:flex;gap:calc(var(--u)*.5)}
+.spbar .btn{flex:1;min-height:calc(var(--u)*2.3)!important;padding:calc(var(--u)*.25)!important;font-size:calc(var(--u)*.95)!important}
+.psbtn.y{background:var(--y)}
+@media (min-aspect-ratio:13/10){.les>.les-btns{flex-wrap:wrap}}
+#class .bar .psbtn,#class .bar .spdbtn{padding:calc(var(--u)*.35) calc(var(--u)*.6)}
+
+</style>
+</head>
+<body>
+<div id="app">
+ <section class="scr on" id="cover">
+  <button class="btn vbtn vb"></button>
+  <div class="cloud" style="top:8%">❓</div><div class="cloud" style="top:26%;animation-delay:-18s">🔢</div><div class="cloud" style="top:44%;animation-delay:-28s">👣</div>
+  <div class="big-city">🔍</div>
+  <h1>數字<br>偵探社</h1>
+  <div class="sub">六年級數學　最大公因數與最小公倍數</div>
+  <div class="hint">點一下開始</div>
+ </section>
+
+ <section class="scr" id="home">
+  <div class="bar"><div><div class="ttl">🔍 數字偵探社</div><div class="sub" id="homeSub">一層一層破解數字案件</div></div><span class="sp"></span><button class="btn vbtn"></button></div>
+  <div id="bldg"><div class="roof" id="roof"></div><div class="awning"></div><div class="tower" id="tower"></div><div class="ground"></div></div>
+  <div class="dock">
+   <button class="btn" id="dkClass"><span>🕵️</span>偵探教室</button>
+   <button class="btn" id="dkGroup"><span>👥</span>小組競賽</button>
+   <button class="btn" id="dkDaily"><span>📅</span>今日挑戰</button>
+   <button class="btn" id="dkSet"><span>⚙️</span>設定</button>
+  </div>
+ </section>
+
+ <section class="scr" id="level">
+  <div class="bar"><button class="btn" id="lvHome">回首頁</button><span class="sp"></span><button class="btn" id="lvPause">暫停</button><button class="btn" id="lvListen">聽一聽</button><button class="btn vbtn"></button></div>
+  <div class="row2"><div class="prog" id="prog"></div><div class="hud" id="hud"></div></div>
+  <div class="teams hide" id="teams"></div>
+  <div id="qwrap"></div>
+ </section>
+
+ <section class="scr" id="class">
+  <div class="bar"><button class="btn" id="clsHome">回首頁</button><span class="sp"></span><button class="btn vbtn"></button></div>
+  <div class="seg" id="clsTabs" style="margin-top:calc(var(--u)*.5)"><button class="btn sel">因數長方形</button><button class="btn">質數篩子</button><button class="btn">短除法機器</button><button class="btn">重聽上課</button></div>
+  <div class="stage" id="clsStage" style="margin-top:calc(var(--u)*.4)"></div>
+ </section>
+
+ <section class="scr" id="result">
+  <div class="bar"><span class="sp"></span><button class="btn vbtn"></button></div>
+  <div id="rbody"></div>
+  <div id="rbtns"></div>
+ </section>
+
+ <div class="ov" id="ovPause"><div class="panel" id="pauseBody"></div></div>
+ <div class="ov" id="ovExit"><div class="panel" id="exitBody"></div></div>
+ <div class="ov" id="ovSet"><div class="panel" id="setBody"></div></div>
+ <div class="ov" id="ovGroup"><div class="panel" id="gsetBody"></div></div>
+</div>
+<script>
+'use strict';
+'use strict';
+/* ================= 基本工具 ================= */
+const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
+const rnd=(a,b)=>a+Math.floor(Math.random()*(b-a+1));
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const uniq=a=>[...new Set(a)];
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+let SEED=null; // 每日挑戰用的固定亂數
+const _rand=Math.random;
+function seedRand(seed){let s=seed>>>0;return()=>{s=(s+0x6D2B79F5)>>>0;let t=s;t=Math.imul(t^t>>>15,t|1);t^=t+Math.imul(t^t>>>7,t|61);return((t^t>>>14)>>>0)/4294967296}}
+function withSeed(seed,fn){const old=Math.random;Math.random=seedRand(seed);try{return fn()}finally{Math.random=old}}
+
+/* ===== 數字讀法（國語）===== */
+const DG=['零','一','二','三','四','五','六','七','八','九'];
+function zh(n){
+  n=+n; if(n===10000) return '一萬'; if(n===0) return '零';
+  if(n<10) return DG[n];
+  if(n<20) return '十'+(n%10?DG[n%10]:'');
+  const th=Math.floor(n/1000)%10,h=Math.floor(n/100)%10,t=Math.floor(n/10)%10,u=n%10;
+  let s='';
+  if(th) s+=DG[th]+'千';
+  if(h) s+=DG[h]+'百'; else if(th&&(t||u)) s+='零';
+  if(t) s+=DG[t]+'十'; else if(u&&(th||h)&&!s.endsWith('零')) s+='零';
+  if(u) s+=DG[u];
+  return s;
+}
+// 把一段文字裡的數字換成中文讀法，給語音用
+function spoken(s){
+  return String(s).replace(/(\d+)\/(\d+)/g,(m,a,b)=>zh(+b)+'分之'+zh(+a)).replace(/∠/g,'角').replace(/★/g,'星星').replace(/°/g,'度').replace(/[（(][\s　]*[）)]/g,'空格').replace(/＿+/g,'空格').replace(/□/g,'空格').replace(/～/g,'到').replace(/…/g,'餘').replace(/×/g,'乘').replace(/÷/g,'除以').replace(/(\d+)/g,m=>zh(+m)).replace(/[＋+]/g,'加').replace(/[－−]/g,'減').replace(/＝/g,'等於').replace(/＞/g,'大於').replace(/＜/g,'小於').replace(/[（）()]/g,'，').replace(/[⭕❌✔👑🍕🔍🕵🦹⭐🏅🧑🍳\ufe0f\u200d]/gu,'').replace(/\s+/g,' ');
+}
+const fmt=n=>String(n);
+
+/* ===== 排程（可暫停）===== */
+const CLK={paused:false,pend:[],timers:new Set()};
+function later(fn,ms){
+  const t=setTimeout(()=>{CLK.timers.delete(t);if(CLK.paused)CLK.pend.push(fn);else fn()},ms);
+  CLK.timers.add(t);return t;
+}
+function clearLater(){CLK.timers.forEach(clearTimeout);CLK.timers.clear();CLK.pend=[]}
+function setPaused(p){
+  CLK.paused=p;
+  if(p){TTS.stop()}
+  else{const q=CLK.pend;CLK.pend=[];q.forEach(f=>f())}
+}
+let _lastTap=0;
+function guard(ms){const n=Date.now();if(n-_lastTap<ms)return false;_lastTap=n;return true}
+
+/* ===== 設定 / 狀態（只存在這次開啟）===== */
+const S={voice:true,rate:0.72,count:6,sfx:true,done:{},stars:{},instrSeen:{},started:false,unlockAll:false,demoSeen:{},lesSeen:{}};
+let _store=null;try{_store=window.localStorage}catch(e){}
+const dayKey=()=>{const d=new Date();return d.getFullYear()*10000+(d.getMonth()+1)*100+d.getDate()};
+function dailyDone(){try{return _store&&_store.getItem('m61-daily')==String(dayKey())}catch(e){return false}}
+function setDailyDone(){try{_store&&_store.setItem('m61-daily',String(dayKey()))}catch(e){}}
+
+/* ===== 語音 ===== */
+const TTS={ok:'speechSynthesis' in window&&typeof SpeechSynthesisUtterance!=='undefined',gen:0,
+  stop(){this.gen++;try{this.ok&&speechSynthesis.cancel()}catch(e){}},
+  est(t){return Math.max(500,String(t).length*(S.rate<0.7?330:S.rate<0.9?270:210))/(TTS.mult||1)},
+  one(text,gen,done){
+    if(gen!==this.gen) return;
+    let fin=false;const f=()=>{if(fin)return;fin=true;clearTimeout(tm);done&&done()};
+    const tm=setTimeout(f,this.est(text)*1.7+900);
+    try{
+      const u=new SpeechSynthesisUtterance(text);u.lang='zh-TW';u.rate=S.rate*(TTS.mult||1);u.pitch=1.05;
+      u.onend=f;u.onerror=f;speechSynthesis.speak(u);
+    }catch(e){clearTimeout(tm);setTimeout(f,this.est(text))}
+  }
+};
+// items: [string | {t,on}]；依序唸出，每段前呼叫 on
+
+function say(t,cb){speakSeq([t],cb)}
+
+/* ===== 音效 ===== */
+let AC=null;
+function ac(){if(!AC){try{AC=new (window.AudioContext||window.webkitAudioContext)()}catch(e){}}if(AC&&AC.state==='suspended')try{AC.resume()}catch(e){}return AC}
+function tone(f,t0,d,type,vol,slide){
+  const c=ac();if(!c||!S.sfx)return;
+  const o=c.createOscillator(),g=c.createGain();o.type=type||'sine';o.frequency.setValueAtTime(f,c.currentTime+t0);
+  if(slide)o.frequency.exponentialRampToValueAtTime(slide,c.currentTime+t0+d);
+  g.gain.setValueAtTime(0.0001,c.currentTime+t0);g.gain.exponentialRampToValueAtTime(vol||0.15,c.currentTime+t0+0.02);g.gain.exponentialRampToValueAtTime(0.0001,c.currentTime+t0+d);
+  o.connect(g);g.connect(c.destination);o.start(c.currentTime+t0);o.stop(c.currentTime+t0+d+0.05);
+}
+function noise(t0,d,vol,hp){
+  const c=ac();if(!c||!S.sfx)return;
+  const b=c.createBuffer(1,c.sampleRate*d,c.sampleRate),da=b.getChannelData(0);for(let i=0;i<da.length;i++)da[i]=(Math.random()*2-1)*(1-i/da.length);
+  const s=c.createBufferSource();s.buffer=b;const g=c.createGain();g.gain.value=vol||0.2;const f=c.createBiquadFilter();f.type='highpass';f.frequency.value=hp||800;
+  s.connect(f);f.connect(g);g.connect(c.destination);s.start(c.currentTime+t0);
+}
+const SFX={
+  ok(){const n=pick([0,2,4]);const base=[523,587,659][Math.floor(n/2)];tone(base,0,.12,'triangle',.18);tone(base*1.25,.1,.12,'triangle',.18);tone(base*1.5,.2,.22,'triangle',.18)},
+  bad(){tone(200,0,.22,'sine',.12,120)},
+  tap(){tone(660,0,.05,'square',.05)},
+  place(){tone(180,0,.09,'square',.12,90);noise(0,.06,.08,2000)},
+  floor(){for(let i=0;i<3;i++){tone(130,i*.16,.1,'square',.14,70);noise(i*.16,.08,.1,1500)}tone(784,.55,.18,'triangle',.18);tone(1047,.7,.3,'triangle',.18)},
+  clap(){for(let i=0;i<22;i++)noise(i*.07+Math.random()*.03,.05,.1+Math.random()*.1,1200+Math.random()*1500)},
+  fire(){tone(500,0,.5,'sine',.1,1800);noise(.5,.5,.18,300);for(let i=0;i<8;i++)noise(.55+i*.06,.1,.08,3000)},
+  fanfare(){[523,659,784,1047,784,1047].forEach((f,i)=>tone(f,i*.14,.25,'triangle',.2))},
+  swap(){tone(400,0,.08,'sine',.12,800);tone(800,.08,.1,'sine',.12,1200)}
+};
+
+/* ===== 畫面特效 ===== */
+function confetti(n,em){
+  n=n||22;em=em||['⭐','✨','🔍','❓','🏅'];
+  for(let i=0;i<n;i++){const s=document.createElement('span');s.className='confe';s.textContent=pick(em);s.style.left=Math.random()*96+'vw';s.style.animationDelay=Math.random()*.8+'s';s.style.animationDuration=1.8+Math.random()*1.4+'s';document.body.appendChild(s);setTimeout(()=>s.remove(),4200)}
+}
+function toast(t){const d=document.createElement('div');d.className='toast';d.innerHTML=t;document.body.appendChild(d);setTimeout(()=>d.remove(),1500)}
+
+
+/* ===== 語音：可暫停、可調速度 ===== */
+const SP={paused:false,cur:null};
+function speakSeq(items,onAll,gap){
+  TTS.stop();const gen=TTS.gen;gap=gap==null?260:gap;
+  SP.paused=false;
+  const st={items,i:0,onAll,gap,gen,called:-1,waiting:false,ep:0};SP.cur=st;spSync();
+  const next=()=>{
+    if(gen!==TTS.gen)return;
+    if(SP.paused){st.waiting=true;return}
+    if(st.i>=items.length){if(SP.cur===st){SP.cur=null;spSync()}onAll&&onAll();return}
+    const it=items[st.i],t=typeof it==='string'?it:it.t,on=typeof it==='string'?null:it.on;
+    if(st.called<st.i){st.called=st.i;on&&on()}
+    const txt=spoken(t),ep=st.ep;
+    const done=()=>{if(gen!==TTS.gen||ep!==st.ep)return;if(SP.paused){st.waiting=true;return}st.i++;later(()=>{if(gen===TTS.gen&&ep===st.ep)next()},gap)};
+    if(!S.voice||!TTS.ok||!txt.trim()){later(done,S.voice?TTS.est(txt)*0.5:350);return}
+    TTS.one(txt,gen,done);
+  };
+  st.next=next;
+  if(CLK.paused)return;
+  next();
+}
+function say(t,cb){speakSeq([t],cb)}
+function speechPause(){const c=SP.cur;if(!c)return;SP.paused=true;c.ep++;c.waiting=true;try{TTS.ok&&speechSynthesis.cancel()}catch(e){}spSync()}
+function speechResume(){SP.paused=false;spSync();const c=SP.cur;if(c&&c.waiting&&c.gen===TTS.gen){c.waiting=false;c.next()}}
+function speechToggle(){if(SP.paused)speechResume();else if(SP.cur)speechPause()}
+const SPD=[[0.6,'🐢 慢'],[0.72,'🚶 普通'],[0.9,'🐇 快']];
+function spdIdx(){let k=0,d=9;SPD.forEach((x,i)=>{const dd=Math.abs(x[0]-S.rate);if(dd<d){d=dd;k=i}});return k}
+function spSync(){
+  document.querySelectorAll('.psbtn').forEach(b=>{b.textContent=b.dataset.short?(SP.paused?'▶':'✋'):(SP.paused?'▶ 繼續':'✋ 暫停');b.classList.toggle('y',SP.paused);b.classList.toggle('pulse',SP.paused)});
+  document.querySelectorAll('.spdbtn').forEach(b=>b.textContent=b.dataset.short?SPD[spdIdx()][1].split(' ')[0]:'速度：'+SPD[spdIdx()][1]);
+}
+function speedCycle(){
+  S.rate=SPD[(spdIdx()+1)%SPD.length][0];spSync();
+  const c=SP.cur;
+  if(c&&!SP.paused&&c.gen===TTS.gen){c.ep++;try{TTS.ok&&speechSynthesis.cancel()}catch(e){}setTimeout(()=>{if(SP.cur===c&&!SP.paused)c.next()},150)}
+  else if(!c){const k=spdIdx();speakSeq([['這樣唸，比較慢。','這樣唸，是普通的速度。','這樣唸，比較快。'][k]])}
+}
+document.addEventListener('click',e=>{const b=e.target.closest('.psbtn,.spdbtn');if(!b)return;e.stopPropagation();if(!guard(250))return;if(b.classList.contains('psbtn'))speechToggle();else speedCycle()});
+const SPBAR='<div class="spbar"><button class="btn psbtn">✋ 暫停</button><button class="btn spdbtn"></button></div>';
+setTimeout(()=>{const bar=document.querySelector('#class .bar .sp');if(bar&&!document.querySelector('#class .psbtn'))bar.insertAdjacentHTML('afterend','<button class="btn psbtn" data-short="1" title="暫停">✋</button><button class="btn spdbtn" data-short="1" title="速度"></button>');spSync()},0);
+
+/* ================= 題型元件 ================= */
+const INSTR={big:'從個位開始，一位一位點數字。',pv:'按上下箭頭，在定位板上放數字。',pick:'把可以填的數字全部點出來，再按「選好了」。',mc:'點一點，選出正確的答案。',tf:'對的點「對」，不對的點「不對」。',num:'用數字鍵打出答案，再按「確定」。',cards:'一張一張點，排出答案。',cmp:'比一比，哪一邊比較大？',board:'按「加」「減」，把數字放到定位板上，再按「確定」。',match:'先點左邊，再點右邊，把配對的連起來。'};
+function stemHtml(s){return txtHtml(s).replace(/(\d{1,5})/g,'<span class="num">$1</span>')}
+const NB=['①','②','③','④'];
+function optSay(o){return o.say||o.t}
+
+function buildShell(q,host,ctx){
+  const seen=S.instrSeen[q.type]||0;
+  const showI=seen<2&&!q.noInstr;
+  host.innerHTML='';
+  host.classList.add('land');
+  const el=(cls,html)=>{const d=document.createElement('div');d.className=cls;d.innerHTML=html;host.appendChild(d);return d};
+  let instr=null;
+  if(showI){instr=el('instr',esc(INSTR[q.type]||INSTR.mc));}else el('instr ghost','');
+  el('stem card',stemHtml(q.stem));
+  if(q.fig){
+    const fh=typeof q.fig==='string'?q.fig:q.fig.html;
+    const fit=/class="(blocks|money)/.test(fh);
+    const fe=el('fig'+(fit?' fitfig':'')+(q.vert?' hasv':''),fit?'<div class="fit">'+fh+'</div>':fh);
+    if(q.vert)fe.insertAdjacentHTML('beforeend',vertPanelHTML(q.vert,q.type==='num'));
+    if(fit){requestAnimationFrame(()=>requestAnimationFrame(()=>fitFig(fe)));setTimeout(()=>fitFig(fe),250)}
+  }else if(q.vert){
+    el('fig vfig hasv',vertPanelHTML(q.vert,q.type==='num'));
+  }
+  ctx.speakHead=[];
+  if(showI&&instr) ctx.speakHead.push(INSTR[q.type]);
+  ctx.speakHead.push(q.say||q.stem);
+  S.instrSeen[q.type]=seen+1;
+}
+function fitFig(fig){
+  const f=fig&&fig.firstElementChild;if(!f||!f.classList.contains('fit'))return;
+  f.style.transform='none';
+  f.style.margin='0';
+  const vp=fig.querySelector('.vp'),cw=fig.clientWidth,ch=fig.clientHeight-(vp?vp.offsetHeight+30:0),ow=f.offsetWidth,oh=f.offsetHeight;
+  if(!cw||ch<=0||!ow||!oh)return;
+  const s=Math.max(.4,Math.min(cw/ow,ch/oh,vp?1.25:2.6));
+  f.style.transform='scale('+s.toFixed(3)+')';
+  if(vp)f.style.margin=((oh*s-oh)/2)+'px '+((ow*s-ow)/2)+'px';
+}
+window.addEventListener('resize',()=>$$('.fitfig').forEach(fitFig));
+function fbEl(host){let f=$('.fb',host);if(!f){f=document.createElement('div');f.className='fb';host.appendChild(f)}return f}
+function setFb(host,t,c){const f=fbEl(host);f.className='fb '+(c||'');f.innerHTML=txtHtml(t||'');requestAnimationFrame(()=>$$('.fitfig',host).forEach(fitFig))}
+
+/* ---- 選擇 / 是非 ---- */
+function rMC(q,host,ctx){
+  buildShell(q,host,ctx);
+  const opts=q.opts.map(o=>typeof o==='string'?{t:o}:o),n=opts.length;
+  const long=opts.some(o=>o.t.length>9),mid=opts.some(o=>o.t.length>5&&!o.html);
+  const box=document.createElement('div');
+  box.className='opts '+(mid||q.oneCol?'one':n===3?'three':'');
+  opts.forEach((o,i)=>{
+    const b=document.createElement('button');b.className='opt c'+(i%4)+(long&&!o.pic?' long':'')+(o.pic?' pic':'');b.dataset.i=i;
+    b.innerHTML=(q.type==='tf'?'':`<span class="nb">${NB[i]||i+1}</span>`)+(o.html||txtHtml(o.t));
+    box.appendChild(b);
+  });
+  host.appendChild(box);fbEl(host);
+  const bs=$$('.opt',box);
+  let tries=0,locked=false;
+  const pick1=i=>{
+    if(locked||ctx.dead())return; if(!guard(260))return;
+    TTS.stop();
+    if(i===q.ans){
+      locked=true;bs[i].classList.add('ok');bs.forEach((b,j)=>j!==i&&b.classList.add('off'));
+      ctx.finish(tries===0,q);
+    }else{
+      tries++;bs[i].classList.add('no','off');SFX.bad();
+      if(tries>=ctx.maxTries){locked=true;bs[q.ans].classList.add('ok');bs.forEach((b,j)=>j!==q.ans&&b.classList.add('off'));ctx.finish(false,q,true)}
+      else ctx.hint(q);
+    }
+  };
+  bs.forEach((b,i)=>b.onclick=()=>pick1(i));
+  ctx.auto=()=>pick1(q.ans);
+  ctx.autoWrong=()=>{const j=bs.findIndex((b,i)=>i!==q.ans&&!b.classList.contains('off'));if(j>=0){_lastTap=0;pick1(j);return true}return false};
+  ctx.speakTail=q.type==='tf'?[]:(q.noOptSay?[]:[{t:'選項是：',on:()=>{}}].concat(opts.map((o,i)=>({t:optSay(o),on:()=>{bs.forEach(x=>x.classList.remove('hot'));bs[i].classList.add('hot')}}))));
+  ctx.speakEnd=()=>bs.forEach(x=>x.classList.remove('hot'));
+}
+
+/* ---- 數字鍵盤（可多個空格） ---- */
+function rNum(q,host,ctx){
+  buildShell(q,host,ctx);
+  const tpl=q.tpl||[{b:0}];
+  const chain=q.kind==='chain';
+  const area=document.createElement('div');area.className=(chain?'chain':'ansbox')+((tpl.filter(p=>typeof p!=='string').length>=3)?' many':'');
+  const fixedPart=[];
+  let bi=0;
+  tpl.forEach(p=>{
+    if(typeof p==='string'){
+      const s=document.createElement('span');
+      if(chain&&p==='→'){s.className='ar';s.textContent='→'}else if(chain){s.className='nd';s.textContent=p}else{s.style.cssText='font-weight:800;font-size:calc(var(--u)*1.2);align-self:center';s.textContent=p}
+      area.appendChild(s);
+    }else{
+      const s=document.createElement('span');s.className='blank';s.dataset.b=p.b;s.innerHTML='&nbsp;';area.appendChild(s);
+    }
+  });
+  host.appendChild(area);fbEl(host);
+  const pad=document.createElement('div');pad.className='pad';
+  ['7','8','9','4','5','6','1','2','3','del','0','go'].forEach(k=>{const b=document.createElement('button');b.className='k '+(k==='del'?'del':k==='go'?'go':'');b.dataset.k=k;b.textContent=k==='del'?'刪掉':k==='go'?'確定':k;pad.appendChild(b)});
+  host.appendChild(pad);
+  const blanks=$$('.blank',area),ans=q.blanks.map(String);
+  let cur=0,buf='',tries=0,anyBad=false,done=false;
+  const refresh=()=>{blanks.forEach((b,i)=>{if(i===cur&&!done){b.classList.add('cur');b.textContent=buf||'？'}})};
+  const ensure=()=>{blanks.forEach((b,i)=>{if(i>cur&&!b.classList.contains('fix')&&!b.classList.contains('rev'))b.innerHTML='&nbsp;';if(i!==cur)b.classList.remove('cur')})};
+  const advance=()=>{
+    cur++;buf='';tries=0;ensure();
+    if(cur>=blanks.length){done=true;blanks.forEach(b=>b.classList.remove('cur'));ctx.finish(!anyBad,q,anyBad)}else refresh();
+  };
+  const press=k=>{
+    if(done||ctx.dead())return;
+    if(k==='del'){buf=buf.slice(0,-1);SFX.tap();refresh();return}
+    if(k==='go'){
+      if(!buf)return;if(!guard(300))return;TTS.stop();
+      if(buf===ans[cur]){const b=blanks[cur];b.classList.remove('cur');b.classList.add('fix');b.textContent=buf;SFX.ok();advance()}
+      else{
+        tries++;anyBad=true;SFX.bad();const b=blanks[cur];b.style.animation='shake .4s';setTimeout(()=>b.style.animation='',420);buf='';b.textContent='？';
+        if(tries>=ctx.maxTries){b.classList.remove('cur');b.classList.add('rev');b.textContent=ans[cur];advance()}else ctx.hint(q);
+      }
+      return;
+    }
+    if(buf.length>=Math.max(5,ans[cur].length))return;
+    if(buf===''&&k==='0'&&ans[cur].length>1&&false)return;
+    buf+=k;SFX.tap();refresh();
+  };
+  $$('.k',pad).forEach(b=>b.onclick=()=>press(b.dataset.k));
+  refresh();
+  ctx.auto=()=>{if(done)return;buf=ans[cur];_lastTap=0;press('go')};
+  ctx.autoWrong=()=>{if(done)return false;buf=ans[cur]==='9'?'8':'9'+ans[cur];_lastTap=0;press('go');return true};
+  ctx.speakTail=[];ctx.speakEnd=()=>{};
+}
+/* ---- 連連看 ---- */
+function rMatch(q,host,ctx){
+  buildShell(q,host,ctx);
+  const L=q.pairs.map((p,i)=>({t:p[0],i})),R=shuffle(q.pairs.map((p,i)=>({t:p[1],i})));
+  const g=document.createElement('div');g.className='mt';
+  const lb=L.map(x=>{const b=document.createElement('button');b.textContent=x.t;b.dataset.i=x.i;return b});
+  const rb=R.map(x=>{const b=document.createElement('button');b.textContent=x.t;b.dataset.i=x.i;return b});
+  lb.forEach((b,k)=>{g.appendChild(b);g.appendChild(rb[k])});
+  host.appendChild(g);fbEl(host);
+  let sel=null,bad=0,left=q.pairs.length,locked=false;
+  const clickL=b=>{if(locked||ctx.dead()||b.classList.contains('done'))return;if(!guard(150))return;lb.forEach(x=>x.classList.remove('sel'));b.classList.add('sel');sel=b;SFX.tap();
+    speakSeq([b.textContent])};
+  const clickR=b=>{
+    if(locked||ctx.dead()||b.classList.contains('done')||!sel)return;if(!guard(200))return;
+    speakSeq([b.textContent]);if(sel.dataset.i===b.dataset.i){sel.classList.remove('sel');sel.classList.add('done');b.classList.add('done');sel=null;SFX.ok();left--;
+      if(!left){locked=true;ctx.finish(bad===0,q)}}
+    else{bad++;SFX.bad();b.style.animation='shake .4s';setTimeout(()=>b.style.animation='',420);
+      if(bad>=3){locked=true;lb.forEach(l=>{const r=rb.find(x=>x.dataset.i===l.dataset.i);l.classList.add('done');r.classList.add('done')});ctx.finish(false,q,true)}else ctx.hint(q)}
+  };
+  lb.forEach(b=>b.onclick=()=>clickL(b));rb.forEach(b=>b.onclick=()=>clickR(b));
+  ctx.auto=()=>{lb.forEach(l=>{if(l.classList.contains('done'))return;_lastTap=0;clickL(l);const r=rb.find(x=>x.dataset.i===l.dataset.i);_lastTap=0;clickR(r)})};
+  ctx.autoWrong=()=>{if(locked)return false;const l=lb.find(x=>!x.classList.contains('done'));const r=rb.find(x=>x.dataset.i!==l.dataset.i&&!x.classList.contains('done'));_lastTap=0;clickL(l);_lastTap=0;clickR(r);return true};
+  ctx.speakTail=[];ctx.speakEnd=()=>{};
+}
+const REND={mc:rMC,tf:rMC,num:rNum,match:rMatch};
+/* ================= 出題流程 ================= */
+const QM={ctx:null,qs:[],idx:0,res:[],cfg:null,host:null,gen:0};
+function qmStart(qs,cfg){
+  QM.qs=qs;QM.idx=0;QM.res=[];QM.cfg=cfg;QM.host=cfg.host;QM.gen++;QM.pendingAdv=null;
+  clearLater();TTS.stop();
+  qmShow();
+}
+function qmDead(gen){return gen!==QM.gen}
+/* 說明/解說播放時，「聽一聽」變成「下一題 ▶」，程度好的同學可直接跳過 */
+function setNextBtn(on){const b=document.getElementById('lvListen');if(!b)return;b.textContent=on?'下一題':'聽一聽';b.classList.toggle('nextb',!!on)}
+function qmSkip(){const a=QM.pendingAdv;if(!a)return false;TTS.stop();a();return true}
+function qmProg(){
+  const p=QM.cfg.prog;if(!p)return;
+  p.innerHTML=QM.qs.map((_,i)=>`<i class="${i<QM.res.length?(QM.res[i]?'ok':'bad'):i===QM.idx?'cur':''}"></i>`).join('');
+}
+function qmShow(){
+  setNextBtn(false);
+  const gen=QM.gen,q=QM.qs[QM.idx];
+  if(!q){QM.cfg.onEnd&&QM.cfg.onEnd(QM.res.slice());return}
+  const host=QM.host;qmProg();if(!q._part2)QM.cfg.onShow&&QM.cfg.onShow(QM.idx,q);
+  const ctx={maxTries:QM.cfg.maxTries||2,locked:false,
+    dead:()=>qmDead(gen)||CLK.paused,
+    hint(q){
+      const h=q.hint||'再想一想，再試一次。';setFb(host,h,'bad');
+      speakSeq([h]);
+    },
+    finish(first,q,revealed){
+      if(qmDead(gen))return;
+      const cont=q.then;if(cont){QM.p1=first&&QM.p1!==false;cont._part2=true}else{first=first&&QM.p1!==false;QM.p1=undefined;QM.res.push(first)}qmProg();
+      const msg=first?pick(['答對了！','太棒了！','沒錯！','你做到了！','答案正確！']):(revealed?'看，答案是這樣：':'答對了！');
+      setFb(host,(first||!revealed?msg+' ':'')+(q.why||''),first||!revealed?'ok':'bad');
+      if(first||!revealed){SFX.ok();confetti(first?14:6);q.afterOk&&q.afterOk(host)}else{q.afterOk&&q.afterOk(host)}
+      if(!cont)QM.cfg.onAnswer&&QM.cfg.onAnswer(first,q,!!revealed);
+      const sx=q.seq?seqExplain(host,q.seq):null;
+      const speakWhy=sx||(!first&&q.why),whyT=sx?sx.text:(q.whySay||q.why);
+      const adv=()=>{if(qmDead(gen)||QM.pendingAdv!==adv)return;QM.pendingAdv=null;if(cont){QM.qs[QM.idx]=cont}else QM.idx++;qmShow()};
+      QM.pendingAdv=adv;setNextBtn(true);
+      if(sx){speakSeq(sx.items,()=>{sx.end();later(adv,1100)},200);later(adv,Math.max(4500,TTS.est(spoken(whyT))*1.5+3000))}
+      else if(speakWhy){speakSeq([whyT],()=>later(adv,700));later(adv,Math.max(3000,TTS.est(spoken(whyT))*1.3+1500))}
+      else{TTS.stop();later(adv,first?1250:1700)}
+    }
+  };
+  QM.ctx=ctx;
+  (REND[q.type]||rMC)(q,host,ctx);
+  if(q.vert){const pe=$('.vp',host);if(pe){
+    const old=ctx.speakEnd;ctx.speakEnd=()=>{old&&old();later(()=>vertRun(pe,q.vert,gen),500)};
+    const bt=pe.querySelector('.vp-btn');if(bt)bt.onclick=()=>{if(!guard(300)||CLK.paused)return;TTS.stop();vertRun(pe,q.vert,gen)};
+  }}
+  ctx.replay=()=>{if(CLK.paused||QM.pendingAdv)return;const items=(ctx.speakHead||[]).concat(ctx.speakTail||[]);speakSeq(items,ctx.speakEnd)};
+  // 第一次自動唸題
+  later(()=>{if(qmDead(gen))return;ctx.replay()},300);
+}
+function qmReplay(){QM.ctx&&QM.ctx.replay&&QM.ctx.replay()}
+function qmResume(){if(QM.pendingAdv&&!CLK.paused){later(QM.pendingAdv,500)}}
+function NQ(stem,tpl,blanks,o){return Object.assign({type:'num',stem,tpl,blanks:blanks.map(String)},o||{})}
+const TFO=[{t:'○ 對',say:'對'},{t:'✕ 不對',say:'不對'}];
+function TF(stem,ok,why,o){return Object.assign({type:'tf',stem,opts:TFO,ans:ok?0:1,why,hint:'想一想，再判斷。',src:'評量卷'},o||{})}
+
+/* ================= 文字工具 ================= */
+function zhBig(n){return zh(n)}
+function fracHTML(a,b){return `<span class="frac"><i>${a}</i><i>${b}</i></span>`}
+function txtHtml(s){return esc(s).replace(/(\d+)\/(\d+)/g,(m,a,b)=>fracHTML(a,b)).replace(/\n/g,'<br>')}
+const GAN=['甲','乙','丙','丁','戊','己'];
+const f1=v=>(+v).toFixed(1);
+
+/* ================= 數學小工具 ================= */
+const isPrime=n=>{if(n<2)return false;for(let i=2;i*i<=n;i++)if(n%i===0)return false;return true};
+const factors=n=>{const a=[];for(let i=1;i<=n;i++)if(n%i===0)a.push(i);return a};
+const pfac=n=>{const r=[];let m=n;for(let p=2;p*p<=m;p++)while(m%p===0){r.push(p);m/=p}if(m>1)r.push(m);return r};
+const gcd=(a,b)=>b?gcd(b,a%b):a;
+const lcm=(a,b)=>a/gcd(a,b)*b;
+const X=a=>a.join('×');
+const prod=a=>a.reduce((x,y)=>x*y,1);
+const PRIMES=[];for(let i=2;i<200;i++)if(isPrime(i))PRIMES.push(i);
+const pdist=n=>uniq(pfac(n));
+function pairsOf(n){const p=[];for(let a=1;a*a<=n;a++)if(n%a===0)p.push([a,n/a]);return p}
+function ruleWhy(n,p){ // 用規則說明 p 是 n 的因數
+  if(p===2)return `${n}的個位是${n%10}，是偶數，有因數2`;
+  if(p===3){const ds=String(n).split('').map(Number);return `${ds.join('＋')}＝${ds.reduce((a,b)=>a+b,0)}，是3的倍數，所以有因數3`}
+  if(p===5)return `${n}的個位是${n%10}，有因數5`;
+  return `${n}÷${p}＝${n/p}，可以整除，有因數${p}`;
+}
+
+/* ================= 圖：因數成對 ================= */
+function pairsHTML(n,all){return `<div class="pairs">${pairsOf(n).map(([a,b],k)=>`<span class="${all?'':'exh '}fp${k}">${a}×${b}</span>`).join('')}</div>`}
+function factorSteps(n){
+  const ps=pairsOf(n),fs=factors(n);
+  const st=[{t:`找${n}的因數：從1開始，一個一個試，看${n}能不能被整除。`},{t:'能整除的數，會兩個兩個成對出現。'}];
+  ps.forEach(([a,b],k)=>st.push({t:a===b?`${a}×${a}＝${n}，${a}只要寫一次。`:`${a}×${b}＝${n}，所以${a}和${b}都是${n}的因數。`,show:`.fp${k}`}));
+  st.push({t:'再試下去，數字就重複了，可以停了。'});
+  st.push({t:`${n}的因數有：${fs.join('、')}，一共${fs.length}個。`,eq:`${n}的因數：${fs.join('、')}`});
+  return st;
+}
+function primeSteps(n){
+  if(n===1)return [{t:'1的因數只有1，只有一個因數。'},{t:'質數要剛好有兩個因數，合數要有三個以上，所以1不是質數，也不是合數。',eq:'1：不是質數，也不是合數'}];
+  const fs=factors(n),st=[{t:'質數：只有1和自己，兩個因數。合數：除了1和自己，還有別的因數。'}];
+  if(fs.length>2){const p=pfac(n)[0];if(p<=5&&n>10)st.push({t:`偵探小技巧：${ruleWhy(n,p)}。`})}
+  st.push({t:`${n}的因數有：${fs.join('、')}。`,eq:`${n}的因數：${fs.join('、')}`});
+  st.push(fs.length===2?{t:`只有1和${n}兩個因數，所以${n}是質數。`,eq:`${n} 是質數 ⭐`}:{t:`除了1和${n}，還有${fs.slice(1,-1).join('、')}，所以${n}是合數。`,eq:`${n} 是合數`});
+  return st;
+}
+/* ================= 圖：點點排長方形 ================= */
+function arrFig(r,c,o){o=o||{};const W=o.W||220,H=o.H||140,s=Math.min((W-16)/c,(H-(o.lbl?34:16))/r,26),ox=(W-s*c)/2,oy=(H-(o.lbl?20:0)-s*r)/2;
+  let h=`<svg viewBox="0 0 ${W} ${H}" class="gf">`;
+  for(let i=0;i<r;i++)for(let j=0;j<c;j++)h+=`<circle cx="${f1(ox+s*(j+.5))}" cy="${f1(oy+s*(i+.5))}" r="${f1(s*.4)}" fill="${o.col||'#ff922b'}"/>`;
+  if(o.lbl)h+=`<text x="${W/2}" y="${H-4}" text-anchor="middle" font-size="16" fill="#1d2b3a">${o.lbl}</text>`;
+  return h+'</svg>';
+}
+/* ================= 圖：短除法 ================= */
+function sdPlan(nums,mode){
+  const rows=[];let cur=nums.slice();
+  for(let g=0;g<20;g++){
+    if(mode==='pf'){const n=cur[0];if(n===1||isPrime(n))break;const p=pfac(n)[0];rows.push({p,from:cur.slice(),to:[n/p]});cur=[n/p]}
+    else{const gg=cur.reduce(gcd);if(gg===1)break;const p=pfac(gg)[0];rows.push({p,from:cur.slice(),to:cur.map(x=>x/p)});cur=cur.map(x=>x/p)}
+  }
+  return {rows,bottom:cur};
+}
+function sdHTML(nums,plan,showAll){
+  const c=nums.length,E=i=>showAll?'':' exh';let h=`<div class="sdwrap"><div class="sd" style="--c:${c}">`;
+  plan.rows.forEach((r,i)=>{h+=`<i class="dv${E()} dv${i}">${r.p}</i>`+r.from.map((v,j)=>`<i class="n${j===0?' f':''} rn${i}${i?E():''}">${v}</i>`).join('')});
+  const k=plan.rows.length;h+=`<i></i>`+plan.bottom.map(v=>`<i class="bt rn${k}${k?E():''}">${v}</i>`).join('');
+  return h+'</div></div>';
+}
+function sdSteps(nums,plan,mode){
+  const st=[],k=plan.rows.length;
+  st.push({t:mode==='pf'?'用短除法：拿最小的質數去除，一直除到不能再除。':`用短除法：找一個質數，可以「同時」整除${nums.join('和')}。`});
+  plan.rows.forEach((r,i)=>{
+    const why=mode==='pf'?'':r.p===2?'（都是偶數）':r.p===5?'（個位都是0或5）':r.p===3?'（數字加起來都是3的倍數）':'';
+    st.push({t:mode==='pf'?`${r.from[0]}可以被${r.p}整除：${r.from[0]}÷${r.p}＝${r.to[0]}。`:`${r.from.join('和')}都可以被${r.p}整除${why}，除以${r.p}，得到${r.to.join('和')}。`,show:`.dv${i},.rn${i+1}`});
+  });
+  if(mode==='pf'){const f=pfac(nums[0]);st.push({t:`最後的${plan.bottom[0]}是質數，不能再分了。`});st.push({t:`把左邊的質數和最下面的數相乘：${nums[0]}＝${X(f)}。`,hl:'.dv,.bt',eq:`${nums[0]}＝${X(f)}`});return st}
+  st.push({t:k?`${plan.bottom.join('和')}，除了1以外，沒有一起的因數了，停下來。`:'找不到可以同時整除的質數，它們「互質」。'});
+  const L=plan.rows.map(r=>r.p);
+  if(mode==='g'){const g=prod(L);if(k>1)st.push({t:'為什麼要相乘？左邊的每一個數，都是把「每一份」再平分，所以份數要乘起來。'});st.push({t:k?`最大公因數＝左邊的數相乘：${L.length>1?X(L)+'＝':''}${g}。`:'所以最大公因數是1。',hl:'.dv',eq:`最大公因數是 ${g}`})}
+  else{const all=L.concat(plan.bottom),l=prod(all);st.push({t:`最小公倍數＝左邊的數和下面的數，全部相乘：${X(all)}＝${l}。`,hl:'.dv,.bt',eq:`最小公倍數是 ${l}`})}
+  return st;
+}
+/* ================= 圖：因數樹 ================= */
+function treeFig(n){
+  const build=v=>{if(isPrime(v)||v<4)return {v};let d=1;for(let a=2;a*a<=v;a++)if(v%a===0)d=a;return {v,l:build(d),r:build(v/d)}};
+  const t=build(n);let leaves=0,dmax=0;
+  const lay=(nd,dep)=>{nd.dep=dep;dmax=Math.max(dmax,dep);if(!nd.l){nd.x=leaves++;return}lay(nd.l,dep+1);lay(nd.r,dep+1);nd.x=(nd.l.x+nd.r.x)/2};lay(t,0);
+  const W=Math.max(150,leaves*54+20),H=dmax*54+42,PX=x=>20+x*54+17,PY=d=>24+d*54;
+  let s=`<svg viewBox="0 0 ${W} ${H}" class="gf">`;const nodes=[];
+  const walk=nd=>{nodes.push(nd);if(nd.l){[nd.l,nd.r].forEach(c=>{s+=`<line class="exh lv${c.dep}" x1="${PX(nd.x)}" y1="${PY(nd.dep)+10}" x2="${PX(c.x)}" y2="${PY(c.dep)-13}" stroke="#495057" stroke-width="2"/>`;walk(c)})}};walk(t);
+  nodes.forEach(nd=>{const pr=!nd.l;s+=`<g class="${nd.dep?'exh ':''}lv${nd.dep}">${pr?`<circle class="pc" cx="${PX(nd.x)}" cy="${PY(nd.dep)-3}" r="15" fill="#fff3bf" stroke="#e03131" stroke-width="2.4"/>`:''}<text x="${PX(nd.x)}" y="${PY(nd.dep)+3}" text-anchor="middle" font-size="17" fill="${pr?'#e03131':'#1d2b3a'}">${nd.v}</text></g>`});
+  return {svg:s+'</svg>',t,dmax};
+}
+function treeSteps(n){
+  const T=treeFig(n),st=[{t:`把${n}一直拆成兩個數相乘，拆到每一個都是質數為止。`}];
+  const lvl=[];const walk=nd=>{if(nd.l){(lvl[nd.dep]=lvl[nd.dep]||[]).push(nd);walk(nd.l);walk(nd.r)}};walk(T.t);
+  lvl.forEach((arr,d)=>st.push({t:arr.map(nd=>`${nd.v}＝${nd.l.v}×${nd.r.v}`).join('，')+'。',show:`.lv${d+1}`}));
+  st.push({t:'紅色圈起來的都是質數，不能再拆了。',hl:''});
+  st.push({t:`由小到大排好：${n}＝${X(pfac(n))}。`,eq:`${n}＝${X(pfac(n))}`});
+  return {fig:T.svg,steps:st};
+}
+/* ================= 圖：倍數時間線 ================= */
+function timeFig(a,b,o){
+  o=o||{};const L=lcm(a,b),M=o.max||(L*2<=Math.max(a,b)*12?L*2:L),W=320,H=128,X0=24,X1=306,XX=v=>X0+v/M*(X1-X0);
+  let s=`<svg viewBox="0 0 ${W} ${H}" class="gf">`;
+  [[a,36,'#1971c2',o.la||(a+'的倍數')],[b,92,'#e03131',o.lb||(b+'的倍數')]].forEach(([k,y,c,lb])=>{
+    s+=`<line x1="${X0}" y1="${y}" x2="${X1}" y2="${y}" stroke="${c}" stroke-width="2" opacity=".5"/><text x="${X0}" y="${y-16}" font-size="12" fill="${c}">${lb}</text>`;
+    const cnt=M/k;for(let v=k;v<=M;v+=k){const cm=v%L===0;s+=`<circle class="${cm?'cmn':''}" cx="${f1(XX(v))}" cy="${y}" r="${cm?6.5:4.5}" fill="${c}"/>`;if(cnt<=12||cm)s+=`<text x="${f1(XX(v))}" y="${y+(y<60?-6:18)}" text-anchor="middle" font-size="${cnt>8?10:12}" fill="${c}">${v}</text>`}});
+  for(let v=L;v<=M;v+=L)s+=`<g class="exh cl"><line x1="${f1(XX(v))}" y1="22" x2="${f1(XX(v))}" y2="108" stroke="#f08c00" stroke-width="3" stroke-dasharray="5 3"/><text x="${f1(XX(v))}" y="124" text-anchor="middle" font-size="13" fill="#e8590c">${v}</text></g>`;
+  return s+'</svg>';
+}
+function chipsHTML(label,arr,o){o=o||{};return `<div class="chips"><b>${label}</b>${arr.map(v=>`<span class="ch c${v}${o.cls?' '+o.cls:''}">${v}</span>`).join('')}${o.more?'<span>…</span>':''}</div>`}
+/* ================= 圖：排正方形 / 裁正方形 ================= */
+function tileFig(w,h,L,o){o=o||{};const W=220,H=170,s=Math.min((W-20)/L,(H-20)/L),ox=(W-L*s)/2,oy=(H-L*s)/2;let g=`<svg viewBox="0 0 ${W} ${H}" class="gf">`;
+  const cols=L/w,rows=L/h;
+  for(let i=0;i<rows;i++)for(let j=0;j<cols;j++)g+=`<rect class="${o.anim?'exh ':''}tl" x="${f1(ox+j*w*s)}" y="${f1(oy+i*h*s)}" width="${f1(w*s)}" height="${f1(h*s)}" fill="${(i+j)%2?'#a5d8ff':'#ffd8a8'}" stroke="#495057" stroke-width="1.2"/>`;
+  g+=`<rect x="${f1(ox)}" y="${f1(oy)}" width="${f1(L*s)}" height="${f1(L*s)}" fill="none" stroke="#e03131" stroke-width="2.6"/>`;
+  return g+'</svg>';
+}
+function cutFig(W0,H0,g,o){ // 長方形裁成正方形
+  const W=230,H=170,s=Math.min((W-30)/W0,(H-34)/H0),ox=(W-W0*s)/2,oy=(H-H0*s)/2+4;let r=`<svg viewBox="0 0 ${W} ${H}" class="gf"><rect x="${f1(ox)}" y="${f1(oy)}" width="${f1(W0*s)}" height="${f1(H0*s)}" fill="#fff9db" stroke="#495057" stroke-width="2"/>`;
+  if(g){r+='<g class="exh sq">';for(let x=g;x<W0;x+=g)r+=`<line x1="${f1(ox+x*s)}" y1="${f1(oy)}" x2="${f1(ox+x*s)}" y2="${f1(oy+H0*s)}" stroke="#1c7ed6" stroke-width="1.5"/>`;for(let y=g;y<H0;y+=g)r+=`<line x1="${f1(ox)}" y1="${f1(oy+y*s)}" x2="${f1(ox+W0*s)}" y2="${f1(oy+y*s)}" stroke="#1c7ed6" stroke-width="1.5"/>`;r+='</g>'}
+  r+=`<text x="${f1(ox+W0*s/2)}" y="${f1(oy-6)}" text-anchor="middle" font-size="13" fill="#1d2b3a">${W0}${o&&o.u||'公分'}</text><text x="${f1(ox-6)}" y="${f1(oy+H0*s/2)}" text-anchor="end" font-size="13" fill="#1d2b3a">${H0}</text>`;
+  return r+'</svg>';
+}
+function fenceFig(a,b,g){ // 長方形四周種樹
+  const W=230,H=160,s=Math.min(180/a,110/b),ox=(W-a*s)/2,oy=(H-b*s)/2;let r=`<svg viewBox="0 0 ${W} ${H}" class="gf"><rect x="${f1(ox)}" y="${f1(oy)}" width="${f1(a*s)}" height="${f1(b*s)}" fill="#d3f9d8" stroke="#2b8a3e" stroke-width="2"/>`;
+  const pts=[];for(let x=0;x<a;x+=g)pts.push([x,0]);for(let y=0;y<b;y+=g)pts.push([a,y]);for(let x=a;x>0;x-=g)pts.push([x,b]);for(let y=b;y>0;y-=g)pts.push([0,y]);
+  pts.forEach(([x,y],k)=>r+=`<text class="exh tr tr${k}" x="${f1(ox+x*s)}" y="${f1(oy+y*s+6)}" text-anchor="middle" font-size="15" stroke="none">🌳</text>`);
+  r+=`<text x="${f1(ox+a*s/2)}" y="${f1(oy-8)}" text-anchor="middle" font-size="13" fill="#1d2b3a">${a}</text><text x="${f1(ox-8)}" y="${f1(oy+b*s/2+4)}" text-anchor="end" font-size="13" fill="#1d2b3a">${b}</text>`;
+  return {svg:r+'</svg>',n:pts.length};
+}
+function ngridHTML(N,o){o=o||{};let h='<div class="ngrid">';for(let v=1;v<=N;v++)h+=`<span class="g${v}${o.mark&&o.mark(v)?' '+o.mark(v):''}" data-v="${v}">${v}</span>`;return h+'</div>'}
+/* 沒有圖的題目：顯示「案件線索卡」 */
+function caseFig(q){
+  if(q.type==='tf'||q.type==='match')return null;
+  const ns=uniq((q.stem.match(/\d+/g)||[]).map(Number).filter(v=>v>1));
+  if(!ns.length||ns.length>3)return null;
+  return `<div class="case"><div class="cs-t">🔍 案件線索</div><div class="cs-n">${ns.join('<span>、</span>')}</div></div>`;
+}
+
+/* ================= 為什麼最大公因數要相乘？（分糖果、餅乾） ================= */
+function shareSVG(k,x,y,o){
+  o=o||{};const W=320,H=o.H||210,cols=Math.min(k,Math.ceil(Math.sqrt(k*1.8))),rows=Math.ceil(k/cols),gap=6;
+  const bw=(W-gap*(cols+1))/cols,bh=Math.min(110,(H-24-gap*(rows+1))/rows);
+  const per=x+y,useDots=per<=48&&k*per<=200;
+  let s=`<svg viewBox="0 0 ${W} ${H}" class="gf"><text x="${W/2}" y="16" text-anchor="middle" font-size="15" fill="#1864ab">${k===1?'全部放在一起':`分成 ${k} 份（每份一樣多）`}</text>`;
+  for(let i=0;i<k;i++){const cx=gap+(i%cols)*(bw+gap),cy=24+gap+Math.floor(i/cols)*(bh+gap);
+    s+=`<rect x="${f1(cx)}" y="${f1(cy)}" width="${f1(bw)}" height="${f1(bh)}" rx="6" fill="${k===1?'#fff9db':'#e7f5ff'}" stroke="#74a9e0" stroke-width="1.5"/>`;
+    if(useDots){const n=per,c=Math.ceil(Math.sqrt(n*bw/bh)),r=Math.ceil(n/c),d=Math.min((bw-6)/c,(bh-6)/r),rr=Math.max(1.6,d*.38);
+      for(let j=0;j<n;j++){const px=cx+3+d*(j%c+.5)+(bw-6-d*c)/2,py=cy+3+d*(Math.floor(j/c)+.5)+(bh-6-d*r)/2;
+        s+=j<x?`<circle cx="${f1(px)}" cy="${f1(py)}" r="${f1(rr)}" fill="#ff922b"/>`:`<rect x="${f1(px-rr)}" y="${f1(py-rr)}" width="${f1(rr*2)}" height="${f1(rr*2)}" fill="#8d5524"/>`}}
+    else s+=`<text x="${f1(cx+bw/2)}" y="${f1(cy+bh/2+5)}" text-anchor="middle" font-size="${Math.max(9,Math.min(15,bw/6))}" fill="#1d2b3a">🍬${x} 🍪${y}</text>`;
+  }
+  return s+'</svg>';
+}
+function whyItems(a,b){
+  const pl=sdPlan([a,b],'g'),g=gcd(a,b),L=pl.rows.map(r=>r.p),it=[];
+  it.push({t:`我們用一個故事來看。有${a}顆糖果和${b}片餅乾，要分給小朋友。`,fig:shareSVG(1,a,b)});
+  it.push({t:'規則是：每個人拿到的糖果要一樣多，餅乾也要一樣多，而且要剛好分完，不能剩下。'});
+  it.push({t:'最多可以分給幾個人呢？短除法，其實就是在一步一步地「分」。'});
+  let k=1;
+  pl.rows.forEach((r,i)=>{const nk=k*r.p,x=a/nk,y=b/nk;
+    it.push({t:`${r.from[0]}和${r.from[1]}都可以被${r.p}整除，表示每一份，都可以再平分成${r.p}份。`,sd:{show:`.dv${i},.rn${i+1}`,hl:`.dv${i}`}});
+    it.push({t:k===1?`所以先分成${r.p}份，每份有${x}顆糖果、${y}片餅乾。`:`原來有${k}份，每一份再分成${r.p}份，就變成${k}×${r.p}＝${nk}份。每份有${x}顆糖果、${y}片餅乾。`,fig:shareSVG(nk,x,y),eq:k===1?`${r.p} 份`:`${k}×${r.p}＝${nk} 份`});
+    k=nk});
+  const x=a/g,y=b/g;
+  if(!L.length){it.push({t:`${a}和${b}找不到一起可以平分的質數，它們互質，只能分給1個人。最大公因數是1。`,eq:'最大公因數 1'});return it}
+  it.push({t:`現在每份是${x}顆糖果、${y}片餅乾。${x}和${y}除了1以外，沒有辦法再一起平分了，所以停下來。`,sd:{hl:'.bt'}});
+  it.push({t:L.length>1?`為什麼左邊的數要相乘？因為每一次，都是把「每一份」再分開。先分${L[0]}份，每份再分${L[1]}份……份數就要一直乘起來：${X(L)}＝${g}。`:`只分了一次，分成${g}份。`,sd:{hl:'.dv'},eq:L.length>1?`${X(L)}＝${g}`:`${g}`});
+  it.push({t:`所以，最多可以分給${g}個人，每人拿到${x}顆糖果、${y}片餅乾。`,fig:shareSVG(g,x,y),eq:`最多 ${g} 人，每人🍬${x} 🍪${y}`});
+  it.push({t:`驗算看看：${a}÷${g}＝${x}，${b}÷${g}＝${y}，都剛好分完！`,eq:`${a}÷${g}＝${x}　${b}÷${g}＝${y}`});
+  it.push({t:`${g}可以剛好分完${a}，也可以剛好分完${b}，是兩個數「共同」的因數，叫做「公因數」。`});
+  it.push({t:`在所有公因數裡，${g}能分給最多的人，是最大的，所以叫做「最大公因數」。`,eq:`最大公因數 ＝ ${g}`});
+  return it;
+}
+function useItems(a,b){
+  const g=gcd(a,b),x=a/g,y=b/g,F=fenceFig(a,b,g);
+  return [
+    {t:'最大公因數有什麼用？它可以幫我們把東西「分得剛剛好，又分得最多」。'},
+    {t:`用處一：分東西。${a}顆糖果和${b}片餅乾，最多可以分成${g}包，每包一樣多。`,fig:shareSVG(g,x,y),eq:`最多 ${g} 包`},
+    {t:`用處二：裁正方形。長${a}公分、寬${b}公分的紙，要裁成一樣大的正方形，不浪費，最大的正方形邊長是${g}公分。`,fig:cutFig(a,b,g),show:'.sq',eq:`邊長 ${g} 公分，共 ${x*y} 個`},
+    {t:`用處三：種樹、架路燈。長${a}公尺、寬${b}公尺的花園四周種樹，距離一樣，最遠可以每${g}公尺種一棵，共${F.n}棵。`,fig:F.svg,show:'.tr',eq:`每 ${g} 公尺一棵，共 ${F.n} 棵`},
+    {t:`用處四：約分。${a}/${b}的分子和分母，一起除以最大公因數${g}，一次就變成最簡分數${x}/${y}。`,fig:`<div class="bigeq">${fracHTML(a,b)} ＝ ${fracHTML(a+'÷'+g,b+'÷'+g)} ＝ <span class="r">${fracHTML(x,y)}</span></div>`,eq:`${a}/${b}＝${x}/${y}`},
+    {t:'記住：題目說「分成、平分、剪成、裁成」，要分得最多、最大，就找最大公因數！'}];
+}
+function whyStage(nums){return `<div class="whybox"><div class="wsd">${nums?sdHTML(nums,sdPlan(nums,'g')):''}</div><div class="wfig"></div></div>`}
+function applyWhy(root,s){const wsd=root.querySelector('.wsd'),wf=root.querySelector('.wfig');if(s.fig!=null&&wf)wf.innerHTML=s.fig;if(s.sd&&wsd)exApply(wsd,s.sd);if(s.show&&wf)exApply(wf,{show:s.show})}
+
+
+/* ================= 題型：可以複選 ================= */
+function rPick(q,host,ctx){
+  buildShell(q,host,ctx);
+  const opts=q.opts.map(o=>typeof o==='string'?{t:o}:o),n=opts.length,pic=opts.some(o=>o.pic);
+  const box=document.createElement('div');box.className='opts pk'+(n>4||(n===3&&pic)?' three':'');
+  opts.forEach((o,i)=>{const b=document.createElement('button');b.className='opt c'+(i%4)+(pic?' pic':' long');b.dataset.i=i;b.innerHTML=o.html||txtHtml(o.t);box.appendChild(b)});
+  const go=document.createElement('button');go.className='btn g big pkgo';go.textContent='選好了';box.appendChild(go);
+  host.appendChild(box);fbEl(host);
+  const bs=$$('.opt',box),ans=q.ans.slice().sort();
+  let tries=0,locked=false;
+  bs.forEach(b=>b.onclick=()=>{if(locked||ctx.dead())return;if(!guard(150))return;b.classList.toggle('sel');SFX.tap();TTS.stop();if(b.classList.contains('sel'))speakSeq([optSay(opts[+b.dataset.i])])});
+  const judge=()=>{
+    if(locked||ctx.dead())return;if(!guard(300))return;TTS.stop();
+    const sel=bs.filter(b=>b.classList.contains('sel')).map(b=>+b.dataset.i).sort();
+    if(!sel.length){speakSeq(['先點選答案，再按選好了。']);return}
+    if(sel.join()===ans.join()){locked=true;bs.forEach((b,i)=>{b.classList.remove('sel');if(ans.includes(i))b.classList.add('ok');else b.classList.add('off')});ctx.finish(tries===0,q);return}
+    tries++;SFX.bad();
+    bs.forEach((b,i)=>{if(b.classList.contains('sel')&&!ans.includes(i)){b.classList.add('no');setTimeout(()=>b.classList.remove('no','sel'),450)}});
+    if(tries>=ctx.maxTries){locked=true;bs.forEach((b,i)=>{b.classList.remove('sel');if(ans.includes(i))b.classList.add('ok');else b.classList.add('off')});ctx.finish(false,q,true)}
+    else{const miss=ans.some(i=>!bs[i].classList.contains('sel'));ctx.hint(Object.assign({},q,{hint:(q.hint||'')+(miss?'還有答案沒有選到喔。':'')}))}
+  };
+  go.onclick=judge;
+  ctx.auto=()=>{bs.forEach((b,i)=>b.classList.toggle('sel',ans.includes(i)));_lastTap=0;judge()};
+  ctx.autoWrong=()=>{if(locked)return false;bs.forEach((b,i)=>b.classList.toggle('sel',!ans.includes(i)));_lastTap=0;judge();return true};
+  ctx.speakTail=[{t:'可以選好幾個。選項有：',on:()=>{}}].concat(opts.map((o,i)=>({t:optSay(o),on:()=>{bs.forEach(x=>x.classList.remove('hot'));bs[i].classList.add('hot')}})));
+  ctx.speakEnd=()=>bs.forEach(x=>x.classList.remove('hot'));
+}
+Object.assign(REND,{pick:rPick});
+INSTR.pick='可以選好幾個，選好了，再按「選好了」。';
+
+/* ================= 師傅教你（講解） ================= */
+function exApply(root,st){
+  const all=s=>s?root.querySelectorAll(s):[];
+  if(st.hl!==undefined){root.querySelectorAll('.hl').forEach(e=>e.classList.remove('hl'));all(st.hl).forEach(e=>e.classList.add('hl'))}
+  if(st.add)all(st.add).forEach(e=>e.classList.add('hl'));
+  if(st.show)all(st.show).forEach(e=>e.classList.add('on'));
+  if(st.hide)all(st.hide).forEach(e=>e.classList.remove('on'));
+  if(st.fade)all(st.fade).forEach(e=>e.classList.add('fadeout'));
+  if(st.run)try{st.run(root)}catch(e){}
+}
+function showExplain(q){
+  if(CURSCR!=='level')return;
+  const e=q.ex||{};
+  const steps=(e.steps||(q.why||'').split(/(?<=[。！])/).filter(s=>s.trim()).map(t=>({t})));
+  const fig=e.fig!==undefined?e.fig:(typeof q.fig==='string'?q.fig:'');
+  let ov=document.getElementById('ovExp');
+  if(!ov){ov=document.createElement('div');ov.className='ov';ov.id='ovExp';ov.innerHTML='<div class="panel exppanel"></div>';document.getElementById('app').appendChild(ov)}
+  const pnl=ov.firstChild;const tok=(ov._tok||0)+1;ov._tok=tok;const alive=()=>ov._tok===tok&&ov.classList.contains('on');
+  const shown=steps.filter(s=>!s.quiet);
+  pnl.innerHTML=`<h2>🕵️ 福爾摩數老師教你</h2><div class="exbody">${fig?`<div class="exfig">${fig}</div>`:''}<ol class="exl">${shown.map(s=>`<li>${txtHtml(s.d||s.t)}</li>`).join('')}</ol></div><div class="ex-ans"></div><div class="les-btns">${SPBAR}<button class="btn" id="exAgain">再看一次</button><button class="btn g big" id="exBack">回去作答</button></div>`;
+  const close=()=>{TTS.stop();ov._tok++;ov.classList.remove('on')};
+  pnl.querySelector('#exBack').onclick=close;spSync();
+  pnl.querySelector('#exAgain').onclick=()=>{if(guard(300)){close();later(()=>showExplain(q),150)}};
+  ov.classList.add('on');
+  const lis=[...pnl.querySelectorAll('.exl li')];let li=0;
+  const items=steps.map(s=>{const my=s.quiet?-1:li++;return {t:s.say||s.t,on:()=>{if(!alive())return;
+    if(my>=0){lis.forEach(x=>x.classList.remove('cur'));const L=lis[my];L.classList.add('on','cur');try{L.scrollIntoView({block:'nearest'})}catch(er){}}
+    exApply(pnl,s);if(s.eq!=null)pnl.querySelector('.ex-ans').innerHTML=txtHtml(s.eq)}}});
+  speakSeq(items,()=>{if(!alive())return;lis.forEach(x=>x.classList.remove('cur'));pnl.querySelector('#exBack').classList.add('pulse');speakSeq(['想好了，就按「回去作答」。'])},650);
+}
+// 每個題型加上「教我怎麼算？」，答錯一次就自動打開
+['num','mc','tf','pick'].forEach(t=>{const f=REND[t];REND[t]=function(q,host,ctx){const r=f(q,host,ctx);
+  if(!q.noExplain){
+    const b=document.createElement('button');b.className='btn y expbtn';b.textContent='🕵️ 教我怎麼算？';
+    const fig=host.querySelector('.fig')||host.querySelector('.stem');fig.after(b);
+    b.onclick=()=>{if(!guard(300)||ctx.dead())return;TTS.stop();showExplain(q)};
+    const oh=ctx.hint;let shown=false;
+    ctx.hint=qq=>{oh(qq);if(!shown){shown=true;later(()=>{if(!ctx.dead()&&!QM.pendingAdv)showExplain(q)},1600)}};
+  }
+  return r}});
+
+/* ================= 角角師傅上課 ================= */
+// slide: {stage, say:[{t, a:(st,eq)=>{}}|string], q:{opts:[..], ans, ok, no}}
+const LES={tok:0};
+function lessonRun(host,L,o){
+  o=o||{};const tok=++LES.tok,alive=()=>tok===LES.tok&&document.body.contains(host.firstChild||host);
+  host.classList.remove('land');
+  host.innerHTML=`<div class="les"><div class="les-dots">${L.map(()=>'<i></i>').join('')}</div><div class="les-say"></div><div class="les-stage"></div><div class="les-eq"></div><div class="les-q"></div><div class="les-btns">${SPBAR}<button class="btn" id="lsPrev">上一步</button><button class="btn b" id="lsAgain">🔁 再聽</button><button class="btn g big" id="lsNext">下一步</button></div></div>`;
+  const $l=s=>host.querySelector(s);
+  const dots=[...host.querySelectorAll('.les-dots i')],sayEl=$l('.les-say'),stage=$l('.les-stage'),eqEl=$l('.les-eq'),qEl=$l('.les-q'),nx=$l('#lsNext'),pv=$l('#lsPrev');
+  let i=0,need=false;
+  const api={};
+  const play=()=>{
+    const sl=L[i];const items=(sl.say||[]).map(x=>typeof x==='string'?{t:x}:x);
+    const seq=items.map(x=>({t:x.s||x.t,on:()=>{if(tok!==LES.tok)return;sayEl.innerHTML=`<span class="tch">🕵️</span><span>${txtHtml(x.t)}</span>`;if(x.a)try{x.a(stage,eqEl)}catch(e){console.error(e)}if(x.eq!=null)eqEl.innerHTML=txtHtml(x.eq)}}));
+    nx.classList.remove('pulse');
+    const after=()=>{if(tok!==LES.tok)return;
+      if(sl.q&&need){const b=[...qEl.querySelectorAll('.opt')];speakSeq([{t:sl.q.ask||'你知道答案嗎？點一點。',on:()=>{}}].concat(sl.q.opts.map((t,k)=>({t:String(t),on:()=>{b.forEach(x=>x.classList.remove('hot'));b[k]&&b[k].classList.add('hot')}}))),()=>b.forEach(x=>x.classList.remove('hot')))}
+      else nx.classList.add('pulse')};
+    speakSeq(seq,after,650);
+  };
+  const show=k=>{
+    i=k;TTS.stop();const sl=L[i];
+    dots.forEach((d,j)=>d.className=j<i?'ok':j===i?'cur':'');
+    stage.innerHTML=sl.stage||'';eqEl.innerHTML='';qEl.innerHTML='';sayEl.innerHTML='';
+    pv.disabled=i===0;nx.textContent=i===L.length-1?(o.last||'開始闖關'):'下一步';
+    need=!!sl.q;nx.disabled=false;
+    if(sl.q){
+      qEl.innerHTML=`<div class="opts">${sl.q.opts.map((t,k)=>`<button class="opt c${k%4}" data-k="${k}">${txtHtml(String(t))}</button>`).join('')}</div>`;
+      [...qEl.querySelectorAll('.opt')].forEach(b=>b.onclick=()=>{
+        if(!need||!guard(250))return;TTS.stop();const k=+b.dataset.k;
+        if(k===sl.q.ans){need=false;b.classList.add('ok');[...qEl.querySelectorAll('.opt')].forEach(x=>x!==b&&x.classList.add('off'));SFX.ok();confetti(10);eqEl.innerHTML=txtHtml(sl.q.ok);if(sl.q.onOk)try{sl.q.onOk(stage)}catch(e){}speakSeq(['答對了！'+sl.q.ok],()=>nx.classList.add('pulse'))}
+        else{b.classList.add('no','off');SFX.bad();speakSeq([sl.q.no||'再想一想。'])}
+      });
+    }
+    later(()=>{if(tok===LES.tok)play()},250);
+  };
+  api.show=show;api.again=()=>{if(guard(300))show(i)};api.replay=()=>show(i);
+  nx.onclick=()=>{if(!guard(350))return;TTS.stop();
+    if(need){SFX.bad();speakSeq(['先回答老師的問題喔！']);return}
+    if(i<L.length-1)show(i+1);else{LES.tok++;o.onDone&&o.onDone()}};
+  pv.onclick=()=>{if(!guard(350))return;if(i>0)show(i-1)};
+  $l('#lsAgain').onclick=api.again;
+  show(0);spSync();
+  return api;
+}
+// 小幫手：上課動畫
+const ON=(sel,cls)=>st=>st.querySelectorAll(sel).forEach(e=>e.classList.add(cls||'on'));
+const OFF=(sel,cls)=>st=>st.querySelectorAll(sel).forEach(e=>e.classList.remove(cls||'on'));
+const HL=sel=>st=>{st.querySelectorAll('.hl').forEach(e=>e.classList.remove('hl'));if(sel)st.querySelectorAll(sel).forEach(e=>e.classList.add('hl'))};
+const ALL=(...fs)=>(st,eq)=>fs.forEach(f=>f&&f(st,eq));
+
+
+/* ================= 題庫 helpers ================= */
+const norm=x=>typeof x==='string'||typeof x==='number'?{t:String(x)}:x;
+function MC(stem,correct,wrongs,o){
+  o=o||{};const c=norm(correct),seen=new Set([c.t]);
+  let ws=wrongs.map(norm).filter(w=>!seen.has(w.t)&&seen.add(w.t));
+  ws=shuffle(ws).slice(0,(o.n||4)-1);
+  const opts=o.keep?[c,...ws]:shuffle([c,...ws]);
+  if(opts.length<2)throw new Error('opts<2 '+stem);
+  return Object.assign({type:'mc',stem,opts,ans:opts.indexOf(c)},o);
+}
+function TFq(stem,ok,why,o){return Object.assign({type:'tf',stem,opts:TFO,ans:ok?0:1,why,hint:'想一想，再判斷。'},o||{})}
+const pickTF=list=>{const x=pick(list);return TFq(x[0],x[1],x[2])};
+function PK(stem,vals,okf,o){const ans=vals.map((v,i)=>okf(v)?i:-1).filter(i=>i>=0);if(!ans.length||ans.length===vals.length)throw new Error('pk '+stem);return Object.assign({type:'pick',stem,opts:vals.map(v=>({t:String(v)})),ans},o||{})}
+const YN=(y,n)=>[{t:'⭕ '+y,say:y},{t:'❌ '+n,say:n}];
+const sdEx=(nums,mode,lead)=>{const pl=sdPlan(nums,mode);return {fig:sdHTML(nums,pl),steps:(lead||[]).concat(sdSteps(nums,pl,mode))}};
+function coPair(gmin,gmax,max){for(let k=0;k<200;k++){const g=rnd(gmin,gmax),x=rnd(1,9),y=rnd(2,9);if(x===y||gcd(x,y)!==1)continue;const a=g*Math.min(x,y),b=g*Math.max(x,y);if(b<=max&&a>=4)return [a,b]}return [12,18]}
+function primeProd(k,max){for(let t=0;t<100;t++){const f=[];for(let i=0;i<k;i++)f.push(pick([2,2,3,3,5,7]));f.sort((a,b)=>a-b);if(prod(f)<=max)return f}return [2,3]}
+
+/* ===== 第1層：因數大搜查 ===== */
+const F1N=[12,18,20,24,15,16,28,30,36,25,39,45,76,21,32,40,42,48];
+function F1_pick(){const n=pick(F1N),fs=factors(n),non=[];for(let v=2;v<n;v++)if(n%v)non.push(v);
+  const good=shuffle(fs).slice(0,rnd(3,4)),vals=good.concat(shuffle(non).slice(0,6-good.length)).sort((a,b)=>a-b);
+  return PK(`下面哪些數是${n}的因數？`,vals,v=>n%v===0,{hint:`用${n}去除除看，可以整除的，就是因數。`,why:`${n}的因數有${fs.join('、')}。`,ex:{fig:pairsHTML(n),steps:factorSteps(n)}})}
+function F1_count(){const n=pick(F1N),fs=factors(n);return NQ(`${n}一共有幾個因數？`,[{b:0},'個'],[fs.length],{hint:'一對一對找，從1開始。',why:`${n}的因數有${fs.join('、')}，共${fs.length}個。`,ex:{fig:pairsHTML(n),steps:factorSteps(n)}})}
+function F1_pair(){const n=pick(F1N),fs=factors(n).filter(v=>v>1&&v<n),a=pick(fs);return NQ(`在空格裡填上數字：${n}＝${a}×（　）`,[`${n}＝${a}×`,{b:0}],[n/a],{hint:`用除法：${n}÷${a}。`,why:`${n}÷${a}＝${n/a}，所以${n}＝${a}×${n/a}。`,ex:{fig:pairsHTML(n,true),steps:[{t:`${a}乘多少等於${n}？用除法算：${n}÷${a}＝${n/a}。`,eq:`${n}÷${a}＝${n/a}`},{t:`所以${a}和${n/a}都是${n}的因數，它們是一對好朋友。`}]}})}
+function F1_all(){const n=pick([12,18,20,24,28,30,36,40,45,76,48,32]),fs=factors(n),mid=fs.filter(v=>v>1&&v<n);
+  const w1=fs.filter(v=>v!==pick(mid)).join('、'),non=[];for(let v=2;v<n;v++)if(n%v)non.push(v);const w2=fs.concat([pick(non)]).sort((a,b)=>a-b).join('、'),w3=fs.slice(0,-1).join('、');
+  return MC(`下面哪一組是${n}的全部因數？`,fs.join('、'),[w1,w2,w3],{oneCol:true,hint:'一對一對找，不要漏掉，也不要多寫。',why:`${n}的因數是${fs.join('、')}。`,ex:{fig:pairsHTML(n),steps:factorSteps(n)}})}
+const F1REL=[['甲數是乙數的因數，那麼乙數是甲數的什麼？','倍數',['因數','質數','合數'],'甲是乙的因數，乙就是甲的倍數，它們一起出現。'],
+ ['3×8＝24，下面哪一句是對的？','3和8都是24的因數',['24是3的因數','8是24的倍數','3是8的倍數'],'3×8＝24，3和8是24的因數，24是3和8的倍數。'],
+ ['任何整數，最小的因數是多少？','1',['0','2','它自己'],'每個整數都可以被1整除，所以最小的因數是1。'],
+ ['任何整數，最大的因數是多少？','它自己',['1','10','沒有最大'],'一個數最大的因數，就是它自己。']];
+function F1_rel(){const x=pick(F1REL);return MC(x[0],x[1],x[2],{oneCol:true,hint:'甲×乙＝丙：甲和乙是丙的因數，丙是甲和乙的倍數。',why:x[3]})}
+const F1TF=[['一個數的倍數，有無限多個。',true,'4、8、12、16……一直加下去，數不完，所以有無限多個。'],['8是4的因數。',false,'4×2＝8，4是8的因數，8是4的倍數。'],
+ ['1是所有整數的因數。',true,'每個整數都可以被1整除。'],['12的因數一共有6個。',true,'1、2、3、4、6、12，共6個。'],['一個數的因數，一定比它自己小。',false,'它自己也是它的因數，一樣大。'],['15是3的倍數，也是5的倍數。',true,'3×5＝15。']];
+function F1_tf(){return pickTF(F1TF)}
+function F1_rect(){const n=pick([12,16,18,20,24,30,36]),ps=pairsOf(n);
+  return NQ(`${n}顆糖果排成長方形，每一排都一樣多（直的、橫的算同一種）。一共有幾種排法？`,[{b:0},'種'],[ps.length],{fig:arrFig(ps[1][0],ps[1][1],{lbl:`例如：${ps[1][0]}排，每排${ps[1][1]}顆`}),hint:'每一種排法，就是一對因數。',why:`${ps.map(p=>p.join('×')).join('、')}，共${ps.length}種。`,
+    ex:{fig:pairsHTML(n),steps:[{t:'排成長方形，排數×每排顆數＝全部的糖果，就是一對因數。'}].concat(factorSteps(n).slice(2,-2)).concat([{t:`一共有${ps.length}對，所以有${ps.length}種排法。`,eq:`${ps.length} 種`}])}})}
+const LV1={id:1,ic:'🔎',name:'因數大搜查',sub:'可以整除的數就是因數',story:'第一個案件：找出藏起來的因數！',mk:[[1,F1_pick],[1,F1_count],[1,F1_pair],[2,F1_all],[2,F1_rel],[2,F1_tf],[3,F1_rect],[3,F1_all],[3,F1_count]]};
+
+/* ===== 第2層：質數與合數 ===== */
+const KINDO=[{t:'質數'},{t:'合數'},{t:'都不是'}];
+function F2_kind(t){let n;do{n=t===1?rnd(1,30):rnd(31,99)}while(t===1&&n>1&&Math.random()<.2);
+  return {type:'mc',stem:`${n}是質數，還是合數？`,opts:KINDO,ans:n===1?2:isPrime(n)?0:1,hint:'找一找，除了1和自己，還有沒有別的因數？',why:n===1?'1只有一個因數，不是質數也不是合數。':isPrime(n)?`${n}只有1和${n}兩個因數，是質數。`:`${n}有因數${pfac(n)[0]}，是合數。`,ex:{fig:n>1?pairsHTML(n,true):'',steps:primeSteps(n)}}}
+function F2_two(){const vals=shuffle([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]).slice(0,8).sort((a,b)=>a-b);
+  return PK('下面哪些數，剛好只有兩個因數？',vals,isPrime,{hint:'只有1和自己兩個因數的，就是質數。',why:'只有兩個因數的數，就是質數。',ex:{steps:[{t:'只有兩個因數（1和自己）的數，就是質數。'}].concat(vals.map(v=>({t:`${v}的因數：${factors(v).join('、')}，${factors(v).length===2?'只有兩個 ⭕':factors(v).length+'個 ❌'}`})))}})}
+const TRICK=[9,15,21,27,33,39,49,51,57,63,65,69,77,81,87,91,93,95,1];
+function F2_pickP(comp){for(let k=0;k<50;k++){const ps=shuffle(PRIMES.filter(p=>p<60)).slice(0,rnd(2,3)),vals=uniq(ps.concat(shuffle(TRICK.concat([4,6,8,10,12,14,16,18,22,34,38])).slice(0,8-ps.length))).sort((a,b)=>a-b);
+  if(vals.length<7)continue;
+  const ok=comp?(v=>v>1&&!isPrime(v)):isPrime;
+  return PK(`下面哪些數是${comp?'合數':'質數'}？`,vals,ok,{hint:comp?'有1和自己以外的因數，就是合數。1不是合數喔！':'只有1和自己兩個因數，才是質數。1不是質數喔！',why:'答案是'+vals.filter(ok).join('、')+'。',ex:{steps:[{t:'一個一個檢查：有沒有1和自己以外的因數？'}].concat(vals.map(v=>({t:v===1?'1：只有一個因數，都不是。':isPrime(v)?`${v}：只有1和${v}，質數。`:`${v}：${ruleWhy(v,pfac(v)[0])}，合數。`}))).concat([{t:`${comp?'合數':'質數'}是：${vals.filter(ok).join('、')}。`,eq:vals.filter(ok).join('、')}])}})}}
+const F2TF=[['16的因數有1、2、4、8、16，共有5個，所以16是質數。',false,'16除了1和16，還有2、4、8，是合數。'],['19的因數只有1和19，所以19是質數。',true,'只有兩個因數，是質數。'],
+ ['最小的合數是2。',false,'2是最小的質數，最小的合數是4。'],['1是奇數，所以它也是質數。',false,'1只有一個因數，不是質數也不是合數。'],
+ ['所有的偶數都是合數。',false,'2是偶數，可是2是質數。'],['一個合數，最少會有三個因數。',true,'1、自己、再加上別的因數，最少三個。'],
+ ['2是質數裡面唯一的偶數。',true,'其他偶數都有因數2，都是合數。'],['5和10都是合數。',false,'5只有1和5兩個因數，是質數。'],['15的因數有3和5，所以15是質數。',false,'15除了1和15，還有3和5，是合數。']];
+function F2_tf(){return pickTF(F2TF)}
+const F2FACT=[['最小的質數是多少？',2,'2只有1和2兩個因數，是最小的質數。'],['最小的合數是多少？',4,'1都不是，2、3是質數，4有1、2、4三個因數，是最小的合數。'],
+ ['二位數中，最小的合數是多少？',10,'10的因數有1、2、5、10，是合數。'],['二位數中，最大的質數是多少？',97,'99＝9×11，98是偶數，97只有1和97兩個因數。'],
+ ['一位數中，所有的合數加起來是多少？',27,'一位數的合數有4、6、8、9，4＋6＋8＋9＝27。'],['最小的合數和最小的質數，相差多少？',2,'最小的合數4，最小的質數2，4－2＝2。'],
+ ['1～20中，一共有幾個質數？',8,'2、3、5、7、11、13、17、19，一共8個。'],['小於20的奇數中，有幾個是質數？',7,'3、5、7、11、13、17、19，共7個。1不是質數。'],
+ ['19～39中，最大的質數是多少？',37,'39＝3×13，38是偶數，37是質數。'],['40～50中，最大的質數是多少？',47,'50、48是偶數，49＝7×7，47是質數。'],
+ ['23～37中，最小的合數是多少？',24,'23是質數，24是偶數，是合數。'],['二位數中，最大的質數和最小的合數相差多少？',87,'最大的質數97，最小的合數10，97－10＝87。']];
+function F2_fact(){const x=pick(F2FACT);return NQ(x[0],[{b:0}],[x[1]],{hint:'質數只有1和自己兩個因數。',why:x[2]})}
+function F2_sum(){for(let k=0;k<50;k++){const n=rnd(8,30),good=[];for(let p=2;p<=n/2;p++)if(isPrime(p)&&isPrime(n-p))good.push([p,n-p]);if(!good.length)continue;const c=pick(good);
+  const bad=[];for(let a=1;a<=n/2;a++)if(!(isPrime(a)&&isPrime(n-a)))bad.push(`${a}＋${n-a}`);if(bad.length<3)continue;
+  return MC(`哪一組可以填進去？兩個空格都要是質數：${n}＝（　）＋（　）`,`${c[0]}＋${c[1]}`,bad,{hint:'兩個數都要是質數，1不是質數喔。',why:`${c[0]}和${c[1]}都是質數，${c[0]}＋${c[1]}＝${n}。`})}}
+const LV2={id:2,ic:'🧩',name:'質數與合數',sub:'只有兩個因數的是質數',story:'第二個案件：分辨誰是質數、誰是合數！',mk:[[1,()=>F2_kind(1)],[1,F2_two],[1,()=>F2_kind(1)],[2,()=>F2_pickP(false)],[2,()=>F2_pickP(true)],[2,F2_tf],[2,()=>F2_kind(2)],[3,F2_fact],[3,F2_sum],[3,F2_fact]]};
+
+/* ===== 第3層：質數偵測器 ===== */
+function m3Steps(n){const ds=String(n).split('').map(Number),s=ds.reduce((a,b)=>a+b,0);return [{t:'偵探小技巧：把每個數字加起來，如果是3的倍數，原來的數就是3的倍數。'},{t:`${ds.join('＋')}＝${s}。`,eq:`${ds.join('＋')}＝${s}`},{t:s%3?`${s}不是3的倍數，所以${n}不是3的倍數。`:`${s}是3的倍數，所以${n}也是3的倍數。`,eq:s%3?`${n} 不是3的倍數`:`${n}÷3＝${n/3}`}]}
+function F3_m3(){const n=rnd(34,333)*3+(Math.random()<.5?0:rnd(1,2));return {type:'mc',stem:`${n}是3的倍數嗎？`,opts:YN('是3的倍數','不是3的倍數'),ans:n%3?1:0,hint:'把每個數字加起來看看。',why:m3Steps(n).slice(-1)[0].t,ex:{steps:m3Steps(n)}}}
+const F3RULE=[['個位數字是0、2、4、6、8的數，一定有因數幾？','2',['3','5','7'],'個位是0、2、4、6、8的數是偶數，一定有因數2。'],['個位數字是0或5的數，一定有因數幾？','5',['2','3','7'],'個位是0或5，一定是5的倍數，有因數5。'],['把每個數字加起來是3的倍數，這個數一定有因數幾？','3',['2','5','9'],'數字加起來是3的倍數，這個數就是3的倍數。'],['個位數字是0的數，一定同時有因數2和幾？','5',['3','7','9'],'個位是0，是2的倍數，也是5的倍數。']];
+function F3_rule(){const x=pick(F3RULE);return MC(x[0],x[1],x[2],{hint:'想想偵探的三個小技巧。',why:x[3]})}
+function F3_pick3(){for(let k=0;k<50;k++){const vals=uniq(Array.from({length:6},()=>Math.random()<.45?rnd(10,333)*3:rnd(30,999))).sort((a,b)=>a-b);if(vals.length<6)continue;const ok=v=>v%3===0;const c=vals.filter(ok).length;if(c<2||c>4)continue;
+  return PK('下面哪些數是3的倍數？',vals,ok,{hint:'每一個數，都把數字加起來看看。',why:'答案是'+vals.filter(ok).join('、')+'。',ex:{steps:[{t:'把每個數字加起來，是3的倍數，原來的數就是3的倍數。'}].concat(vals.map(v=>{const ds=String(v).split('').map(Number),s=ds.reduce((a,b)=>a+b,0);return {t:`${v}：${ds.join('＋')}＝${s}，${s%3?'不是 ❌':'是 ⭕'}`}}))}})}}
+function F3_box(){for(let k=0;k<50;k++){const d=[rnd(1,9),rnd(0,9),rnd(0,9),rnd(0,9)],S=d.reduce((a,b)=>a+b,0),okd=[],nod=[];for(let x=0;x<=9;x++)((S+x)%3?nod:okd).push(x);
+  const c=pick(nod.filter(x=>x>0)),ws=shuffle(okd.filter(x=>x>0)).slice(0,3);if(ws.length<3)continue;
+  return MC(`${d.join('')}□ 是一個五位數，而且是3的倍數，□裡的數「不可能」是哪一個？`,String(c),ws.map(String),{hint:'把數字加起來，再加上□，要是3的倍數。',why:`${d.join('＋')}＝${S}，${S}＋${c}＝${S+c}不是3的倍數。`,ex:{steps:[{t:`先把知道的數字加起來：${d.join('＋')}＝${S}。`,eq:`${S}＋□`},{t:`${S}＋□要是3的倍數，□可以是${okd.join('、')}。`},{t:`${S}＋${c}＝${S+c}，不是3的倍數，所以不可能是${c}。`,eq:`不可能是 ${c}`}]}})}}
+const BIGP=[101,103,107,109,113,127,131,137,139,149,151,157],BIGC=[111,117,141,171,183,201,123,129,153,159];
+function F3_comp(){const comp=Math.random()<.55,n=comp?pick(BIGC):pick(BIGP);
+  const st=comp?[{t:'要看是不是合數，先用偵探小技巧找因數。'},...m3Steps(n).slice(1,2),{t:`是3的倍數，${n}＝3×${n/3}，有因數3，所以是合數。`,eq:`${n}＝3×${n/3} → 合數`}]
+    :[{t:'用小技巧檢查：不是偶數，沒有因數2；個位不是0或5，沒有因數5。'},...m3Steps(n).slice(1,2),{t:'數字加起來不是3的倍數，沒有因數3。'},{t:'再用7、11去試，也都不能整除。'},{t:`所以${n}只有1和${n}兩個因數，是質數。`,eq:`${n} 是質數`}];
+  return {type:'mc',stem:`${n}是不是合數？`,opts:YN('是合數','不是合數，是質數'),ans:comp?0:1,hint:'用偵探的三個小技巧，找找看有沒有因數2、3、5。',why:st.slice(-1)[0].t,ex:{steps:st}}}
+const HUNT=[51,57,87,91,49,77,93,119,133,143,39,69,53,59,61,67,71,73,79,83,89,97,47,43];
+function F3_hunt(){for(let k=0;k<50;k++){const vals=shuffle(HUNT).slice(0,6).sort((a,b)=>a-b),c=vals.filter(isPrime).length;if(c<2||c>3)continue;
+  return PK('偵探挑戰：下面哪些數是質數？（小心陷阱！）',vals,isPrime,{hint:'51、57、91、77這種，看起來像質數，其實是合數喔！',why:'質數是'+vals.filter(isPrime).join('、')+'。',ex:{steps:[{t:'每個數都試試看能不能被2、3、5、7、11整除。'}].concat(vals.map(v=>({t:isPrime(v)?`${v}：試過都不能整除，是質數 ⭕`:`${v}＝${X(pfac(v))}，是合數 ❌`})))}})}}
+function F3_between(){const s=pick([10,20,30,40,50]),k=rnd(3,5),after=PRIMES.filter(p=>p>s),ans=after[k];
+  return NQ(`${s}和甲數之間（不包含這兩個數），剛好有${k}個質數。甲數最大可以是多少？`,[{b:0}],[ans],{hint:`把比${s}大的質數一個一個列出來。`,why:`比${s}大的質數：${after.slice(0,k+1).join('、')}……甲數最大是${ans}。`,
+    ex:{steps:[{t:`把比${s}大的質數，一個一個列出來：${after.slice(0,k).join('、')}，這是${k}個。`},{t:`下一個質數是${ans}。甲數如果比${ans}大，中間就有${k+1}個質數了。`},{t:`甲數如果剛好是${ans}，${ans}不算在中間，還是${k}個。所以甲數最大是${ans}。`,eq:`甲數最大是 ${ans}`}]}})}
+function F3_4box(){const t=rnd(2,9),cs=[];for(let d=1;d<=9;d++){const v=t*10+d;if(!isPrime(v))cs.push(v)}
+  return NQ(`□是1～9的數，「${t}□」這個二位數是合數，一共有幾種可能？`,[{b:0},'種'],[cs.length],{hint:`把${t}1到${t}9一個一個檢查。`,why:`合數有${cs.join('、')}，共${cs.length}種。`,ex:{steps:[{t:`把${t}1、${t}2……${t}9一個一個檢查。`}].concat([1,2,3,4,5,6,7,8,9].map(d=>{const v=t*10+d;return {t:isPrime(v)?`${v}是質數。`:`${v}是合數。`,quiet:false}})).concat([{t:`合數一共有${cs.length}個。`,eq:`${cs.length} 種`}])}})}
+const LV3={id:3,ic:'🔦',name:'質數偵測器',sub:'2、3、5的小技巧',story:'第三個案件：用偵探小技巧，快速找出因數！',mk:[[1,F3_m3],[1,F3_rule],[1,F3_m3],[2,F3_pick3],[2,F3_box],[2,F3_comp],[3,F3_hunt],[3,F3_between],[3,F3_4box]]};
+
+/* ===== 第4層：質因數 ===== */
+function pfSteps(n){const fs=factors(n),pp=fs.filter(isPrime);return [{t:'質因數：是這個數的因數，而且是質數。'},{t:`${n}的因數有：${fs.join('、')}。`},{t:`其中是質數的有：${pp.join('、')}。`,hl:pp.map(v=>'.c'+v).join(','),eq:`${n}的質因數：${pp.join('、')}`}]}
+function F4_pick(){const n=pick([84,60,63,90,70,42,66,78,45,36,48,30,105,56]),fs=factors(n),pp=fs.filter(isPrime),np=fs.filter(v=>!isPrime(v)&&v<n),other=PRIMES.filter(p=>p<25&&n%p);
+  const vals=uniq(pp.concat(shuffle(np).slice(0,3),shuffle(other).slice(0,Math.max(1,6-pp.length-3)))).sort((a,b)=>a-b);
+  return PK(`下面哪些數是${n}的質因數？`,vals,v=>n%v===0&&isPrime(v),{hint:'要是因數，又要是質數。',why:`${n}的質因數是${pp.join('、')}。`,ex:{fig:chipsHTML(n+'的因數',fs),steps:pfSteps(n)}})}
+function F4_not(){const n=pick([60,30,42,70,66,78,90,84,105]),pp=pdist(n),bad=pick(factors(n).filter(v=>v>1&&!isPrime(v)&&v<n));
+  return MC(`下面哪一個「不是」${n}的質因數？`,String(bad),pp.slice(0,3).map(String),{hint:'質因數一定要是質數。',why:`${bad}不是質數，所以不是質因數。${n}＝${X(pfac(n))}。`,ex:{fig:chipsHTML(n+'的因數',factors(n)),steps:pfSteps(n).concat([{t:`${bad}雖然是${n}的因數，可是${bad}不是質數，所以不是質因數。`,hl:'.c'+bad}])}})}
+function F4_count(){const n=pick([42,30,60,70,84,66,105,48,36,90,72,100]),pp=pdist(n);return NQ(`${n}的質因數一共有幾個？`,[{b:0},'個'],[pp.length],{hint:'先找因數，再挑出質數。',why:`${n}的質因數有${pp.join('、')}，共${pp.length}個。`,ex:{fig:chipsHTML(n+'的因數',factors(n)),steps:pfSteps(n).concat([{t:`一共有${pp.length}個。`,eq:`${pp.length} 個`}])}})}
+function F4_common(){const P=pick([[70,84],[30,42],[60,90],[36,48],[45,75],[28,42],[66,99]]),a=pdist(P[0]),b=pdist(P[1]),c=a.filter(x=>b.includes(x));
+  return NQ(`${P[0]}和${P[1]}，共同的質因數有幾個？`,[{b:0},'個'],[c.length],{hint:'先分別找出兩個數的質因數。',why:`${P[0]}的質因數${a.join('、')}，${P[1]}的質因數${b.join('、')}，共同的是${c.join('、')}。`,ex:{steps:[{t:`${P[0]}＝${X(pfac(P[0]))}，質因數是${a.join('、')}。`},{t:`${P[1]}＝${X(pfac(P[1]))}，質因數是${b.join('、')}。`},{t:`兩個都有的是${c.join('、')}，共${c.length}個。`,eq:`${c.length} 個`}]}})}
+const F4TF=[['6是48的質因數。',false,'6是48的因數，可是6不是質數，所以不是質因數。'],['48的質因數有2和3。',true,'48＝2×2×2×2×3。'],['9有2個質因數。',false,'9的因數1、3、9，是質數的只有3，只有1個質因數。'],
+ ['2的質因數是2。',true,'2是質數，它的質因數就是它自己。'],['一個整數的因數又是質數時，這個因數叫做質因數。',true,'這就是質因數的意思。'],['60的質因數有2、3、5三個數。',true,'60＝2×2×3×5。'],['1是所有整數的質因數。',false,'1不是質數，所以1不是質因數。']];
+function F4_tf(){return pickTF(F4TF)}
+function F4_sum(){const a=pick([56,98,84,70,66,52,63]),b=pick([65,99,77,91,85,35,51]),A=Math.max(...pfac(a)),B=Math.min(...pfac(b));
+  return NQ(`${a}的最大質因數，和${b}的最小質因數，加起來是多少？`,[{b:0}],[A+B],{hint:'先把兩個數做質因數分解。',why:`${a}＝${X(pfac(a))}，最大是${A}；${b}＝${X(pfac(b))}，最小是${B}；${A}＋${B}＝${A+B}。`,ex:{steps:[{t:`${a}＝${X(pfac(a))}，最大的質因數是${A}。`},{t:`${b}＝${X(pfac(b))}，最小的質因數是${B}。`},{t:`${A}＋${B}＝${A+B}。`,eq:`${A+B}`}]}})}
+function F4_self(){const p=pick([2,3,5,7,11,13,17,19]);return MC(`${p}的質因數是什麼？`,String(p),['1',`1和${p}`,'沒有質因數'],{hint:`${p}是質數喔！`,why:`${p}的因數是1和${p}，其中是質數的只有${p}，所以${p}的質因數就是${p}。`})}
+const LV4={id:4,ic:'🧤',name:'質因數',sub:'是因數又是質數',story:'第四個案件：找出數字裡面的質數零件！',mk:[[1,F4_pick],[1,F4_not],[1,F4_pick],[2,F4_count],[2,F4_common],[2,F4_tf],[3,F4_sum],[3,F4_self],[3,F4_not]]};
+
+/* ===== 第5層：質因數分解 ===== */
+const F5N=[12,18,20,24,28,30,36,45,50,54,60,63,70,75,90,100,48,56,80,88,95,16,40,84,42];
+function pfWrongs(n){const f=pfac(n),w=[];
+  if(f.length>=3)w.push(X([f[0]*f[1]].concat(f.slice(2)).sort((a,b)=>a-b)));
+  if(f.length>=3)w.push(X([f[0]].concat([prod(f.slice(1))])));
+  w.push('1×'+X(f));
+  if(f.length>=3)w.push(X(f.slice(1)));
+  w.push(X([f[0],n/f[0]]));
+  return w.filter(x=>x!==X(f));}
+function F5_mc(){const n=pick(F5N),f=pfac(n);return MC(`下面哪一個是${n}的質因數分解？`,`${n}＝${X(f)}`,pfWrongs(n).map(w=>`${n}＝${w}`),{oneCol:true,hint:'乘號中間的每一個數，都要是質數，而且乘起來要等於這個數。',why:`${n}＝${X(f)}。`,ex:sdEx([n],'pf',[{t:'質因數分解：每一個乘數都要是質數。1不是質數，不用寫。'}])})}
+function F5_blank(){let n;do{n=pick(F5N)}while(pfac(n).length<3||pfac(n).length>4);const f=pfac(n),tpl=[`${n}＝${f[0]}`];f.slice(1).forEach((v,i)=>tpl.push('×',{b:i}));
+  return NQ(`把${n}做質因數分解，填上空格（由小到大）。`,tpl,f.slice(1),{hint:`先用${f[0]}除：${n}÷${f[0]}＝${n/f[0]}，再繼續拆。`,why:`${n}＝${X(f)}。`,ex:sdEx([n],'pf')})}
+function F5_mul(){const f=primeProd(rnd(3,4),400),n=prod(f);let v=f[0];const st=[{t:'從左邊開始，兩個兩個乘。'}];f.slice(1).forEach(x=>{st.push({t:`${v}×${x}＝${v*x}`,eq:`${v}×${x}＝${v*x}`});v*=x});
+  return NQ(`${X(f)}＝？`,[`${X(f)}＝`,{b:0}],[n],{hint:'一個一個乘。',why:`${X(f)}＝${n}。`,ex:{steps:st}})}
+const F5TF=[['12的質因數分解，可以寫成3×4。',false,'4不是質數，還可以拆：12＝2×2×3。'],['32的質因數分解是2×2×2×2×2。',true,'2×2×2×2×2＝32，每個都是質數。'],['70的質因數分解可以寫成2×5×7。',true,'2×5×7＝70。'],
+ ['15的質因數分解是1×3×5。',false,'1不是質數，不用寫：15＝3×5。'],['用短除法做質因數分解時，除數都要是質數。',true,'對！除數要用質數。'],['36的質因數分解是4×9。',false,'4和9都不是質數：36＝2×2×3×3。']];
+function F5_tf(){return pickTF(F5TF)}
+function F5_stone(){for(let k=0;k<50;k++){const ps=shuffle([2,3,5,7,11,13,17]).slice(0,rnd(3,4)).sort((a,b)=>a-b),P=prod(ps);if(P>3000)continue;
+  const decoy=shuffle([4,6,9,12,20].concat([2,3,5,7,11,13,17].filter(x=>!ps.includes(x)))).slice(0,7-ps.length),vals=ps.concat(decoy).sort((a,b)=>a-b);
+  return PK(`青蛙跳過一些石頭，每塊石頭只跳一次。牠跳過的石頭，上面的數字乘起來是${P}。青蛙跳了哪些石頭？`,vals,v=>ps.includes(v),{hint:`把${P}做質因數分解。`,why:`${P}＝${X(ps)}。`,ex:sdEx([P],'pf',[{t:`把${P}做質因數分解，就知道是哪些石頭。`}])})}}
+function F5_pairp(){const P=pick([[5,11],[7,11],[7,13],[5,7],[5,13],[5,17],[11,13],[3,17]]),n=P[0]*P[1];
+  return MC(`哪兩個質數相乘，等於${n}？`,`${P[0]}和${P[1]}`,[`1和${n}`,`3和${Math.round(n/3)}`,`${P[0]}和${P[1]+2}`,`7和${Math.round(n/7)}`].filter(x=>x!==`${P[0]}和${P[1]}`),{hint:'用小的質數一個一個試除。',why:`${n}＝${P[0]}×${P[1]}。`,ex:sdEx([n],'pf')})}
+function F5_prod(){const L=pick([[2,4,6,8,10],[4,6,9],[6,10,15],[12,14,15],[3,6,10],[4,9,10]]),n=prod(L),f=pfac(n);
+  const w1=X(L),w2=X(L.map(v=>pfac(v)[0]).sort((a,b)=>a-b));
+  return MC(`甲數＝${X(L)}，甲數的質因數分解是哪一個？`,X(f),[w1,w2,X(f.slice(1)),X(f.concat([2]))],{oneCol:true,hint:'把每一個數先拆成質數，再全部排好。',why:`${L.map(v=>isPrime(v)?v:`${v}＝${X(pfac(v))}`).join('，')}，合起來是${X(f)}。`,
+    ex:{steps:[{t:'把每一個數，先拆成質數相乘。'}].concat(L.map(v=>({t:isPrime(v)?`${v}是質數。`:`${v}＝${X(pfac(v))}`}))).concat([{t:`全部合起來，由小到大排：${X(f)}。`,eq:X(f)}])}})}
+const LV5={id:5,ic:'👣',name:'質因數分解',sub:'拆到全部都是質數',story:'第五個案件：把數字拆成質數零件！',mk:[[1,F5_mc],[1,F5_blank],[1,F5_mul],[2,F5_mc],[2,F5_tf],[2,F5_blank],[3,F5_stone],[3,F5_pairp],[3,F5_prod]]};
+
+/* ===== 第6層：最大公因數 ===== */
+function F6_list(){const P=pick([[12,18],[8,20],[12,30],[16,24],[18,27],[20,30],[14,21],[15,25],[24,36]]),[a,b]=P,fa=factors(a),fb=factors(b),cm=fa.filter(v=>fb.includes(v));
+  const vals=uniq(fa.concat(fb)).sort((x,y)=>x-y).slice(0,7);
+  return PK(`${a}和${b}的公因數有哪些？`,vals,v=>a%v===0&&b%v===0,{hint:'要同時是兩個數的因數。',why:`公因數是${cm.join('、')}。`,ex:{fig:chipsHTML(a+'的因數',fa)+chipsHTML(b+'的因數',fb),steps:[{t:`先列出${a}的因數：${fa.join('、')}。`},{t:`再列出${b}的因數：${fb.join('、')}。`},{t:`兩個都有的，叫做公因數：${cm.join('、')}。`,hl:cm.map(v=>'.c'+v).join(','),eq:`公因數：${cm.join('、')}`},{t:`最大的${cm[cm.length-1]}，就是最大公因數。`,hl:'.c'+cm[cm.length-1]}]}})}
+function F6_sd(t){const [a,b]=t===1?coPair(2,9,60):coPair(2,19,100);return NQ(`用短除法，找出${a}和${b}的最大公因數。`,[{b:0}],[gcd(a,b)],{hint:'用質數「一起」除兩個數，最後把左邊的數相乘。',why:`${a}和${b}的最大公因數是${gcd(a,b)}。`,ex:sdEx([a,b],'g')})}
+function mkAB(){for(let k=0;k<100;k++){const C=primeProd(rnd(1,2),30),A=C.concat(primeProd(rnd(1,2),40)).sort((x,y)=>x-y),B=C.concat(primeProd(rnd(1,2),40)).sort((x,y)=>x-y);if(prod(A)>999||prod(B)>999||A.length<3||B.length<3)continue;return [A,B]}return [[2,3,5,5,7],[2,2,3,5]]}
+function common(A,B){const b=B.slice(),c=[];A.forEach(x=>{const i=b.indexOf(x);if(i>=0){c.push(x);b.splice(i,1)}});return c}
+function abHTML(A,B,C){const mk=(L,nm)=>{const used=C.slice();return `<div class="bigeq">${nm}＝${L.map(x=>{const i=used.indexOf(x);if(i>=0){used.splice(i,1);return `<span class="ch cm">${x}</span>`}return `<span class="ch">${x}</span>`}).join('×')}</div>`};return mk(A,'A')+mk(B,'B')}
+function F6_pf(){const [A,B]=mkAB(),C=common(A,B),g=prod(C);
+  return NQ(`A＝${X(A)}，B＝${X(B)}，A和B的最大公因數是多少？`,[{b:0}],[g],{hint:'找出兩邊「都有」的質因數，再乘起來。',why:`共同的質因數是${X(C)}，乘起來是${g}。`,ex:{fig:abHTML(A,B,C),steps:[{t:'最大公因數，就是兩個數「都有」的質因數，乘起來。'},{t:`兩邊都有的是：${C.join('、')}。`,hl:'.cm'},{t:C.length>1?`${X(C)}＝${g}。`:`所以是${g}。`,eq:`最大公因數 ${g}`}]}})}
+const COP=[[9,16],[19,68],[36,51],[4,25],[21,84],[30,1],[42,27],[19,39],[18,35],[48,33],[32,25],[40,37],[17,51],[23,31],[8,15],[21,49],[14,25],[12,35],[26,39],[13,17],[11,24]];
+function F6_cop(){for(let k=0;k<50;k++){const ps=shuffle(COP).slice(0,4),c=ps.filter(p=>gcd(p[0],p[1])===1).length;if(c<1||c>3)continue;
+  const vals=ps.map(p=>p.join('和'));return PK('下面哪幾組數「互質」？',vals,v=>{const [x,y]=v.split('和').map(Number);return gcd(x,y)===1},{hint:'互質：最大公因數是1，除了1，沒有共同的因數。',why:'最大公因數是1的，就是互質。',ex:{steps:[{t:'互質：兩個數的公因數只有1。'}].concat(ps.map(p=>{const g=gcd(p[0],p[1]);return {t:`${p[0]}和${p[1]}：${g===1?'公因數只有1，互質 ⭕':`都有因數${g}，不互質 ❌`}`}}))}})}}
+const F6TF=[['兩個不同的奇數，一定互質。',false,'21和49都是奇數，可是都有因數7，不互質。'],['兩個不同的偶數，一定不互質。',true,'偶數都有因數2，所以一定不互質。'],['互質的兩個數，一定都是質數。',false,'9和16都是合數，可是它們互質。'],
+ ['任意兩個不同的合數，一定不互質。',false,'9和16都是合數，公因數只有1，互質。'],['兩個不同的質數，一定互質。',true,'質數只有1和自己，兩個不同的質數，公因數只有1。'],['當兩數互質時，它們的公因數只有1。',true,'這就是互質的意思。'],['兩個整數的公因數，都是最大公因數的因數。',true,'例如12和18：公因數1、2、3、6，都是6的因數。']];
+function F6_tf(){return pickTF(F6TF)}
+function F6_three(){const T=pick([[24,36,18],[30,45,105],[14,56,63],[36,44,56],[18,40,75],[12,30,42],[16,24,40],[20,30,50]]),g=T.reduce(gcd);
+  return NQ(`找出${T.join('、')}的最大公因數。`,[{b:0}],[g],{hint:'用質數同時除三個數。',why:`最大公因數是${g}。`,ex:sdEx(T,'g',[{t:'三個數也一樣，要找可以「三個一起」整除的質數。'}])})}
+function F6_fix(){const [a,b]=coPair(3,9,90),pl=sdPlan([a,b],'g'),g=gcd(a,b),wrong=prod(pl.rows.map(r=>r.p).concat(pl.bottom));
+  return NQ(`小睿用短除法找${a}和${b}的最大公因數，他把左邊和下面全部乘起來，算出${wrong}。正確的最大公因數是多少？`,[{b:0}],[g],{hint:'最大公因數只要乘「左邊」的數。左邊和下面全部乘，是最小公倍數。',why:`最大公因數只乘左邊：${g}。`,ex:sdEx([a,b],'g',[{t:'小睿搞混了：左邊和下面全部相乘，是「最小公倍數」。最大公因數，只乘左邊。'}])})}
+const LV6={id:6,ic:'🗝️',name:'最大公因數',sub:'共同的因數裡最大的',story:'第六個案件：找出兩個數「共同的祕密」！',mk:[[1,F6_list],[1,()=>F6_sd(1)],[1,()=>F6_sd(1)],[2,F6_pf],[2,F6_cop],[2,F6_tf],[2,()=>F6_sd(2)],[3,F6_three],[3,F6_fix],[3,F6_cop]]};
+
+/* ===== 第7層：最小公倍數 ===== */
+function F7_line(){const P=pick([[4,6],[3,4],[2,5],[6,8],[4,10],[6,9],[3,5],[4,5]]),[a,b]=P,L=lcm(a,b);
+  return NQ(`看看下面的倍數線，${a}和${b}的最小公倍數是多少？`,[{b:0}],[L],{fig:timeFig(a,b),hint:'找藍色和紅色「都有」的點，最小的那一個。',why:`${a}和${b}都有的倍數，最小的是${L}。`,ex:{fig:timeFig(a,b),steps:[{t:`${a}的倍數：${[1,2,3,4,5].map(k=>a*k).join('、')}……`},{t:`${b}的倍數：${[1,2,3,4,5].map(k=>b*k).join('、')}……`},{t:'兩個都有的倍數，叫做公倍數。',show:'.cl'},{t:`最小的是${L}，叫做最小公倍數。`,eq:`最小公倍數 ${L}`}]}})}
+function F7_sd(t){const [a,b]=t===1?coPair(2,6,50):coPair(2,14,105);return NQ(`用短除法，找出${a}和${b}的最小公倍數。`,[{b:0}],[lcm(a,b)],{hint:'一起除到不能除，再把左邊和下面全部相乘。',why:`${a}和${b}的最小公倍數是${lcm(a,b)}。`,ex:sdEx([a,b],'l')})}
+function F7_sp(){if(Math.random()<.5){const P=pick([[8,15],[13,4],[16,9],[3,11],[7,10],[5,9],[4,15],[11,6]]);
+    return NQ(`${P[0]}和${P[1]}的最小公倍數是多少？`,[{b:0}],[P[0]*P[1]],{hint:'它們有沒有共同的因數？',why:`${P[0]}和${P[1]}互質，最小公倍數就是兩數相乘：${P[0]}×${P[1]}＝${P[0]*P[1]}。`,ex:{steps:[{t:`${P[0]}和${P[1]}，除了1，沒有共同的因數，它們互質。`},{t:'互質的兩個數，最小公倍數就是兩個數相乘。'},{t:`${P[0]}×${P[1]}＝${P[0]*P[1]}。`,eq:`${P[0]*P[1]}`}]}})}
+  const P=pick([[12,24],[34,68],[13,52],[19,57],[11,99],[17,51],[15,45],[24,72]]);
+  return NQ(`${P[0]}和${P[1]}的最小公倍數是多少？`,[{b:0}],[P[1]],{hint:`${P[1]}是${P[0]}的幾倍？`,why:`${P[1]}是${P[0]}的${P[1]/P[0]}倍，最小公倍數就是${P[1]}。`,ex:{steps:[{t:`${P[1]}÷${P[0]}＝${P[1]/P[0]}，${P[1]}是${P[0]}的倍數。`},{t:`${P[1]}自己也是${P[1]}的倍數，所以${P[1]}就是兩個數的公倍數，而且是最小的。`},{t:`最小公倍數是${P[1]}。`,eq:`${P[1]}`}]}})}
+function F7_pf(){for(let k=0;k<50;k++){const [A,B]=mkAB(),C=common(A,B),L=lcm(prod(A),prod(B));if(L>2000)continue;const rest=B.slice();C.forEach(x=>rest.splice(rest.indexOf(x),1));const all=A.concat(rest).sort((x,y)=>x-y);
+  return NQ(`A＝${X(A)}，B＝${X(B)}，A和B的最小公倍數是多少？`,[{b:0}],[L],{hint:'共同的質因數只算一次，再乘上兩邊剩下的。',why:`${X(all)}＝${L}。`,ex:{fig:abHTML(A,B,C),steps:[{t:'最小公倍數：兩邊都有的質因數，只算一次；再乘上各自剩下的。'},{t:`兩邊都有的：${C.join('、')}。`,hl:'.cm'},{t:`A全部拿來，再加上B剩下的${rest.join('、')||'（沒有）'}。`},{t:`${X(all)}＝${L}。`,eq:`最小公倍數 ${L}`}]}})}}
+function F7_three(){const T=pick([[12,24,36],[8,12,18],[4,6,10],[6,8,12],[10,15,20],[9,12,18],[4,6,9]]),L=T.reduce(lcm),mx=Math.max(...T),st=[{t:`偵探方法：從最大的${mx}開始，列出它的倍數，找第一個也是其他數的倍數。`}];
+  for(let v=mx;v<=L;v+=mx){const ok=T.every(x=>v%x===0);st.push({t:`${v}：${T.filter(x=>x!==mx).map(x=>v%x===0?`是${x}的倍數`:`不是${x}的倍數`).join('，')}${ok?' ⭕':' ❌'}`})}
+  st.push({t:`所以最小公倍數是${L}。`,eq:`最小公倍數 ${L}`});
+  return NQ(`${T.join('、')}的最小公倍數是多少？`,[{b:0}],[L],{hint:`從${mx}的倍數開始找。`,why:`最小公倍數是${L}。`,ex:{steps:st}})}
+function F7_both(){const P=pick([[17,51],[11,99],[28,72],[78,91],[16,48],[24,30],[20,45],[8,25],[38,76]]),[a,b]=P;
+  return NQ(`找出${a}和${b}的最大公因數和最小公倍數。`,['最大公因數',{b:0},'　最小公倍數',{b:1}],[gcd(a,b),lcm(a,b)],{hint:'最大公因數乘左邊；最小公倍數，左邊和下面全部乘。',why:`最大公因數${gcd(a,b)}，最小公倍數${lcm(a,b)}。`,ex:(()=>{const pl=sdPlan([a,b],'g'),s=sdSteps([a,b],pl,'g'),L=pl.rows.map(r=>r.p).concat(pl.bottom);s.push({t:`最小公倍數＝左邊和下面全部相乘：${X(L)}＝${lcm(a,b)}。`,hl:'.dv,.bt',eq:`最大公因數 ${gcd(a,b)}　最小公倍數 ${lcm(a,b)}`});return {fig:sdHTML([a,b],pl),steps:s}})()})}
+const F7TF=[['24和72的最小公倍數是72。',true,'72是24的3倍，所以最小公倍數是72。'],['27和54的最大公因數是27，最小公倍數是54。',true,'54是27的2倍。'],['任意2個不同的質數，最小公倍數是1。',false,'兩個不同的質數互質，最小公倍數是兩數相乘，不是1。最大公因數才是1。'],
+ ['當兩數互質時，最小公倍數是兩數的乘積。',true,'例如8和15：8×15＝120。'],['17和51兩數互質。',false,'51＝3×17，它們都有因數17，不互質。'],['兩個數的最小公倍數，一定比這兩個數都大。',false,'12和24的最小公倍數是24，和24一樣大。']];
+function F7_tf(){return pickTF(F7TF)}
+const LV7={id:7,ic:'🗺️',name:'最小公倍數',sub:'共同的倍數裡最小的',story:'第七個案件：兩個數什麼時候會再碰面？',mk:[[1,F7_line],[1,()=>F7_sd(1)],[1,F7_line],[2,F7_sp],[2,F7_pf],[2,()=>F7_sd(2)],[3,F7_three],[3,F7_both],[3,F7_tf]]};
+
+/* ===== 第8層：公因數應用 ===== */
+const JUD=[['把長36公分、寬24公分的紙，裁成一樣大的正方形，正方形的邊長最長是多少？','g'],['60顆柳丁和48顆檸檬分裝成盒，每盒一樣多，最多可以裝成幾盒？','g'],['45公分和60公分的電線，剪成一樣長的小段，每段最長是多少？','g'],['32張圖畫紙和40枝鉛筆平分給學生，最多可以分給幾人？','g'],['長方形花園四周種樹，四個角都要種，每棵樹距離一樣，最大距離是多少？','g'],
+ ['用長36公分、寬24公分的紙，排成一個正方形，邊長最短是多少？','l'],['1號公車每15分鐘、2號公車每25分鐘開一班，下一次同時開出是幾分鐘後？','l'],['45公分和60公分的電線，各自接成一長條，排成一樣長，最短是多長？','l'],['水餃每20顆或每15顆裝一袋都剛好，水餃最少有幾顆？','l'],['小明每6天、小華每9天去一次圖書館，下次一起去是幾天後？','l']];
+function F_judge(){const x=pick(JUD),g=x[1]==='g';
+  return {type:'mc',stem:'這一題要用哪一個來算？\n'+x[0],opts:[{t:'最大公因數'},{t:'最小公倍數'}],ans:g?0:1,hint:'是把東西「分小」，還是「合起來變大」？',why:g?'把東西分成、剪成、裁成小的，用最大公因數。':'把東西排成、接成、一起出發，越變越大，用最小公倍數。',
+    ex:{steps:[{t:'偵探判斷法：'},{t:'把大的東西「分成、剪成、裁成、平分」，答案比原來的數小 → 最大公因數。'},{t:'把小的東西「排成、接成、同時、再碰面」，答案比原來的數大 → 最小公倍數。'},{t:g?'這一題是把東西分小，要用最大公因數。':'這一題是合起來變大，要用最小公倍數。',eq:g?'最大公因數':'最小公倍數'}]}}}
+const PACK=[[60,48,'柳丁','檸檬','顆','盒'],[45,72,'蘋果','水梨','顆','盒'],[27,36,'紅球','黃球','顆','箱'],[84,48,'桔梗','百合','朵','束'],[56,77,'番茄','櫻桃','顆','籃'],[32,40,'圖畫紙','鉛筆','份','人'],[52,78,'黃球','紅球','顆','袋'],[24,36,'糖果','餅乾','個','包'],[48,60,'男生','女生','人','組'],[18,24,'男生','女生','人','組']];
+const packLead=(a,b,X1,Y1,U)=>[{t:`每${U}的${X1}一樣多，${U}數要能把${a}平分；${Y1}也一樣多，${U}數也要能把${b}平分。`},{t:`所以${U}數是${a}和${b}的公因數；要「最多」，就是最大公因數。`}];
+function F8_pack(){const [a,b,X1,Y1,u,U]=pick(PACK),g=gcd(a,b);
+  return NQ(`${a}${u}${X1}和${b}${u}${Y1}，平分成好幾${U}，每${U}的${X1}一樣多，${Y1}也一樣多，剛好分完。最多可以分成幾${U}？`,[{b:0},U],[g],{hint:`${U}數要能平分${a}，也要能平分${b}。`,why:`${a}和${b}的最大公因數是${g}。`,ex:sdEx([a,b],'g',packLead(a,b,X1,Y1,U))})}
+function F8_each(){const [a,b,X1,Y1,u,U]=pick(PACK),g=gcd(a,b);
+  return NQ(`${a}${u}${X1}和${b}${u}${Y1}，平分成好幾${U}，每${U}的${X1}一樣多，${Y1}也一樣多。最多可以分成幾${U}？每${U}有幾${u}${X1}、幾${u}${Y1}？`,['最多',{b:0},U+'，每'+U+X1,{b:1},u+'、'+Y1,{b:2},u],[g,a/g,b/g],{hint:'先算最大公因數，再用除法。',why:`${g}${U}；${a}÷${g}＝${a/g}，${b}÷${g}＝${b/g}。`,ex:(()=>{const e=sdEx([a,b],'g',packLead(a,b,X1,Y1,U));e.steps.push({t:`每${U}的${X1}：${a}÷${g}＝${a/g}；${Y1}：${b}÷${g}＝${b/g}。`,eq:`${g}${U}，每${U}${X1}${a/g}${u}、${Y1}${b/g}${u}`});return e})()})}
+const RECT=[[96,90],[24,16],[36,24],[45,30],[60,48],[42,28],[30,18],[40,24]];
+function F8_square(cnt){const [W0,H0]=pick(RECT),g=gcd(W0,H0),n=(W0/g)*(H0/g);
+  const lead=[{t:'正方形的邊，要能剛好量完長，也要剛好量完寬，所以是長和寬的公因數。'},{t:'要「最長」，就是最大公因數。'}];
+  const e=sdEx([W0,H0],'g',lead);e.fig=cutFig(W0,H0,g)+e.fig;e.steps.push({t:'畫出來就是這樣！',show:'.sq'});if(cnt)e.steps.push({t:`長邊可以剪${W0}÷${g}＝${W0/g}個，寬邊${H0}÷${g}＝${H0/g}個，一共${W0/g}×${H0/g}＝${n}個。`,eq:`${n} 個`});
+  return cnt?NQ(`一張長${W0}公分、寬${H0}公分的紙，全部剪成一樣大的正方形，邊長是整數公分。正方形邊長最長是幾公分？可以剪成幾個？`,['邊長',{b:0},'公分，可以剪',{b:1},'個'],[g,n],{fig:cutFig(W0,H0),hint:'邊長是長和寬的最大公因數。',why:`邊長${g}公分，共${n}個。`,ex:e})
+    :NQ(`一張長${W0}公分、寬${H0}公分的紙，全部剪成一樣大的正方形，邊長是整數公分。正方形的邊長最長是幾公分？`,[{b:0},'公分'],[g],{fig:cutFig(W0,H0),hint:'邊長要能量完長，也能量完寬。',why:`${W0}和${H0}的最大公因數是${g}。`,ex:e})}
+function F8_fence(){const P=pick([[30,24],[45,75],[36,24],[40,24],[20,12],[48,36]]),[a,b]=P,g=gcd(a,b),F=fenceFig(a,b,g),n=2*(a/g+b/g);
+  const e=sdEx([a,b],'g',[{t:'樹的距離要能平分長邊，也能平分寬邊，所以是公因數；距離最大，種的樹最少。'}]);
+  e.steps.push({t:`長邊${a}÷${g}＝${a/g}段，寬邊${b}÷${g}＝${b/g}段。`});e.steps.push({t:`繞一圈是(${a/g}＋${b/g})×2＝${n}段。圍成一圈，樹的棵數和段數一樣，${n}棵。`,show:'.tr',eq:`距離${g}公尺，${n}棵`});e.fig=F.svg;
+  return NQ(`長方形菜園長${a}公尺、寬${b}公尺，要在四周種樹，四個角都要種，每棵樹的距離都一樣。相鄰兩棵樹最大距離是幾公尺？最少要種幾棵？`,['距離',{b:0},'公尺，種',{b:1},'棵'],[g,n],{fig:fenceFig(a,b,g).svg.replace(/class="exh tr/g,'class="exh tr'),hint:'距離是長和寬的最大公因數；圍成一圈，棵數＝段數。',why:`距離${g}公尺，(${a/g}＋${b/g})×2＝${n}棵。`,ex:e})}
+function F8_brace(){const P=pick([[32,40],[24,36],[18,30],[27,45],[20,28]]),[a,b]=P,g=gcd(a,b);
+  return NQ(`彤欣有${a}顆紅珠子和${b}顆藍珠子，要串成一樣的手鍊，每條都有紅和藍，珠子全部用完。一條手鍊最少有幾顆珠子？`,[{b:0},'顆'],[a/g+b/g],{hint:'先找最多可以串幾條（最大公因數），每條就最少。',why:`最多${g}條，每條紅${a/g}顆、藍${b/g}顆，共${a/g+b/g}顆。`,ex:sdEx([a,b],'g',[{t:'手鍊條數越多，每條的珠子就越少。條數最多是最大公因數。'}]).steps.length?(()=>{const e=sdEx([a,b],'g',[{t:'手鍊條數越多，每條珠子越少。條數最多是最大公因數。'}]);e.steps.push({t:`每條：紅${a}÷${g}＝${a/g}顆，藍${b}÷${g}＝${b/g}顆，${a/g}＋${b/g}＝${a/g+b/g}顆。`,eq:`${a/g+b/g} 顆`});return e})():null})}
+function F8_tri(){const T=pick([[18,24,36],[12,18,24],[20,30,40],[15,25,35]]),g=T.reduce(gcd),n=T.reduce((s,x)=>s+x/g,0);
+  return NQ(`三角形公園的三邊長是${T.join('公尺、')}公尺，要在四周架路燈，三個角都要架，每盞距離一樣。最少要架幾盞？`,[{b:0},'盞'],[n],{hint:'距離是三個數的最大公因數；圍一圈，盞數＝段數。',why:`距離${g}公尺，${T.map(x=>x/g).join('＋')}＝${n}盞。`,ex:(()=>{const e=sdEx(T,'g',[{t:'距離越大，路燈越少。距離要能平分三條邊，是最大公因數。'}]);e.steps.push({t:`每邊的段數：${T.map(x=>`${x}÷${g}＝${x/g}`).join('，')}。`});e.steps.push({t:`圍一圈：${T.map(x=>x/g).join('＋')}＝${n}段，就是${n}盞燈。`,eq:`${n} 盞`});return e})()})}
+const LV8={id:8,ic:'🎩',name:'公因數大應用',sub:'分成、剪成、平分',story:'第八個案件：用最大公因數，把東西分得剛剛好！',mk:[[1,F_judge],[1,F8_pack],[1,F8_pack],[2,()=>F8_square(false)],[2,F8_each],[2,F_judge],[3,()=>F8_square(true)],[3,F8_fence],[3,F8_brace],[3,F8_tri]]};
+
+/* ===== 第9層：公倍數應用 ===== */
+const BUS=[[6,10,'甲路公車','乙路公車','分鐘'],[15,25,'1號公車','2號公車','分鐘'],[8,12,'紅燈','藍燈','秒'],[10,15,'小火車','摩天輪','分鐘'],[6,9,'凡亞','品珍','天'],[12,18,'哥哥','妹妹','天'],[25,20,'巴士','火車','分鐘']];
+function F9_bus(){const [a,b,A,B,u]=pick(BUS),L=lcm(a,b);
+  return NQ(`${A}每${a}${u}一次，${B}每${b}${u}一次。剛剛一起出發後，下一次一起是幾${u}後？`,[{b:0},u+'後'],[L],{fig:timeFig(a,b,{la:A,lb:B}),hint:`要是${a}的倍數，也是${b}的倍數。`,why:`${a}和${b}的最小公倍數是${L}。`,ex:(()=>{const e=sdEx([a,b],'l',[{t:`一起的時間，要是${a}的倍數，也是${b}的倍數，是公倍數；「下一次」是最小的，最小公倍數。`}]);e.fig=timeFig(a,b,{la:A,lb:B})+e.fig;e.steps.push({t:'看倍數線，橘色線就是一起的時候。',show:'.cl'});return e})()})}
+const LEAST=[[20,15,'水餃','顆','袋'],[21,6,'包子','個','袋'],[25,8,'金幣','個','數'],[12,18,'糖果','顆','包'],[16,24,'貼紙','張','疊'],[14,21,'餅乾','片','盒']];
+function F9_least(){const [a,b,X1,u,U]=pick(LEAST),L=lcm(a,b);
+  return NQ(`${X1}每${a}${u}裝一${U}，或每${b}${u}裝一${U}，都剛好裝完。${X1}最少有幾${u}？`,[{b:0},u],[L],{hint:`數量是${a}的倍數，也是${b}的倍數。`,why:`${a}和${b}的最小公倍數是${L}。`,ex:sdEx([a,b],'l',[{t:`每${a}${u}剛好裝完 → 是${a}的倍數；每${b}${u}也剛好 → 也是${b}的倍數。`},{t:'所以是公倍數；「最少」就是最小公倍數。'}])})}
+const tstr=(h,m)=>`${h}時${String(m)}分`;
+function F9_time(){const [a,b,A,B]=pick([[6,10,'甲路公車','乙路公車'],[8,28,'小燈泡','大燈泡'],[25,20,'巴士','火車'],[15,25,'1號公車','2號公車'],[12,16,'藍車','紅車']]),L=lcm(a,b),h=rnd(6,8),m=pick([0,15,30,35,40]),T=h*60+m+L,ans=tstr(Math.floor(T/60),T%60);
+  const w=[tstr(Math.floor((h*60+m+a*b)/60),(h*60+m+a*b)%60),tstr(Math.floor((h*60+m+a+b)/60),(h*60+m+a+b)%60),tstr(Math.floor((T+a)/60),(T+a)%60)];
+  return MC(`${A}每${a}分鐘一班，${B}每${b}分鐘一班。上午${tstr(h,m)}同時出發，下一次同時出發是上午幾時幾分？`,ans,w,{hint:`先算${a}和${b}的最小公倍數，再往後加。`,why:`最小公倍數${L}分鐘，${tstr(h,m)}再過${L}分鐘是${ans}。`,ex:(()=>{const e=sdEx([a,b],'l');e.steps.push({t:`${tstr(h,m)}再過${L}分鐘，是${ans}。`,eq:`上午${ans}`});return e})()})}
+const TILE=[[20,12],[8,6],[15,10],[12,9],[70,50],[36,24],[10,4]];
+function F9_sq(cnt){const [w,h]=pick(TILE),L=lcm(w,h),n=(L/w)*(L/h);
+  const e=sdEx([w,h],'l',[{t:'正方形的邊，要是長的倍數，也要是寬的倍數，是公倍數；「最短」是最小公倍數。'}]);e.fig=tileFig(w,h,L,{anim:true})+e.fig;e.steps.push({t:'排起來就是這樣！',show:'.tl'});
+  if(cnt)e.steps.push({t:`橫的排${L}÷${w}＝${L/w}個，直的排${L}÷${h}＝${L/h}排，共${L/w}×${L/h}＝${n}個。`,eq:`${n} 個`});
+  return cnt?NQ(`用長${w}公分、寬${h}公分的長方形，同一個方向排成正方形。正方形邊長最短是幾公分？用了幾個長方形？`,['邊長',{b:0},'公分，用了',{b:1},'個'],[L,n],{hint:'邊長是長和寬的最小公倍數。',why:`邊長${L}，共${n}個。`,ex:e})
+    :NQ(`用長${w}公分、寬${h}公分的長方形，同一個方向排成正方形。正方形的邊長最短是幾公分？`,[{b:0},'公分'],[L],{hint:'邊長要是長的倍數，也是寬的倍數。',why:`${w}和${h}的最小公倍數是${L}。`,ex:e})}
+function F9_range(){for(let k=0;k<80;k++){const a=rnd(4,30),b=rnd(4,30);if(a===b)continue;const L=lcm(a,b);if(L<40||L>200)continue;const H=rnd(1,4),lo=H*100,hi=lo+99,ms=[];for(let v=L;v<=hi;v+=L)if(v>=lo)ms.push(v);if(ms.length!==1)continue;
+  const nm=['','一百','兩百','三百','四百'][H],ans=ms[0],list=[];for(let v=L;v<=ans+L;v+=L)list.push(v);
+  return NQ(`六年級學生大約有${nm}多人，每${a}人分一組，或每${b}人分一組，都剛好分完。六年級有多少人？`,[{b:0},'人'],[ans],{hint:`先找${a}和${b}的最小公倍數，再找${nm}多的那一個倍數。`,why:`最小公倍數${L}，${nm}多的倍數是${ans}。`,ex:(()=>{const e=sdEx([a,b],'l');e.steps.push({t:`${L}的倍數：${list.join('、')}……`});e.steps.push({t:`${nm}多的是${ans}，所以有${ans}人。`,eq:`${ans} 人`});return e})()})}}
+function F9_rem(){if(Math.random()<.6){const [a,b]=pick([[9,12],[6,8],[4,6],[10,15],[6,9],[8,12]]),r=rnd(1,Math.min(a,b)-1),L=lcm(a,b);
+    return NQ(`一群小朋友，每${a}人一組或每${b}人一組，都剩下${r}人。這群小朋友最少有幾人？`,[{b:0},'人'],[L+r],{hint:`先不管剩下的${r}人，找最小公倍數，最後再加回來。`,why:`最小公倍數${L}，${L}＋${r}＝${L+r}。`,ex:(()=>{const e=sdEx([a,b],'l',[{t:`先把剩下的${r}人請到旁邊，其他人就剛好分完，是${a}和${b}的公倍數。`}]);e.steps.push({t:`再把${r}人加回來：${L}＋${r}＝${L+r}人。`,eq:`${L+r} 人`});return e})()})}
+  const [a,b]=pick([[6,16],[16,28],[4,6],[12,18]]),r=rnd(1,Math.min(a,b)-1),L=lcm(a,b),N=L*rnd(2,4)+rnd(1,L-1),best=Math.floor((N-r)/L)*L+r;
+  return NQ(`一箱芒果不超過${N}顆，每${a}顆或每${b}顆裝一盒，都剩下${r}顆。芒果最多有幾顆？`,[{b:0},'顆'],[best],{hint:`找${a}和${b}的公倍數，加上${r}，不能超過${N}。`,why:`最小公倍數${L}，最大的是${best}。`,ex:(()=>{const e=sdEx([a,b],'l',[{t:`扣掉剩下的${r}顆，就是${a}和${b}的公倍數。`}]);e.steps.push({t:`${L}的倍數加上${r}，不能超過${N}：${L}×${Math.floor((N-r)/L)}＋${r}＝${best}。`,eq:`${best} 顆`});return e})()})}
+const LV9={id:9,ic:'📸',name:'公倍數大應用',sub:'同時、一起、排成',story:'第九個案件：用最小公倍數，算出下一次碰面！',mk:[[1,F9_bus],[1,F9_least],[1,F_judge],[2,F9_time],[2,()=>F9_sq(false)],[2,F9_bus],[3,F9_range],[3,F9_rem],[3,()=>F9_sq(true)]]};
+
+const LV=[LV1,LV2,LV3,LV4,LV5,LV6,LV7,LV8,LV9];
+const PRIZES=[0,'🔍','📒','🔦','🧤','👣','🗝️','🗺️','🎩','📸'];
+const PRIZEN=[0,'放大鏡','偵探筆記本','手電筒','偵探手套','腳印模型','萬能鑰匙','藏寶地圖','偵探帽','照相機'];
+
+
+/* ================= 福爾摩數老師上課 ================= */
+const ADD=sel=>st=>st.querySelectorAll(sel).forEach(e=>e.classList.add('hl'));
+const row3=items=>`<div class="row3">${items.map(([svg,cap,cls])=>`<div class="${cls||''}">${svg}<span>${cap}</span></div>`).join('')}</div>`;
+const card=html=>`<div style="font-weight:900;font-size:calc(var(--u)*1.45);text-align:center;line-height:1.6;padding:.4em">${html}</div>`;
+const arrS=(r,c,lbl,col)=>arrFig(r,c,{W:150,H:110,lbl,col});
+const sieve=(st,p)=>{st.querySelectorAll('.ngrid span').forEach(s=>{const v=+s.dataset.v;if(v!==p&&v%p===0)s.classList.add('cx')});const e=st.querySelector('.g'+p);e&&e.classList.add('pr')};
+const sieveEnd=st=>st.querySelectorAll('.ngrid span').forEach(s=>{const v=+s.dataset.v;if(v>1&&!s.classList.contains('cx'))s.classList.add('pr')});
+const sdL=(nums,mode)=>{const pl=sdPlan(nums,mode);return sdHTML(nums,pl)};
+const sdSay=(nums,mode)=>sdSteps(nums,sdPlan(nums,mode),mode).map(s=>({t:s.t,a:st=>{exApply(st,s)},eq:s.eq}));
+
+const LESSONS={
+1:[
+ {stage:row3([[arrS(1,12),'1排，每排12顆','exh a0'],[arrS(2,6),'2排，每排6顆','exh a1'],[arrS(3,4),'3排，每排4顆','exh a2']]),say:['嗨！我是福爾摩數老師，歡迎加入數字偵探社！','第一個案件：有12顆糖果，要排成長方形，每一排都要一樣多。',{t:'排成1排，每排12顆。',a:ON('.a0')},{t:'排成2排，每排6顆。',a:ON('.a1')},{t:'排成3排，每排4顆。',a:ON('.a2')},{t:'倒過來排，4排、6排、12排也可以！',eq:'1、2、3、4、6、12'}]},
+ {stage:row3([[arrS(2,5,'還剩2顆','#ced4da'),'每排5顆？']])+card('12 ÷ 5 ＝ 2 … 剩 2'),say:['那每排5顆可以嗎？','排2排用掉10顆，還剩2顆，排不整齊！',{t:'所以5不是12的因數。可以把12剛好分完的數，才叫做12的「因數」。',eq:'12的因數：1、2、3、4、6、12'}]},
+ {stage:card('<span class="r">3</span> × <span class="r">4</span> ＝ <span class="b">12</span>').replace('<div style','<div class="bigeq" style'),say:['用乘法來看：3×4＝12。',{t:'3和4，是12的因數。',eq:'3、4 是 12 的因數'},{t:'12，是3和4的倍數。',eq:'12 是 3 和 4 的倍數'},'因數和倍數是好朋友，總是一起出現！']},
+ {stage:pairsHTML(18),say:['偵探找因數的方法：一對一對找，從1開始。',{t:'1×18＝18。',a:ON('.fp0')},{t:'2×9＝18。',a:ON('.fp1')},{t:'3×6＝18。',a:ON('.fp2')},'試4、試5，都不能整除。再試6，就和前面重複了，停！',{t:'18的因數：1、2、3、6、9、18。',eq:'18的因數：1、2、3、6、9、18'}]},
+ {stage:pairsHTML(8,true),say:['考考你！'],q:{ask:'8的因數有哪些？',opts:['1、2、4、8','1、2、8','2、4'],ans:0,ok:'1×8、2×4，所以是1、2、4、8！',no:'一對一對找：1乘多少等於8？2乘多少等於8？'}}
+],
+2:[
+ {stage:row3([[arrS(1,7,'只能排1排','#74c0fc'),'7顆糖果']]),say:['換成7顆糖果，排排看。','2排？3排？都會剩下。只能排成1排！',{t:'7的因數只有1和7，兩個而已。',eq:'7的因數：1、7'}]},
+ {stage:card('因數只有 <span style="color:#e03131">1 和自己</span><br>→ <span style="color:#1971c2">質數</span> ⭐<br><small style="font-size:.6em">2、3、5、7、11、13、17、19……</small>'),say:[{t:'一個大於1的數，因數只有1和自己，就叫做「質數」。',eq:'質數：只有兩個因數'},'像2、3、5、7、11、13，都是質數。']},
+ {stage:row3([[arrS(1,6),'1排6顆'],[arrS(2,3),'2排3顆']]),say:['換6顆糖果。6可以排成1排，也可以排成2排、每排3顆。',{t:'6的因數有1、2、3、6。除了1和自己，還有2和3。',eq:'6的因數：1、2、3、6'},{t:'這種還有別的因數的數，叫做「合數」。',eq:'合數：三個以上的因數'}]},
+ {stage:card('1 的因數：只有 1<br>→ 不是質數，也不是合數'),say:['那1呢？1的因數只有1，一個而已。',{t:'質數要兩個因數，合數要三個以上，所以1都不是，它很特別！',eq:'1：都不是'}]},
+ {stage:card('最小的質數：<span style="color:#e03131">2</span>（唯一的偶數質數）<br>最小的合數：<span style="color:#1971c2">4</span>'),say:['偵探要記住：最小的質數是2，它也是唯一的偶數質數。','其他偶數都有因數2，所以都是合數。',{t:'最小的合數是4。',eq:'最小質數 2，最小合數 4'}]},
+ {stage:row3([[arrS(3,3),'9顆']]),say:['考考你！'],q:{ask:'9是質數還是合數？',opts:['質數','合數'],ans:1,ok:'9＝3×3，可以排成3排，有因數3，是合數！',no:'9顆糖果，可以排成3排嗎？'}}
+],
+3:[
+ {stage:card('技巧一：個位是 0、2、4、6、8 → 有因數 <span style="color:#e03131">2</span><br>技巧二：個位是 0 或 5 → 有因數 <span style="color:#e03131">5</span>'),say:['偵探有三個小技巧，可以很快找到因數！',{t:'技巧一：個位是0、2、4、6、8的偶數，一定有因數2。',eq:'例：38、76 都有因數 2'},{t:'技巧二：個位是0或5，一定有因數5。',eq:'例：65、75 都有因數 5'}]},
+ {stage:card('141 → 1 ＋ 4 ＋ 1 ＝ <span style="color:#e03131">6</span><br><small style="font-size:.6em">6 是 3 的倍數 → 141 也是 3 的倍數</small>'),say:[{t:'技巧三：把每個數字加起來，如果是3的倍數，這個數就有因數3。'},{t:'141：1＋4＋1＝6，6是3的倍數。',eq:'1＋4＋1＝6'},{t:'所以141是3的倍數：141＝3×47，是合數！',eq:'141＝3×47'}]},
+ {stage:card('100 ＝ 99 ＋ <span style="color:#e03131">1</span><br>10 ＝ 9 ＋ <span style="color:#e03131">1</span>'),say:['為什麼可以這樣？141是1個百、4個十、1個一。','每一個百，3個3個分完，都剛好剩1個；每一個十，也剩1個。',{t:'所以剩下1＋4＋1＝6個，6再3個一堆，剛好分完！',eq:'剩下 1＋4＋1＝6 → 分得完'}]},
+ {stage:ngridHTML(50),say:['我們來抓50以內的質數！',{t:'1不是質數。',a:st=>st.querySelector('.g1').classList.add('one')},{t:'2是質數，把2的倍數都劃掉。',a:st=>sieve(st,2)},{t:'3是質數，劃掉3的倍數。',a:st=>sieve(st,3)},{t:'5是質數，劃掉5的倍數。',a:st=>sieve(st,5)},{t:'7是質數，劃掉7的倍數。',a:st=>sieve(st,7)},{t:'剩下黃色的，全部都是質數！',a:sieveEnd,eq:'50以內有15個質數'}]},
+ {stage:card('51 是質數嗎？'),say:['考考你！'],q:{ask:'51是質數嗎？',opts:['是質數','不是，是合數'],ans:1,ok:'5＋1＝6，51有因數3，51＝3×17，是合數！',no:'用技巧三：5加1等於多少？'}}
+],
+4:[
+ {stage:chipsHTML('18的因數',factors(18)),say:[{t:'18的因數有：1、2、3、6、9、18。'},{t:'其中是質數的，有2和3。',a:HL('.c2,.c3')},{t:'一個數的因數，又是質數，就叫做「質因數」。',eq:'18的質因數：2、3'}]},
+ {stage:chipsHTML('18的因數',factors(18)),say:[{t:'小心！6是18的因數，可是6不是質數，所以6不是質因數。',a:HL('.c6')},{t:'1也不是質因數，因為1不是質數。',a:HL('.c1')},{t:'質因數就像數字的「質數零件」。',a:HL('.c2,.c3')}]},
+ {stage:card('7 的因數：1、7<br>7 的質因數：<span style="color:#e03131">7</span>'),say:['那質數的質因數呢？',{t:'7的因數是1和7，其中是質數的只有7，所以7的質因數就是7自己。',eq:'質數的質因數 ＝ 它自己'}]},
+ {stage:chipsHTML('15的因數',factors(15)),say:['考考你！'],q:{ask:'15的質因數有哪些？',opts:['1、15','3、5','1、3、5、15'],ans:1,ok:'15的因數裡，是質數的只有3和5！',no:'1不是質數，15也不是質數喔。'}}
+],
+5:[
+ {stage:treeFig(12).svg,say:['質因數分解，就是把一個數拆成質數相乘。像拆積木一樣，拆到不能再拆。',{t:'12＝3×4。',a:ON('.lv1')},{t:'3是質數，不能再拆；4還可以拆：4＝2×2。',a:ON('.lv2')},'紅色圈起來的都是質數，不能再拆了！',{t:'由小到大排：12＝2×2×3。',eq:'12＝2×2×3'}]},
+ {stage:treeFig(60).svg,say:['再拆一個大一點的：60。',{t:'60＝6×10。',a:ON('.lv1')},{t:'6＝2×3，10＝2×5。',a:ON('.lv2')},{t:'由小到大排：60＝2×2×3×5。',eq:'60＝2×2×3×5'}]},
+ {stage:sdL([60],'pf'),say:['還有一個更快的方法，叫做「短除法」。'].concat(sdSay([60],'pf'))},
+ {stage:card('12 ＝ 3 × 4 ❌（4還能拆）<br>15 ＝ 1 × 3 × 5 ❌（1不是質數）'),say:['偵探要小心兩個陷阱。',{t:'12＝3×4不對，4不是質數，還可以再拆。'},{t:'15＝1×3×5也不對，1不是質數，不用寫。',eq:'每一個乘數都要是質數'}]},
+ {stage:treeFig(18).svg.replace(/class="exh /g,'class="exh on '),say:['考考你！'],q:{ask:'18的質因數分解是哪一個？',opts:['2×9','2×3×3','1×2×3×3'],ans:1,ok:'18＝2×3×3，每個都是質數！',no:'9還可以拆喔；1不用寫。'}}
+],
+6:[
+ {stage:chipsHTML('12的因數',factors(12))+chipsHTML('18的因數',factors(18)),say:['12的因數：1、2、3、4、6、12。','18的因數：1、2、3、6、9、18。',{t:'兩個數都有的：1、2、3、6，叫做「公因數」。',a:HL('.c1,.c2,.c3,.c6'),eq:'公因數：1、2、3、6'},{t:'最大的公因數是6，叫做「最大公因數」。',a:HL('.c6'),eq:'最大公因數：6'}]},
+ {stage:sdL([12,18],'g'),say:['用短除法更快！'].concat(sdSay([12,18],'g'))},
+ {stage:whyStage([12,18]),say:['為什麼短除法左邊的數要「相乘」？我們用分糖果來看！'].concat(whyItems(12,18).map(x=>({t:x.t,a:st=>applyWhy(st,x),eq:x.eq})))},
+ {stage:whyStage(null),say:useItems(24,36).map(x=>({t:x.t,a:st=>applyWhy(st,x),eq:x.eq}))},
+ {stage:`<div class="bigeq">12＝<span class="ch cm">2</span>×2×<span class="ch cm">3</span></div><div class="bigeq">18＝<span class="ch cm">2</span>×<span class="ch cm">3</span>×3</div>`,say:['也可以用質因數分解。',{t:'找兩邊「都有」的質因數：都有一個2、一個3。',a:HL('.cm')},{t:'2×3＝6，最大公因數是6。',eq:'2×3＝6'}]},
+ {stage:chipsHTML('8的因數',factors(8))+chipsHTML('15的因數',factors(15)),say:[{t:'8和15，公因數只有1。',a:HL('.c1')},{t:'最大公因數是1的兩個數，叫做「互質」。',eq:'8和15 互質'},'小心！互質不一定是質數。8和15都是合數，可是它們互質。']},
+ {stage:sdL([24,30],'g').replace(/ exh/g,''),say:['考考你！'],q:{ask:'24和30的最大公因數是多少？',opts:['3','6','12'],ans:1,ok:'左邊2×3＝6！',no:'只要把左邊的數相乘。'}}
+],
+7:[
+ {stage:timeFig(4,6,{max:24}),say:['4的倍數：4、8、12、16、20、24……','6的倍數：6、12、18、24……',{t:'兩個都有的12、24……叫做「公倍數」。',a:ON('.cl'),eq:'公倍數：12、24……'},{t:'最小的是12，叫做「最小公倍數」。',eq:'最小公倍數：12'}]},
+ {stage:sdL([4,6],'l'),say:['用短除法來找：'].concat(sdSay([4,6],'l'))},
+ {stage:sdL([30,36],'l'),say:['再來一題：30和36。'].concat(sdSay([30,36],'l')).concat(['記住：最大公因數只乘左邊；最小公倍數，左邊和下面全部乘！'])},
+ {stage:card('互質 → 兩數相乘：8和15 → <span style="color:#e03131">120</span><br>倍數關係 → 大的數：12和24 → <span style="color:#e03131">24</span>'),say:['兩個偵探小祕密：',{t:'互質的兩個數，最小公倍數就是兩數相乘：8×15＝120。',eq:'8和15 → 120'},{t:'如果大的數是小的數的倍數，最小公倍數就是大的數：12和24，答案是24。',eq:'12和24 → 24'}]},
+ {stage:timeFig(6,8),say:['考考你！'],q:{ask:'6和8的最小公倍數是多少？',opts:['14','24','48'],ans:1,ok:'6、12、18、24；8、16、24。最小是24！',no:'看倍數線，第一個兩邊都有的點。'}}
+],
+8:[
+ {stage:card('分成、剪成、裁成、平分<br>大 → 小<br><span style="color:#e03131">最大公因數</span>'),say:['偵探判斷法第一招：',{t:'題目是把大的東西「分成、剪成、裁成、平分」，答案會比原來的數小，用「最大公因數」。'}]},
+ {stage:sdL([60,48],'g').replace(/ exh/g,''),say:['60顆柳丁和48顆檸檬分裝，每盒的柳丁一樣多，檸檬也一樣多。','盒數要能平分60，也要能平分48，所以是公因數。',{t:'要最多盒，就是最大公因數：2×2×3＝12盒。',eq:'最多 12 盒'}]},
+ {stage:cutFig(36,24,12),say:['長36公分、寬24公分的紙，裁成一樣大的正方形。','正方形的邊，要能量完36，也要量完24，是公因數。',{t:'最大的正方形，邊長是最大公因數12公分。',a:ON('.sq'),eq:'邊長 12 公分，共 3×2＝6 個'}]},
+ {stage:fenceFig(30,24,6).svg,say:['長30公尺、寬24公尺的花園，四周種樹，四個角都要種，距離一樣。','距離最大，就是30和24的最大公因數6公尺。',{t:'長邊30÷6＝5段，寬邊24÷6＝4段，繞一圈(5＋4)×2＝18段。',a:ON('.tr')},{t:'圍成一圈，樹和段數一樣多，要種18棵。',eq:'18 棵'}]},
+ {stage:card('27 顆紅球、36 顆黃球'),say:['考考你！'],q:{ask:'27顆紅球和36顆黃球平分到箱子，每箱紅球一樣多、黃球也一樣多，最多幾箱？',opts:['3箱','9箱','108箱'],ans:1,ok:'27和36的最大公因數是9！',no:'找27和36的最大公因數。'}}
+],
+9:[
+ {stage:card('同時、一起、再碰面、排成、接成<br>小 → 大<br><span style="color:#1971c2">最小公倍數</span>'),say:['偵探判斷法第二招：',{t:'題目是「同時、一起、再碰面、排成一樣長、排成正方形」，答案越變越大，用「最小公倍數」。'}]},
+ {stage:timeFig(15,25,{la:'1號公車',lb:'2號公車'}),say:['1號公車每15分鐘一班，2號公車每25分鐘一班。','6點一起開出，再一起開出的時間，要是15的倍數，也是25的倍數。',{t:'最小公倍數是75，所以75分鐘後，7點15分。',a:ON('.cl'),eq:'75 分鐘後'}]},
+ {stage:tileFig(20,12,60,{anim:true}),say:['長20公分、寬12公分的長方形，排成正方形。','正方形的邊，要是20的倍數，也是12的倍數。',{t:'最短是最小公倍數60公分。',a:ON('.tl'),eq:'邊長 60 公分'},{t:'橫的60÷20＝3個，直的60÷12＝5排，共3×5＝15個。',eq:'15 個長方形'}]},
+ {stage:card('每 9 人或 12 人一組，都剩 2 人'),say:['如果有剩下的呢？每9人一組或每12人一組，都剩下2人。','先把2人請到旁邊，其他人剛好分完，是9和12的公倍數：最小36。',{t:'再把2人加回來：36＋2＝38人。',eq:'36＋2＝38'}]},
+ {stage:card('三百多人，每 10 人或 24 人一組剛好'),say:['三百多人，每10人或每24人一組都剛好。',{t:'10和24的最小公倍數是120。',eq:'120'},{t:'120、240、360、480……三百多的是360，所以有360人。',eq:'360 人'}]},
+ {stage:timeFig(6,10),say:['考考你！'],q:{ask:'甲路公車每6分鐘一班，乙路每10分鐘一班，同時開出後，下一次同時開出是幾分鐘後？',opts:['16分鐘','30分鐘','60分鐘'],ans:1,ok:'6和10的最小公倍數是30！',no:'找6和10都有的倍數，最小的那個。'}}
+]};
+
+function qKey(q){return q.stem+'|'+JSON.stringify([q.ans,q.a,q.b,q.target,q.blanks,q.hand,q.left,q.right,q.opts&&q.opts.map(o=>o.say||o.t||o)])}
+function tryMake(fn,seen){for(let t=0;t<14;t++){try{const q=fn();if(!q)continue;const k=qKey(q);if(seen&&seen.has(k))continue;seen&&seen.add(k);if(!q.fig){const cf=caseFig(q);if(cf)q.fig=cf}return q}catch(e){(window.__qerr=window.__qerr||[]).push(String(e&&e.stack||e))}}return null}
+function buildQs(lv,n,seen){n=n||S.count;seen=seen||new Set();const a=Math.round(n/3),b=Math.round(n/3),cnt=[a,b,Math.max(1,n-a-b)],out=[];
+  [1,2,3].forEach((t,ti)=>{const pool=shuffle(lv.mk.filter(x=>x[0]===t).map(x=>x[1]));for(let i=0;i<cnt[ti];i++){const q=tryMake(pool[i%pool.length],seen);if(q){q.lvlTier=t;out.push(q)}}});return out}
+function buildBoss(n,seen){n=n||8;seen=seen||new Set();const ls=shuffle(LV.slice()).slice(0,n),out=[];ls.forEach(l=>{const pool=l.mk.filter(x=>x[0]>=2).map(x=>x[1]);const q=tryMake(pick(pool),seen);if(q){q.lvlTier=3;q.fromLv=l.id;out.push(q)}});return out}
+/* ================= 遊戲流程 ================= */
+const SC={};['cover','home','level','class','result'].forEach(id=>SC[id]=$('#'+id));
+let CURSCR='cover',RUN=null,RUNTOK=0;
+const SEEN=new Set();
+const BOSS={id:10,ic:'🦹',name:'追捕怪盜X',sub:'每層出一題難題'};
+const ALLLV=LV.concat([BOSS]);
+
+function go(id){
+  typeof lessonStop==='function'&&lessonStop();
+  Object.values(SC).forEach(s=>s.classList.remove('on'));
+  SC[id].classList.add('on');CURSCR=id;closeOv();
+  if(id==='home')renderHome();
+}
+function showOv(id){closeOv();$('#'+id).classList.add('on')}
+function closeOv(){$$('.ov').forEach(o=>o.classList.remove('on'))}
+function syncVoice(){$$('.vbtn').forEach(b=>b.textContent=S.voice?'🔊 聲音：開':'🔇 聲音：關')}
+function toggleVoice(){
+  S.voice=!S.voice;syncVoice();
+  if(!S.voice)TTS.stop();else speakSeq(['聲音開了']);
+}
+// 不重複的稱讚
+const USED={};
+function fresh(key,list){
+  const u=USED[key]=USED[key]||[];
+  let c=list.filter(x=>!u.includes(x));if(!c.length){USED[key]=[];c=list}
+  const v=pick(c);USED[key].push(v);return v;
+}
+const PRAISE3=['案件完美破解，滿分！','你是最厲害的小偵探！','福爾摩數老師都在幫你拍手！','再難的數字也逃不過你的眼睛！','叮！又拿到一個偵探道具！'];
+const PRAISE2=['破案了，再玩一次會更熟。','很不錯，又拿到一個偵探道具！','做得很好，再練習一下會更棒。'];
+const PRAISE1=['破案了！慢慢來，下次會更快。','道具拿到了，再玩一次會更熟喔。','有些題目很辛苦，再玩一次試試看。'];
+function fireworks(){
+  SFX.fire();confetti(46,['🎆','🎇','✨','⭐','🎉']);
+  later(()=>{SFX.clap();confetti(40,['🎊','🔍','⭐','✨','🏅'])},900);
+  later(()=>{SFX.fire();confetti(30,['🎆','✨','🎇'])},1900);
+}
+const starsTxt=n=>'⭐'.repeat(n)+'☆'.repeat(3-n);
+
+/* ---------- 封面 ---------- */
+function initCover(){
+  SC.cover.onclick=e=>{
+    if(e.target.closest('.vbtn'))return;
+    ac();S.started=true;go('home');
+    speakSeq(['歡迎來到數字偵探社！','偵探社大樓有九個案件，每破解一個，就得到一個偵探道具。點一下，就可以開始。']);
+  };
+}
+
+/* ---------- 首頁：積木大樓 ---------- */
+function nextFloor(){
+  for(let i=1;i<=9;i++)if(!S.done[i])return i;
+  return S.done[10]?0:10;
+}
+function renderHome(){
+  const nx=nextFloor(),all=S.done[10];
+  let h='';
+  for(let id=10;id>=1;id--){
+    const lv=ALLLV[id-1],done=!!S.done[id],isNext=id===nx,locked=!S.unlockAll&&!done&&!isNext&&nx!==0&&id>nx;
+    const st=done?starsTxt(S.stars[id]||1):locked?'🔒':'▶';
+    h+=`<button class="floor ${done?'done':''} ${isNext?'next':''} ${id===10?'boss':''} ${locked?'lock':''}" data-id="${id}"><span class="no">${id===10?'頂':id}</span><span class="ic">${lv.ic}</span><span class="nm">${lv.name}<small>${lv.sub}</small></span>${done&&id<10?`<span class="tp">${PRIZES[id]}</span>`:''}<span class="st">${st}</span></button>`;
+  }
+  $('#tower').innerHTML=h;
+  $('#roof').innerHTML=`<div class="pzroof">${[1,2,3,4,5,6,7,8,9].map(i=>`<i class="${S.done[i]?'':'no'}">${PRIZES[i]}</i>`).join('')}${all?'<b>🏅 名偵探</b>':''}</div>`;
+  const n=[1,2,3,4,5,6,7,8,9].filter(i=>S.done[i]).length;
+  $('#homeSub').textContent=all?'你是名偵探了！':n?`已經破解 ${n} 個案件`:'一層一層破解數字案件';
+  $$('#tower .floor').forEach(b=>b.onclick=()=>{
+    if(!guard(350))return;const id=+b.dataset.id;
+    if(b.classList.contains('lock')){SFX.bad();toast('先完成下面的樓層喔');speakSeq(['先完成下面的樓層喔']);return}
+    startFloor(id);
+  });
+}
+
+/* ---------- 共用：開始一組題 ---------- */
+function setHud(h){$('#hud').innerHTML=h||''}
+function mkQs(lv){
+  let qs=buildQs(lv,S.count,SEEN);
+  if(qs.length<S.count){SEEN.clear();qs=buildQs(lv,S.count,SEEN)}
+  return qs;
+}
+function mkBoss(){
+  let qs=buildBoss(8,SEEN);
+  if(qs.length<8){SEEN.clear();qs=buildBoss(8,SEEN)}
+  return qs;
+}
+function introCard(ic,title,sub,then,say){
+  const tok=RUNTOK,host=$('#qwrap');
+  host.classList.remove('land');
+  host.innerHTML=`<div class="card intro"><div class="bigic">${ic}</div><div class="ttl">${title}</div><div class="sub">${sub||''}</div></div>`;
+  $('#prog').innerHTML='';
+  let fired=false;
+  const start=()=>{if(fired||tok!==RUNTOK)return;fired=true;RUN&&(RUN.resume=null);then()};
+  RUN.resume=()=>{fired=false;introCard(ic,title,sub,then,say)};
+  speakSeq([say||title],()=>later(start,300));later(function fb(){if(tok!==RUNTOK)return;if(SP.paused||CLK.paused){later(fb,1000);return}start()},TTS.est(spoken(say||title))*1.8+3000);
+}
+function levelScreen(){/*FIXLV*/QM.gen++;QM.ctx=null;QM.pendingAdv=null;clearLater();
+  $('#teams').classList.add('hide');$('#teams').innerHTML='';$('#qwrap').classList.remove('tight');
+  setHud('');go('level');
+}
+
+/* ---------- 闖關 ---------- */
+function startFloor(id){
+  if(id===10)return startBoss();
+  const lv=LV[id-1];RUNTOK++;RUN={kind:'level',lv,bricks:0,combo:0};
+  levelScreen();setHud('🔍 0');
+  const tok=RUNTOK;
+  const lesson=()=>{if(tok!==RUNTOK)return;QM.gen++;QM.ctx=null;QM.pendingAdv=null;clearLater();$('#prog').innerHTML='';setNextBtn(false);
+    RUN.les=lessonRun($('#qwrap'),LESSONS[lv.id],{onDone:()=>{if(tok!==RUNTOK)return;S.lesSeen[lv.id]=1;RUN.les=null;RUN.resume=null;startQs(lv)}});
+    RUN.resume=()=>{RUN.les&&RUN.les.replay()}};
+  if(!S.lesSeen[lv.id]){introCard(lv.ic,`第${lv.id}層　${lv.name}`,lv.story,lesson,`第${lv.id}層，${lv.name}。${lv.story}福爾摩數老師先來上課！`);return}
+  introChoice(lv,lesson,()=>startQs(lv));
+}
+function introChoice(lv,lesson,play){
+  const tok=RUNTOK,host=$('#qwrap');host.classList.remove('land');$('#prog').innerHTML='';
+  host.innerHTML=`<div class="card intro"><div class="bigic">${lv.ic}</div><div class="ttl">第${lv.id}層　${lv.name}</div><div class="sub">${lv.story}</div><div class="btns2"><button class="btn b" id="icLes">🕵️ 再聽一次上課</button><button class="btn g big" id="icGo">開始破案</button></div></div>`;
+  let fired=false;const f=fn=>{if(fired||tok!==RUNTOK)return;fired=true;TTS.stop();RUN.resume=null;fn()};
+  $('#icLes').onclick=()=>{if(guard(300))f(lesson)};$('#icGo').onclick=()=>{if(guard(300))f(play)};
+  RUN.resume=()=>{fired=false;introChoice(lv,lesson,play)};
+  speakSeq([`第${lv.id}層，${lv.name}。要再聽一次老師上課，還是直接開始破案？`]);
+}
+function startLesson(done){
+  const tok=RUNTOK;
+  lessonStart($('#qwrap'),{onDone:()=>{if(tok!==RUNTOK)return;lessonStop();RUN&&(RUN.resume=null);done()}});
+  $('#prog').innerHTML='';
+}
+function startQs(lv){
+  {
+    const qs=mkQs(lv);
+    qmStart(qs,{host:$('#qwrap'),prog:$('#prog'),maxTries:2,
+      onAnswer:(first)=>{if(first){RUN.bricks++;RUN.combo++;if(RUN.combo>=3){later(()=>{toast(`🔥 連續答對 ${RUN.combo} 題！`);SFX.clap()},400)}}else RUN.combo=0;setHud(`<span class="bump">🔍 ${RUN.bricks}</span>`+(RUN.combo>=2?`<span class="combo">🔥${RUN.combo}</span>`:''))},
+      onEnd:res=>endFloor(lv,res)});
+  }
+}
+function calcStars(res){
+  const n=res.length,c=res.filter(Boolean).length;
+  return c>=n-1?3:c>=Math.ceil(n/2)?2:1;
+}
+function endFloor(lv,res){
+  const stars=calcStars(res);
+  S.done[lv.id]=true;S.stars[lv.id]=Math.max(S.stars[lv.id]||0,stars);
+  SFX.floor();confetti(30,['⭐','🔍',PRIZES[lv.id],'✨']);
+  const praise=fresh('floor'+stars,stars===3?PRAISE3:stars===2?PRAISE2:PRAISE1);
+  const next=lv.id<9?lv.id+1:10;
+  showResult({emoji:lv.ic,title:`第${lv.id}個案件破解了！`,sub:praise,stars,extra:`<div class="prize">得到偵探道具：${PRIZEN[lv.id]}<span>${PRIZES[lv.id]}</span></div>`,
+    say:`第${lv.id}個案件破解了！${praise}得到偵探道具：${PRIZEN[lv.id]}。`,
+    btns:[{t:next===10?'追捕怪盜X':'下一個案件',cls:'g big',fn:()=>startFloor(next)},{t:'再玩一次',cls:'y',fn:()=>startFloor(lv.id)},{t:'回首頁',cls:'',fn:()=>go('home')}]});
+}
+
+/* ---------- 魔王關 ---------- */
+function bossHud(hp,max){return '<span class="hp">'+Array.from({length:max},(_,i)=>i<hp?'❤️':'🖤').join('')+'</span>'}
+function startBoss(){
+  RUNTOK++;RUN={kind:'boss',hp:8,max:8,hit:0};
+  levelScreen();setHud(bossHud(8,8));
+  introCard('🦹','追捕怪盜X！','每答對一題，就離怪盜更近一步',()=>{
+    const qs=mkBoss();RUN.max=qs.length;RUN.hp=qs.length;setHud(bossHud(RUN.hp,RUN.max));
+    qmStart(qs,{host:$('#qwrap'),prog:$('#prog'),maxTries:2,
+      onAnswer:(first,q,rev)=>{
+        if(!rev){RUN.hp--;RUN.hit++;setHud(bossHud(RUN.hp,RUN.max));SFX.fire();toast(fresh('hit',['找到一條線索！','怪盜慌了！','越來越近了！','追上去！']))}
+        else{toast('線索跑掉了')}
+      },
+      onEnd:res=>endBoss(res)});
+  },'頂樓到了！怪盜X偷走了數字寶石！每答對一題，就離怪盜更近一步，把他抓起來！');
+}
+function endBoss(res){
+  const need=Math.ceil(RUN.max*.6),won=RUN.hit>=need;
+  if(won){
+    S.done[10]=true;S.stars[10]=Math.max(S.stars[10]||0,RUN.hit>=RUN.max-1?3:RUN.hit>=Math.ceil(RUN.max*.8)?2:1);
+    fireworks();
+    showResult({emoji:'🚔',title:'抓到怪盜X了！',sub:'數字寶石找回來了！你是數字偵探社的名偵探！',stars:S.stars[10],extra:'<div class="prize">名偵探徽章<span>🏅</span></div>',
+      say:'抓到怪盜X了！數字寶石找回來了！你是數字偵探社的名偵探！',btns:[{t:'再挑戰一次',cls:'y',fn:()=>startBoss()},{t:'回首頁',cls:'g big',fn:()=>go('home')}]});
+  }else{
+    SFX.swap();
+    showResult({emoji:'🦹',title:'怪盜X逃走了…',sub:`找到 ${RUN.hit} 條線索，再多一點，就能抓到他！`,stars:0,
+      say:'怪盜X逃走了。再試一次，一定抓得到！',btns:[{t:'再挑戰一次',cls:'g big',fn:()=>startBoss()},{t:'回首頁',cls:'',fn:()=>go('home')}]});
+  }
+}
+
+/* ---------- 每天一題 ---------- */
+function dailyIsDone(){return !!S.dailyMem||dailyDone()}
+function dailyQuestion(){
+  return withSeed(dayKey(),()=>{
+    const lv=pick(LV.slice(2)),pool=lv.mk.filter(x=>x[0]===3).map(x=>x[1]);
+    let q=null;for(let t=0;t<6&&!q;t++)q=tryMake(pick(pool),null);
+    if(!q)q=tryMake(LV[2].mk[3][1],null);
+    q.lvName=lv.name;return q;
+  });
+}
+function startDaily(){
+  const dt=new Date(),ds=`${dt.getMonth()+1}月${dt.getDate()}日`;
+  RUNTOK++;RUN={kind:'daily'};
+  levelScreen();
+  const play=()=>{
+    const q=dailyQuestion();
+    introCard('📅',`今日挑戰　${ds}`,`今天的難題：${q.lvName}`,()=>{
+      qmStart([q],{host:$('#qwrap'),prog:$('#prog'),maxTries:2,onEnd:res=>endDaily(res[0],ds)});
+    },`今日挑戰，${dt.getMonth()+1}月${dt.getDate()}日。每天只有一題，來試試看。`);
+  };
+  if(dailyIsDone()){
+    showResult({emoji:'📅',title:'今天的挑戰完成囉！',sub:'明天會有新的題目，再來試試看。',stars:0,say:'今天的挑戰已經完成囉！明天會有新的題目。',
+      btns:[{t:'再玩一次',cls:'y',fn:()=>{levelScreen();play()}},{t:'回首頁',cls:'g big',fn:()=>go('home')}]});
+  }else play();
+}
+function endDaily(first,ds){
+  S.dailyMem=true;setDailyDone();
+  const good=!!first;
+  if(good)fireworks();else{SFX.floor();confetti(24)}
+  const sub=good?fresh('daily',['一次就答對，今天的挑戰成功！','好厲害，今天的難題被你解開了！','今天的挑戰，漂亮完成！']):'今天的挑戰完成了！明天再來，會更熟。';
+  showResult({emoji:good?'🏅':'📅',title:`${ds}　挑戰完成`,sub,stars:good?3:1,
+    say:'今天的挑戰完成了！'+sub,btns:[{t:'回首頁',cls:'g big',fn:()=>go('home')}]});
+}
+
+/* ---------- 結果畫面 ---------- */
+function showResult(o){
+  const tok=++RUNTOK;
+  const pile=o.pile?`<div class="pile">${Array.from({length:o.pile},(_,i)=>`<i style="animation-delay:${i*.12}s;background:${['#ffd54f','#ff8a80','#82b1ff','#a5d6a7','#ffcc80'][i%5]}"></i>`).join('')}</div>`:'';
+  $('#rbody').innerHTML=`<div class="bigic ${o.stars?'':'sad'}">${o.emoji}</div><div class="ttl">${o.title}</div>${o.stars?`<div class="rstars">${[0,1,2].map(i=>`<span class="${i<o.stars?'on':''}" style="animation-delay:${.2+i*.25}s">★</span>`).join('')}</div>`:''}<div class="rsub">${o.sub||''}</div>${pile}${o.extra||''}`;
+  const b=$('#rbtns');b.innerHTML='';
+  o.btns.forEach(x=>{const e=document.createElement('button');e.className='btn '+x.cls;e.textContent=x.t;e.onclick=()=>{if(!guard(400))return;TTS.stop();x.fn()};b.appendChild(e)});
+  go('result');
+  if(o.say)later(()=>{if(tok===RUNTOK)speakSeq([o.say])},700);
+}
+
+/* ---------- 小組競賽 ---------- */
+const TEAMS=[{n:'紅隊',c:'#ffb3b3',e:'🔴'},{n:'藍隊',c:'#a9d3ff',e:'🔵'},{n:'綠隊',c:'#b4ecbc',e:'🟢'},{n:'黃隊',c:'#ffe58a',e:'🟡'}];
+const GCFG={teams:2,rounds:3,range:'all'};
+function openGroupSetup(){
+  const seg=(key,items)=>`<div class="seg" data-k="${key}">${items.map(([v,t])=>`<button class="btn ${GCFG[key]===v?'sel':''}" data-v="${v}">${t}</button>`).join('')}</div>`;
+  $('#gsetBody').innerHTML=`<h2>👥 小組競賽</h2><div class="sub" style="text-align:center">輪流答題，一次定勝負。答對的隊伍，得到一條線索。</div>
+   <div class="row"><span>幾隊？</span></div>${seg('teams',[[2,'2隊'],[3,'3隊'],[4,'4隊']])}
+   <div class="row"><span>每隊幾題？</span></div>${seg('rounds',[[3,'3題'],[4,'4題'],[5,'5題']])}
+   <div class="row"><span>題目範圍</span></div>${seg('range',[['basic','基礎'],['mid','中級'],['high','進階'],['all','全部']])}
+   <div class="seg"><button class="btn g big" id="gGo">開始比賽</button></div><div class="seg"><button class="btn" id="gBack">回首頁</button></div>`;
+  $$('#gsetBody .seg[data-k] .btn').forEach(b=>b.onclick=()=>{
+    const k=b.parentNode.dataset.k;let v=b.dataset.v;if(k!=='range')v=+v;GCFG[k]=v;SFX.tap();
+    $$('.btn',b.parentNode).forEach(x=>x.classList.toggle('sel',x===b));
+  });
+  $('#gGo').onclick=()=>{if(!guard(400))return;closeOv();startGroup()};
+  $('#gBack').onclick=()=>{closeOv()};
+  showOv('ovGroup');
+}
+function mkGroupQs(total){
+  const rg={basic:[0,1,2],mid:[3,4,5],high:[6,7,8],all:[0,1,2,3,4,5,6,7,8]}[GCFG.range];
+  const tiers=GCFG.range==='basic'?[1,2]:[2,3],out=[];
+  let last=-1;
+  for(let i=0;i<total;i++){
+    let qi=null;
+    for(let t=0;t<10&&!qi;t++){
+      let li;do{li=pick(rg)}while(li===last&&rg.length>1);
+      const lv=LV[li],tier=pick(tiers),pool=lv.mk.filter(x=>x[0]===tier).map(x=>x[1]);
+      const q=tryMake(pick(pool),SEEN);if(q&&!q.noGroup){qi=q;last=li}
+    }
+    if(qi)out.push(qi);
+  }
+  return out;
+}
+function teamStrip(sc,cur){
+  const n=GCFG.teams;
+  const el=$('#teams');el.classList.remove('hide');
+  el.style.gridTemplateColumns=`repeat(${n},1fr)`;el.classList.toggle('compact',n>=3);
+  el.innerHTML=Array.from({length:n},(_,i)=>`<div class="team ${i===cur?'cur':''}" style="background:${TEAMS[i].c}"><span>${TEAMS[i].e}</span><b>${sc[i]}</b><div class="tw">${'<i></i>'.repeat(Math.min(sc[i],24))}</div></div>`).join('');
+}
+function startGroup(){
+  const n=GCFG.teams,total=n*GCFG.rounds;
+  RUNTOK++;RUN={kind:'group',score:Array(n).fill(0)};
+  go('level');setHud('');$('#qwrap').classList.add('tight');
+  const qs=mkGroupQs(total);
+  qs.forEach((q,i)=>{const nm=TEAMS[i%n].n;q.say=`輪到${nm}。`+(q.say||q.stem)});
+  teamStrip(RUN.score,0);
+  introCard('👥','小組競賽',`${n}隊，每隊${GCFG.rounds}題`,()=>{
+    qmStart(qs,{host:$('#qwrap'),prog:$('#prog'),maxTries:1,
+      onShow:i=>{teamStrip(RUN.score,i%n);toast(`輪到 ${TEAMS[i%n].e}${TEAMS[i%n].n}`)},
+      onAnswer:(first)=>{
+        const t=QM.idx%n;
+        if(first){RUN.score[t]++;teamStrip(RUN.score,t);SFX.place()}
+      },
+      onEnd:()=>endGroup()});
+  },`小組競賽開始！一共${n}隊，輪流答題，只有一次機會。`);
+}
+function endGroup(){
+  const sc=RUN.score,mx=Math.max(...sc),win=sc.map((s,i)=>s===mx?i:-1).filter(i=>i>=0);
+  fireworks();
+  const names=win.map(i=>TEAMS[i].n).join('和');
+  const title=win.length===sc.length?'每一隊都一樣棒！':`${win.map(i=>TEAMS[i].e).join('')} ${names}　找到最多線索！`;
+  const extra=`<div class="teams" style="grid-template-columns:repeat(${sc.length===4?2:sc.length},1fr);width:100%">${sc.map((s,i)=>`<div class="team ${win.includes(i)?'cur':''}" style="background:${TEAMS[i].c}"><span>${TEAMS[i].e}</span><b>${s}</b><div class="tw">${'<i></i>'.repeat(Math.min(s,24))}</div></div>`).join('')}</div>`;
+  showResult({emoji:'🏆',title,sub:win.length===sc.length?'大家都很厲害，一樣多！':'大家都是好偵探，一起拍拍手！',stars:0,extra,
+    say:(win.length===sc.length?'每一隊都一樣棒！':`${names}，找到最多線索！`)+'大家都很棒，一起拍拍手！',
+    btns:[{t:'再比一次',cls:'y',fn:()=>openGroupSetup()},{t:'回首頁',cls:'g big',fn:()=>go('home')}]});
+}
+
+/* ================= 偵探教室 ================= */
+const CLS={scene:0,n:12,a:24,b:36,sv:new Set()};
+function lessonStop(){TTS.mult=1;LES.tok++}
+function openClass(){go('class');CLS.scene=0;renderClass();speakSeq(['歡迎來到偵探教室！上面有四個按鈕：因數長方形、質數篩子、短除法機器，還有重聽上課。'])}
+function renderClass(){
+  $$('#clsTabs .btn').forEach((b,i)=>b.classList.toggle('sel',i===CLS.scene));
+  const st=$('#clsStage');st.classList.remove('lesmode');TTS.stop();LES.tok++;
+  [clsArr,clsSieve,clsSD,clsLes][CLS.scene](st);
+}
+/* ---- 因數長方形 ---- */
+function clsArr(st,say){
+  const n=CLS.n,ps=pairsOf(n),fs=factors(n),kind=n===1?'不是質數，也不是合數':fs.length===2?'質數 ⭐（只能排一排）':'合數（可以排成好幾種長方形）';
+  st.innerHTML=`<div class="cl-a"><div class="say">按＋、－改變糖果的數量，看看可以排成幾種長方形。</div><div class="bignum">${n} 顆</div><div class="read">${kind}</div>
+   <div class="chips"><b>因數</b>${fs.map(v=>`<span class="ch">${v}</span>`).join('')}</div>
+   <div class="cbtns"><button class="btn r" id="caM">－ 1</button><button class="btn g" id="caP">＋ 1</button><button class="btn" id="caSay">讀給我聽</button></div></div>
+   <div class="cl-b"><div class="clsfig" style="flex-wrap:wrap;gap:.3em;align-content:center;overflow:auto">${ps.map(([a,b])=>`<div style="width:${ps.length>3?'46%':ps.length>1?'46%':'90%'};text-align:center;font-weight:900">${arrFig(a,b,{W:160,H:Math.max(50,Math.min(120,a*24+30)),lbl:`${a} × ${b}`})}</div>`).join('')}</div></div>`;
+  const t=n===1?'1的因數只有1，不是質數，也不是合數。':`${n}顆糖果，可以排成${ps.length}種長方形：${ps.map(p=>p.join('乘')).join('、')}。${n}的因數有${fs.join('、')}，是${fs.length===2?'質數':'合數'}。`;
+  $('#caM').onclick=()=>{if(!guard(200))return;if(CLS.n<=1){SFX.bad();return}CLS.n--;SFX.tap();clsArr(st,1)};
+  $('#caP').onclick=()=>{if(!guard(200))return;if(CLS.n>=48){SFX.bad();speakSeq(['最多48顆喔。']);return}CLS.n++;SFX.tap();clsArr(st,1)};
+  $('#caSay').onclick=()=>{if(guard(300))speakSeq([t])};
+  speakSeq([say?t:'按加、減，改變糖果的數量，看看可以排成幾種長方形。只能排一排的，就是質數。']);
+}
+/* ---- 質數篩子 ---- */
+function clsSieve(st){
+  st.innerHTML=`<div class="cl-a"><div class="say" id="svSay">用篩子把倍數劃掉，留下來的就是質數！</div>
+   <div class="cbtns">${[2,3,5,7].map(p=>`<button class="btn ${CLS.sv.has(p)?'g':'y'}" data-p="${p}">劃掉${p}的倍數</button>`).join('')}</div>
+   <div class="cbtns"><button class="btn b" id="svShow">顯示質數</button><button class="btn" id="svClr">重來</button></div></div>
+   <div class="cl-b"><div class="clsfig" style="padding:.3em">${ngridHTML(100)}</div></div>`;
+  const g=st.querySelector('.ngrid');g.querySelector('.g1').classList.add('one');
+  CLS.sv.forEach(p=>sieve(st,p));
+  st.querySelectorAll('[data-p]').forEach(b=>b.onclick=()=>{if(!guard(300))return;const p=+b.dataset.p;CLS.sv.add(p);sieve(st,p);b.className='btn g';SFX.swap();speakSeq([`${p}是質數，留下來。${p}的倍數都有因數${p}，是合數，劃掉！`])});
+  $('#svShow').onclick=()=>{if(!guard(300))return;[2,3,5,7].forEach(p=>{CLS.sv.add(p);sieve(st,p)});sieveEnd(st);st.querySelectorAll('[data-p]').forEach(b=>b.className='btn g');SFX.fanfare();confetti(14,['⭐','🔍','✨']);speakSeq(['100以內，一共有25個質數，就是黃色的這些！'])};
+  $('#svClr').onclick=()=>{CLS.sv.clear();SFX.tap();clsSieve(st)};
+  g.querySelectorAll('span').forEach(s=>s.onclick=()=>{if(!guard(200))return;const v=+s.dataset.v;g.querySelectorAll('.hl').forEach(x=>x.classList.remove('hl'));s.classList.add('hl');
+    const t=v===1?'1只有一個因數，不是質數也不是合數。':isPrime(v)?`${v}只有1和${v}兩個因數，是質數。`:`${v}＝${X(pfac(v))}，是合數。`;$('#svSay').textContent=t;speakSeq([t])});
+  speakSeq(['按劃掉2的倍數、3的倍數、5的倍數、7的倍數，留下來的就是質數。點一個數字，可以聽它的祕密。']);
+}
+/* ---- 短除法機器 ---- */
+function clsSD(st){
+  const {a,b}=CLS;
+  const ctl=(k,v)=>`<div class="srow"><button class="btn r" data-k="${k}" data-d="-1">－</button><span style="background:#d0ebff;min-width:3.5em">${v}</span><button class="btn g" data-k="${k}" data-d="1">＋</button><button class="btn" data-k="${k}" data-d="r">🎲</button></div>`;
+  st.innerHTML=`<div class="cl-a"><div class="say" id="sdSay">選兩個數，再按下面的按鈕，看短除法一步一步算。</div><div class="stw">${ctl('a',a)}${ctl('b',b)}</div>
+   <div class="cbtns"><button class="btn y" id="sdG">最大公因數</button><button class="btn b" id="sdL">最小公倍數</button></div>
+   <div class="cbtns"><button class="btn" id="sdPa">分解 ${a}</button><button class="btn" id="sdPb">分解 ${b}</button></div>
+   <div class="cbtns"><button class="btn g" id="sdWhy">🤔 為什麼要相乘？</button><button class="btn y" id="sdUse">💡 最大公因數有什麼用？</button></div></div>
+   <div class="cl-b"><div class="clsfig" id="sdFig" style="flex-direction:column"></div><div class="read" id="sdRes"></div></div>`;
+  st.querySelectorAll('[data-k]').forEach(x=>x.onclick=()=>{if(!guard(150))return;const k=x.dataset.k;let v=x.dataset.d==='r'?rnd(4,99):CLS[k]+ +x.dataset.d;if(v<2||v>150){SFX.bad();return}CLS[k]=v;SFX.tap();clsSD(st)});
+  const run=(nums,mode)=>{if(!guard(400))return;const pl=sdPlan(nums,mode),f=$('#sdFig');f.innerHTML=sdHTML(nums,pl);$('#sdRes').textContent='';
+    const S=sdSteps(nums,pl,mode);speakSeq(S.map(s=>({t:s.t,on:()=>{if(CURSCR!=='class')return;exApply(f,s);$('#sdSay').textContent=s.t;if(s.eq)$('#sdRes').textContent=s.eq}})))};
+  $('#sdG').onclick=()=>run([a,b],'g');$('#sdL').onclick=()=>run([a,b],'l');
+  $('#sdPa').onclick=()=>run([a],'pf');
+  const story=(items,nums)=>{if(!guard(400))return;const f=$('#sdFig');f.innerHTML=whyStage(nums);$('#sdRes').textContent='';
+    speakSeq(items.map(s=>({t:s.t,on:()=>{if(CURSCR!=='class')return;applyWhy(f,s);$('#sdSay').textContent=s.t;if(s.eq)$('#sdRes').innerHTML=txtHtml(s.eq)}})))};
+  $('#sdWhy').onclick=()=>story(whyItems(a,b),[a,b]);
+  $('#sdUse').onclick=()=>{if(gcd(a,b)<2){SFX.bad();speakSeq([`${a}和${b}互質，最大公因數是1。換兩個有共同因數的數，例如24和36，再試試看。`]);return}story(useItems(a,b),null)};$('#sdPb').onclick=()=>run([b],'pf');
+  speakSeq(['選兩個數，再按最大公因數或最小公倍數，看短除法一步一步算。']);
+}
+/* ---- 重聽上課 ---- */
+function clsLes(st){
+  st.classList.remove('lesmode');
+  st.innerHTML=`<div class="say" style="grid-column:1/-1">想再聽哪一層的上課？點一下。</div><div class="lesgrid" style="grid-column:1/-1">${LV.map(l=>`<button class="btn" data-id="${l.id}"><span>${l.ic}</span>第${l.id}層<br>${l.name}</button>`).join('')}</div>`;
+  st.querySelectorAll('[data-id]').forEach(b=>b.onclick=()=>{if(!guard(350))return;const id=+b.dataset.id;st.classList.add('lesmode');
+    lessonRun(st,LESSONS[id],{last:'上完了！',onDone:()=>{SFX.ok();confetti(16);speakSeq(['上完了！你真認真！']);clsLes(st)}})});
+  speakSeq(['想再聽哪一層的上課？點一下。']);
+}
+
+/* ---------- 設定 / 暫停 ---------- */
+const RATES=[[0.6,'唸慢'],[0.72,'普通'],[0.9,'唸快']];
+function speedSeg(){return `<div class="seg" id="spSeg">${RATES.map(([v,t])=>`<button class="btn ${Math.abs(S.rate-v)<.01?'sel':''}" data-v="${v}">${t}</button>`).join('')}</div>`}
+function bindSpeed(){
+  $$('#spSeg .btn').forEach(b=>b.onclick=()=>{S.rate=+b.dataset.v;$$('#spSeg .btn').forEach(x=>x.classList.toggle('sel',x===b));speakSeq(['這個速度，聽得清楚嗎？'])});
+}
+function openSettings(){
+  $('#setBody').innerHTML=`<h2>⚙ 設定</h2>
+   <div class="row"><span>聲音</span><button class="btn vbtn"></button></div>
+   <div class="row"><span>唸題速度</span></div>${speedSeg()}
+   <div class="row"><span>每一關幾題？</span></div>
+   <div class="seg" id="cntSeg">${[4,6,8].map(n=>`<button class="btn ${S.count===n?'sel':''}" data-v="${n}">${n}題</button>`).join('')}</div>
+   <div class="row"><span>關卡鎖（老師用）</span></div>
+   <div class="seg" id="lockSeg"><button class="btn ${!S.unlockAll?'sel':''}" data-v="0">一關一關</button><button class="btn ${S.unlockAll?'sel':''}" data-v="1">全部打開</button></div>
+   <button class="btn g big" id="setOk">好了</button>`;
+  syncVoice();bindSpeed();
+  $$('#setBody .vbtn').forEach(b=>b.onclick=toggleVoice);
+  $$('#cntSeg .btn').forEach(b=>b.onclick=()=>{S.count=+b.dataset.v;$$('#cntSeg .btn').forEach(x=>x.classList.toggle('sel',x===b));SFX.tap()});
+  $$('#lockSeg .btn').forEach(b=>b.onclick=()=>{S.unlockAll=b.dataset.v==='1';$$('#lockSeg .btn').forEach(x=>x.classList.toggle('sel',x===b));SFX.tap()});
+  $('#setOk').onclick=()=>{closeOv();renderHome()};
+  showOv('ovSet');
+}
+function pauseGame(){
+  if(CLK.paused)return;
+  setPaused(true);
+  $('#pauseBody').innerHTML=`<h2>⏸ 暫停中</h2><div class="row"><span>聲音</span><button class="btn vbtn"></button></div><div class="row"><span>唸題速度</span></div>${speedSeg()}<button class="btn g big" id="pgOn">繼續玩</button>`;
+  syncVoice();bindSpeed();
+  $$('#pauseBody .vbtn').forEach(b=>b.onclick=toggleVoice);
+  $('#pgOn').onclick=resumeGame;
+  showOv('ovPause');
+}
+function resumeGame(){
+  closeOv();setPaused(false);
+  RUN&&RUN.resume&&RUN.resume();
+  qmResume();
+}
+function askExit(){
+  if(CLK.paused)return;
+  setPaused(true);
+  $('#exitBody').innerHTML=`<h2>要回首頁嗎？</h2><div class="sub" style="text-align:center">這個案件還沒破解喔。</div><button class="btn g big" id="exStay">繼續玩</button><button class="btn r" id="exGo">回首頁</button>`;
+  $('#exStay').onclick=resumeGame;
+  $('#exGo').onclick=()=>{closeOv();setPaused(false);RUNTOK++;clearLater();TTS.stop();QM.gen++;go('home')};
+  showOv('ovExit');
+}
+
+/* ---------- 初始化 ---------- */
+function init(){
+  initCover();
+  $$('.vbtn').forEach(b=>b.onclick=e=>{e.stopPropagation();toggleVoice()});syncVoice();
+  $('#dkClass').onclick=()=>{if(guard(350))openClass()};
+  $('#dkGroup').onclick=()=>{if(guard(350))openGroupSetup()};
+  $('#dkDaily').onclick=()=>{if(guard(350))startDaily()};
+  $('#dkSet').onclick=()=>{if(guard(350))openSettings()};
+  $('#lvHome').onclick=()=>{if(guard(300))askExit()};
+  $('#lvPause').onclick=()=>{if(guard(300))pauseGame()};
+  $('#lvListen').onclick=()=>{if(!guard(300)||CLK.paused)return;if(RUN&&RUN.les&&CURSCR==='level'){RUN.les.replay();return}if(!qmSkip())qmReplay()};
+  $('#clsHome').onclick=()=>{TTS.stop();go('home')};
+  $$('#clsTabs .btn').forEach((b,i)=>b.onclick=()=>{CLS.scene=i;TTS.stop();SFX.tap();renderClass()});
+  document.addEventListener('visibilitychange',()=>{if(document.hidden){if(CURSCR==='level'&&!CLK.paused)pauseGame();else TTS.stop()}});
+  window.__M31={S,go,startFloor,startBoss,startDaily,startGroup,GCFG,QM,LV,buildQs,buildBoss,CLK,RUN:()=>RUN,openClass,openSettings};
+  go('cover');
+}
+init();
+/* ================= 點數、角色、獎勵商店（三個數學遊戲共用同一份點數） ================= */
+const PT={key:'math3-points-v1',d:{pts:0,ch:null,name:'',own:[],wear:null},round:0,combo:0,asked:false};
+try{const s=_store&&_store.getItem(PT.key);if(s)Object.assign(PT.d,JSON.parse(s))}catch(e){}
+function ptSave(){try{_store&&_store.setItem(PT.key,JSON.stringify(PT.d))}catch(e){}}
+const PT_CHARS=[['🐶','小狗'],['🐱','小貓'],['🐰','小兔子'],['🐼','熊貓'],['🦊','狐狸'],['🐸','青蛙'],['🐯','小老虎'],['🐧','企鵝'],['🦄','獨角獸'],['🐲','小龍'],['🐵','小猴子'],['🐨','無尾熊']];
+const PT_SHOP=[['🎈','氣球',30],['⭐','星星',30],['⚽','足球',40],['🍦','冰淇淋',40],['🎀','蝴蝶結',60],['🎩','魔術帽',60],['🕶️','墨鏡',80],['🧸','小熊',100],['🌈','彩虹',120],['🚲','腳踏車',150],['👑','皇冠',200],['🏆','大獎盃',300]];
+const chE=()=>PT.d.ch||'🙂',chN=()=>{const c=PT_CHARS.find(x=>x[0]===PT.d.ch);return PT.d.name||(c?c[1]:'小朋友')};
+const wearE=()=>PT.d.wear||'';
+function avHTML(cls){return `<span class="av ${cls||''}"><span class="av-c">${chE()}</span>${wearE()?`<span class="av-w">${wearE()}</span>`:''}</span>`}
+function ptRefresh(){
+  const hc=document.getElementById('ptChip');if(hc)hc.innerHTML=`${avHTML()}<span class="pc-n">${esc(chN())}</span><span class="pc-p">⭐ ${PT.d.pts}</span>`;
+  const lb=document.getElementById('avBox');if(lb)lb.innerHTML=`${avHTML()}<b>⭐${PT.d.pts}</b>`;
+}
+function ptAdd(n,why){
+  if(!n)return;PT.d.pts+=n;PT.round+=n;ptSave();ptRefresh();
+  const lb=document.getElementById('avBox');
+  if(lb&&CURSCR==='level'){const av=lb.querySelector('.av');if(av){av.classList.remove('jump');void av.offsetWidth;av.classList.add('jump')}
+    const f=document.createElement('span');f.className='ptfly';f.textContent=`+${n}`+(why?` ${why}`:'');lb.appendChild(f);setTimeout(()=>f.remove(),1300)}
+}
+/* ---- 包住原本的流程，加上點數 ---- */
+const _qmStart=qmStart;
+qmStart=function(qs,cfg){
+  const o=cfg.onAnswer;
+  cfg.onAnswer=(first,q,rev)=>{o&&o(first,q,rev);
+    if(RUN&&RUN.kind==='group')return;
+    if(first){PT.combo++;ptAdd(10);if(PT.combo>=3&&PT.combo%3===0)later(()=>ptAdd(5,'連續答對'),500)}
+    else{PT.combo=0;if(!rev)ptAdd(5)}};
+  return _qmStart(qs,cfg);
+};
+const _levelScreen=levelScreen;
+levelScreen=function(){PT.round=0;PT.combo=0;const r=_levelScreen();ptRefresh();return r};
+const _endFloor=endFloor;
+endFloor=function(lv,res){const st=calcStars(res);ptAdd(20+st*10);return _endFloor(lv,res)};
+const _endBoss=endBoss;
+endBoss=function(res){if(RUN&&RUN.hit>=Math.ceil(RUN.max*.6))ptAdd(100);return _endBoss(res)};
+const _endDaily=endDaily;
+endDaily=function(first,ds){ptAdd(first?30:10);return _endDaily(first,ds)};
+const _showResult=showResult;
+showResult=function(o){
+  if(PT.round>0&&RUN&&RUN.kind!=='group'){const n=PT.round;o=Object.assign({},o,{extra:(o.extra||'')+`<div class="ptgain">${avHTML('big')}<div><div class="pg-t">這一回得到</div><div class="pg-n">⭐ <span id="pgN">0</span> 點</div><div class="pg-s">一共有 ${PT.d.pts} 點</div></div></div>`,say:(o.say||'')+`這一回得到${n}點。`});
+    later(()=>{const e=document.getElementById('pgN');if(!e)return;let v=0;const step=Math.max(1,Math.round(n/20)),t=setInterval(()=>{v=Math.min(n,v+step);e.textContent=v;SFX.tap();if(v>=n)clearInterval(t)},50)},500);
+  }
+  PT.round=0;return _showResult(o);
+};
+const _go=go;
+go=function(id){const r=_go(id);if(id==='home'){ptRefresh();if(!PT.d.ch&&!PT.asked){PT.asked=true;waitQuiet(()=>{if(CURSCR==='home'&&!document.querySelector('.ov.on'))openChar(true);else PT.asked=false})}}return r};
+// 等歡迎的語音完整唸完，再停一下，才跳出選角色（不打斷歡迎詞）
+function waitQuiet(cb){
+  let quiet=0,t0=Date.now();
+  const busy=()=>{try{return S.voice&&TTS.ok&&(speechSynthesis.speaking||speechSynthesis.pending)}catch(e){return false}};
+  const tick=()=>{
+    if(CURSCR!=='home'){PT.asked=false;return}
+    if(CLK&&CLK.paused){setTimeout(tick,400);return}
+    quiet=busy()?0:quiet+400;
+    if(quiet>=1600&&Date.now()-t0>=(S.voice?2500:3000))return cb();
+    if(Date.now()-t0>30000)return cb();
+    setTimeout(tick,400);
+  };
+  setTimeout(tick,800);
+}
+const _openSettings=openSettings;
+openSettings=function(){
+  _openSettings();
+  const ok=document.getElementById('setOk');if(!ok)return;
+  ok.insertAdjacentHTML('beforebegin',`<div class="row"><span>點數（老師用）</span><button class="btn r" id="ptReset">點數歸零</button></div>`);
+  document.getElementById('ptReset').onclick=()=>{if(!guard(400))return;const b=document.getElementById('ptReset');
+    if(b.dataset.c!=='1'){b.dataset.c='1';b.textContent='再按一次，確定歸零';speakSeq(['再按一次，點數和買到的寶物都會清掉。']);return}
+    PT.d.pts=0;PT.d.own=[];PT.d.wear=null;ptSave();ptRefresh();b.textContent='已經歸零';speakSeq(['點數已經歸零。'])};
+};
+/* ---- 角色與商店視窗 ---- */
+function ptOv(){let ov=document.getElementById('ovPt');if(!ov){ov=document.createElement('div');ov.className='ov';ov.id='ovPt';ov.innerHTML='<div class="panel ptpanel"></div>';document.getElementById('app').appendChild(ov)}return ov}
+function openChar(first){
+  const ov=ptOv(),p=ov.firstChild;
+  p.innerHTML=`<h2>${first?'選一個你喜歡的角色':'我的角色'}</h2><div class="ptabs"><button class="btn sel" data-t="c">選角色</button><button class="btn" data-t="s">獎勵商店</button><button class="btn" data-t="b">我的寶物</button></div><div class="ptbody"></div><button class="btn g big" id="ptOk">好了</button>`;
+  const body=p.querySelector('.ptbody');
+  const tab=t=>{p.querySelectorAll('.ptabs .btn').forEach(b=>b.classList.toggle('sel',b.dataset.t===t));
+    if(t==='c'){
+      body.innerHTML=`<div class="chgrid">${PT_CHARS.map(c=>`<button class="chb ${PT.d.ch===c[0]?'sel':''}" data-c="${c[0]}"><span>${c[0]}</span><small>${c[1]}</small></button>`).join('')}</div><div class="row nmrow"><span>名字（可以不填）</span><input id="ptName" maxlength="6" value="${esc(PT.d.name)}" placeholder="打你的名字"></div>`;
+      body.querySelectorAll('.chb').forEach(b=>b.onclick=()=>{PT.d.ch=b.dataset.c;ptSave();ptRefresh();body.querySelectorAll('.chb').forEach(x=>x.classList.toggle('sel',x===b));SFX.ok();const c=PT_CHARS.find(x=>x[0]===PT.d.ch);speakSeq([`你選了${c[1]}。`])});
+      const ni=body.querySelector('#ptName');ni.oninput=()=>{PT.d.name=ni.value.trim().slice(0,6);ptSave();ptRefresh()};
+    }else if(t==='s'){
+      body.innerHTML=`<div class="ptnow">${avHTML('big')}<b>⭐ ${PT.d.pts} 點</b></div><div class="shopg">${PT_SHOP.map(s=>{const own=PT.d.own.includes(s[0]);return `<button class="shb ${own?'own':''}" data-e="${s[0]}"><span>${s[0]}</span><small>${s[1]}</small><em>${own?'已經有了':'⭐'+s[2]}</em></button>`}).join('')}</div>`;
+      body.querySelectorAll('.shb').forEach(b=>b.onclick=()=>{
+        if(!guard(300))return;const s=PT_SHOP.find(x=>x[0]===b.dataset.e);
+        if(PT.d.own.includes(s[0])){PT.d.wear=s[0];ptSave();ptRefresh();SFX.swap();speakSeq([`${chN()}帶上了${s[1]}。`]);tab('s');return}
+        if(PT.d.pts<s[2]){SFX.bad();speakSeq([`${s[1]}要${s[2]}點，還差${s[2]-PT.d.pts}點。多答對幾題就可以買了！`]);b.classList.remove('no');void b.offsetWidth;b.classList.add('no');return}
+        PT.d.pts-=s[2];PT.d.own.push(s[0]);PT.d.wear=s[0];ptSave();ptRefresh();SFX.fanfare();confetti(24,[s[0],'✨','⭐']);speakSeq([`買到了${s[1]}！${chN()}帶上了${s[1]}。`]);tab('s');
+      });
+    }else{
+      body.innerHTML=PT.d.own.length?`<div class="sub" style="text-align:center">點一下，讓角色帶上這個寶物</div><div class="shopg">${PT.d.own.map(e=>{const s=PT_SHOP.find(x=>x[0]===e)||[e,''];return `<button class="shb ${PT.d.wear===e?'sel':''}" data-e="${e}"><span>${e}</span><small>${s[1]}</small></button>`}).join('')}<button class="shb" data-e=""><span>🚫</span><small>不帶</small></button></div>`:`<div class="ptempty">還沒有寶物。<br>答對題目得到點數，就可以到「獎勵商店」買喔！</div>`;
+      body.querySelectorAll('.shb').forEach(b=>b.onclick=()=>{PT.d.wear=b.dataset.e||null;ptSave();ptRefresh();SFX.tap();tab('b')});
+    }};
+  p.querySelectorAll('.ptabs .btn').forEach(b=>b.onclick=()=>{SFX.tap();tab(b.dataset.t);
+    speakSeq([b.dataset.t==='c'?'選一個你喜歡的角色。':b.dataset.t==='s'?`你有${PT.d.pts}點。點一個寶物，就可以用點數買。`:'這些是你買到的寶物。'])});
+  p.querySelector('#ptOk').onclick=()=>{if(!PT.d.ch){PT.d.ch=PT_CHARS[0][0];ptSave()}ptRefresh();TTS.stop();ov.classList.remove('on')};
+  tab('c');ov.classList.add('on');
+  speakSeq([first?'選一個你喜歡的角色。答對題目，可以得到點數，再到獎勵商店買寶物喔！':'選角色，或用點數買寶物。']);
+}
+(function ptInit(){
+  const bar=document.querySelector('#home .bar'),sp=bar&&bar.querySelector('.sp');
+  if(sp)sp.insertAdjacentHTML('afterend','<button class="btn ptchip" id="ptChip"></button>');
+  const chip=document.getElementById('ptChip');if(chip)chip.onclick=()=>{if(guard(350))openChar(false)};
+  const row=document.querySelector('#level .row2');if(row)row.insertAdjacentHTML('afterbegin','<div id="avBox"></div>');
+  ptRefresh();
+})();
+</script>
+</body>
+</html>

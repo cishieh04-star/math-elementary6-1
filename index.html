@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>小六上數學互動遊戲</title>
+    <style>
+        body { 
+            font-family: "Helvetica Neue", Arial, sans-serif; 
+            padding: 20px; 
+            /* 放寬最大寬度，讓 4 個選項有足夠空間顯示不擁擠 */
+            max-width: 1200px; 
+            margin: auto; 
+            background-color: #9c978a; 
+        }
+
+        /* 統一的按鈕樣式類別 */
+        .box {
+            padding: 12px 10px; /* 稍微縮小左右內距避免字被擠壓 */
+            margin: 10px 0;
+            border-radius: 8px;
+            font-weight: bold;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+            /* 讓按鈕內文字完美垂直/水平置中 */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-sizing: border-box;
+        }
+
+        /* 階層 1：深藍底白字標題 */
+        .header-box { 
+            background: #0b0573; color: #ffffff; 
+            font-size: 1.5em; margin-bottom: 20px;
+        }
+        
+        /* 階層 2：黃底黑字副標題 */
+        .category-box { 
+            background: #f1c40f; color: #000000; 
+            font-size: 1.1em; width: fit-content; margin: 10px auto; 
+        }
+        
+        /* 階層 3：橘色按鈕 Grid 佈局 */
+        ul { 
+            list-style-type: none; 
+            padding: 0; 
+            display: grid; 
+            /* 關鍵修改：強制設定為 4 個一排 */
+            grid-template-columns: repeat(4, 1fr); 
+            gap: 15px; 
+        }
+        
+        .game-link { 
+            background: #d35400; color: #ffffff; 
+            font-size: 1.1em; 
+            transition: transform 0.2s;
+            height: 100%; /* 讓每一排的按鈕高度自動對齊一致 */
+            margin: 0;
+        }
+        .game-link:hover { transform: scale(1.02); }
+
+        a { text-decoration: none; color: inherit; width: 100%; }
+
+        /* RWD 微調：如果是在直立的小螢幕手機上觀看，字體自動縮小以防破版 */
+        @media (max-width: 768px) {
+            .game-link { font-size: 0.9em; padding: 10px 5px; }
+            ul { gap: 10px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="box header-box">小六上數學互動遊戲</div>
+    <div class="box category-box">請選擇下列課程遊戲單元</div>
+
+    <ul id="game-list"></ul>
+
+    <script>
+        const version = "1";
+        const games = [
+            { name: "單元一<br>最大公因數與最小公倍數</a>", file: "math-6-1.html" },
+            { name: "單元二<br>分數除法</a>", file: "math-6-2.html" },
+            { name: "單元三<br>數量關係，</a>", file: "math-6-3.html" },
+            { name: "單元四<br>小數除法</a>", file: "math-6-4.html" },
+            { name: "單元五<br>比與比值</a>", file: "math-6-5.html" }
+           
+           
+        ];
+
+        const listElement = document.getElementById('game-list');
+        
+        /* 透過迴圈中的 index 自動幫每一個項目加上流水編號 */
+        games.forEach((game, index) => {
+            const li = document.createElement('li');
+            const displayNumber = index + 1; // 自動計算編號 (1, 2, 3...)
+            li.innerHTML = `<div class="box game-link"><a href="${game.file}?v=${version}">${displayNumber}.${game.name}</a></div>`;
+            listElement.appendChild(li);
+        });
+    </script>
+</body>
+</html>
