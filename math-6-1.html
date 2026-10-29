@@ -551,7 +551,7 @@ button{font:inherit;color:inherit;border:0;cursor:pointer;touch-action:manipulat
   <div class="bar"><div><div class="ttl">🔍 數字偵探社</div><div class="sub" id="homeSub">一層一層破解數字案件</div></div><span class="sp"></span><button class="btn vbtn"></button></div>
   <div id="bldg"><div class="roof" id="roof"></div><div class="awning"></div><div class="tower" id="tower"></div><div class="ground"></div></div>
   <div class="dock">
-   <button class="btn" id="dkClass"><span>🕵️</span>偵探教室</button>
+   <button class="btn" id="dkClass"><span>👩‍🏫</span>名師教室</button>
    <button class="btn" id="dkGroup"><span>👥</span>小組競賽</button>
    <button class="btn" id="dkDaily"><span>📅</span>今日挑戰</button>
    <button class="btn" id="dkSet"><span>⚙️</span>設定</button>
@@ -633,7 +633,7 @@ let _lastTap=0;
 function guard(ms){const n=Date.now();if(n-_lastTap<ms)return false;_lastTap=n;return true}
 
 /* ===== 設定 / 狀態（只存在這次開啟）===== */
-const S={voice:true,rate:0.72,count:6,sfx:true,done:{},stars:{},instrSeen:{},started:false,unlockAll:false,demoSeen:{},lesSeen:{}};
+const S={voice:true,rate:0.72,count:6,sfx:true,done:{},stars:{},instrSeen:{},started:false,unlockAll:true,demoSeen:{},lesSeen:{}};
 let _store=null;try{_store=window.localStorage}catch(e){}
 const dayKey=()=>{const d=new Date();return d.getFullYear()*10000+(d.getMonth()+1)*100+d.getDate()};
 function dailyDone(){try{return _store&&_store.getItem('m61-daily')==String(dayKey())}catch(e){return false}}
@@ -867,8 +867,8 @@ function rMatch(q,host,ctx){
   buildShell(q,host,ctx);
   const L=q.pairs.map((p,i)=>({t:p[0],i})),R=shuffle(q.pairs.map((p,i)=>({t:p[1],i})));
   const g=document.createElement('div');g.className='mt';
-  const lb=L.map(x=>{const b=document.createElement('button');b.textContent=x.t;b.dataset.i=x.i;return b});
-  const rb=R.map(x=>{const b=document.createElement('button');b.textContent=x.t;b.dataset.i=x.i;return b});
+  const lb=L.map(x=>{const b=document.createElement('button');b.innerHTML=txtHtml(x.t);b.dataset.i=x.i;return b});
+  const rb=R.map(x=>{const b=document.createElement('button');b.innerHTML=txtHtml(x.t);b.dataset.i=x.i;return b});
   lb.forEach((b,k)=>{g.appendChild(b);g.appendChild(rb[k])});
   host.appendChild(g);fbEl(host);
   let sel=null,bad=0,left=q.pairs.length,locked=false;
@@ -989,9 +989,13 @@ function primeSteps(n){
   return st;
 }
 /* ================= 圖：點點排長方形 ================= */
-function arrFig(r,c,o){o=o||{};const W=o.W||220,H=o.H||140,s=Math.min((W-16)/c,(H-(o.lbl?34:16))/r,26),ox=(W-s*c)/2,oy=(H-(o.lbl?20:0)-s*r)/2;
+function arrFig(r,c,o){o=o||{};const W=o.W||220,H=o.H||140;let num=o.num!==false,M=num?12:0,s=Math.min((W-16-M)/c,(H-(o.lbl?34:16)-M)/r,26);
+  if(num&&s<9){num=false;M=0;s=Math.min((W-16)/c,(H-(o.lbl?34:16))/r,26)}
+  const ox=(W-s*c+M)/2,oy=(H-(o.lbl?20:0)-s*r+M)/2;
   let h=`<svg viewBox="0 0 ${W} ${H}" class="gf">`;
   for(let i=0;i<r;i++)for(let j=0;j<c;j++)h+=`<circle cx="${f1(ox+s*(j+.5))}" cy="${f1(oy+s*(i+.5))}" r="${f1(s*.4)}" fill="${o.col||'#ff922b'}"/>`;
+  if(num){const fs=Math.min(10,s*.72);for(let j=0;j<c;j++)h+=`<text x="${f1(ox+s*(j+.5))}" y="${f1(oy-3)}" text-anchor="middle" font-size="${f1(fs)}" font-weight="700" fill="#868e96">${j+1}</text>`;
+    for(let i=0;i<r;i++)h+=`<text x="${f1(ox-4)}" y="${f1(oy+s*(i+.5)+fs*.36)}" text-anchor="end" font-size="${f1(fs)}" font-weight="700" fill="#868e96">${i+1}</text>`}
   if(o.lbl)h+=`<text x="${W/2}" y="${H-4}" text-anchor="middle" font-size="16" fill="#1d2b3a">${o.lbl}</text>`;
   return h+'</svg>';
 }
@@ -1869,7 +1873,7 @@ function endGroup(){
 /* ================= 偵探教室 ================= */
 const CLS={scene:0,n:12,a:24,b:36,sv:new Set()};
 function lessonStop(){TTS.mult=1;LES.tok++}
-function openClass(){go('class');CLS.scene=0;renderClass();speakSeq(['歡迎來到偵探教室！上面有四個按鈕：因數長方形、質數篩子、短除法機器，還有重聽上課。'])}
+function openClass(){go('class');CLS.scene=0;renderClass();speakSeq(['歡迎來到名師教室！上面有四個按鈕：因數長方形、質數篩子、短除法機器，還有重聽上課。'])}
 function renderClass(){
   $$('#clsTabs .btn').forEach((b,i)=>b.classList.toggle('sel',i===CLS.scene));
   const st=$('#clsStage');st.classList.remove('lesmode');TTS.stop();LES.tok++;
@@ -1900,7 +1904,7 @@ function clsSieve(st){
   $('#svShow').onclick=()=>{if(!guard(300))return;[2,3,5,7].forEach(p=>{CLS.sv.add(p);sieve(st,p)});sieveEnd(st);st.querySelectorAll('[data-p]').forEach(b=>b.className='btn g');SFX.fanfare();confetti(14,['⭐','🔍','✨']);speakSeq(['100以內，一共有25個質數，就是黃色的這些！'])};
   $('#svClr').onclick=()=>{CLS.sv.clear();SFX.tap();clsSieve(st)};
   g.querySelectorAll('span').forEach(s=>s.onclick=()=>{if(!guard(200))return;const v=+s.dataset.v;g.querySelectorAll('.hl').forEach(x=>x.classList.remove('hl'));s.classList.add('hl');
-    const t=v===1?'1只有一個因數，不是質數也不是合數。':isPrime(v)?`${v}只有1和${v}兩個因數，是質數。`:`${v}＝${X(pfac(v))}，是合數。`;$('#svSay').textContent=t;speakSeq([t])});
+    const t=v===1?'1只有一個因數，不是質數也不是合數。':isPrime(v)?`${v}只有1和${v}兩個因數，是質數。`:`${v}＝${X(pfac(v))}，是合數。`;$('#svSay').innerHTML=txtHtml(t);speakSeq([t])});
   speakSeq(['按劃掉2的倍數、3的倍數、5的倍數、7的倍數，留下來的就是質數。點一個數字，可以聽它的祕密。']);
 }
 /* ---- 短除法機器 ---- */
@@ -1914,11 +1918,11 @@ function clsSD(st){
    <div class="cl-b"><div class="clsfig" id="sdFig" style="flex-direction:column"></div><div class="read" id="sdRes"></div></div>`;
   st.querySelectorAll('[data-k]').forEach(x=>x.onclick=()=>{if(!guard(150))return;const k=x.dataset.k;let v=x.dataset.d==='r'?rnd(4,99):CLS[k]+ +x.dataset.d;if(v<2||v>150){SFX.bad();return}CLS[k]=v;SFX.tap();clsSD(st)});
   const run=(nums,mode)=>{if(!guard(400))return;const pl=sdPlan(nums,mode),f=$('#sdFig');f.innerHTML=sdHTML(nums,pl);$('#sdRes').textContent='';
-    const S=sdSteps(nums,pl,mode);speakSeq(S.map(s=>({t:s.t,on:()=>{if(CURSCR!=='class')return;exApply(f,s);$('#sdSay').textContent=s.t;if(s.eq)$('#sdRes').textContent=s.eq}})))};
+    const S=sdSteps(nums,pl,mode);speakSeq(S.map(s=>({t:s.t,on:()=>{if(CURSCR!=='class')return;exApply(f,s);$('#sdSay').innerHTML=txtHtml(s.t);if(s.eq)$('#sdRes').textContent=s.eq}})))};
   $('#sdG').onclick=()=>run([a,b],'g');$('#sdL').onclick=()=>run([a,b],'l');
   $('#sdPa').onclick=()=>run([a],'pf');
   const story=(items,nums)=>{if(!guard(400))return;const f=$('#sdFig');f.innerHTML=whyStage(nums);$('#sdRes').textContent='';
-    speakSeq(items.map(s=>({t:s.t,on:()=>{if(CURSCR!=='class')return;applyWhy(f,s);$('#sdSay').textContent=s.t;if(s.eq)$('#sdRes').innerHTML=txtHtml(s.eq)}})))};
+    speakSeq(items.map(s=>({t:s.t,on:()=>{if(CURSCR!=='class')return;applyWhy(f,s);$('#sdSay').innerHTML=txtHtml(s.t);if(s.eq)$('#sdRes').innerHTML=txtHtml(s.eq)}})))};
   $('#sdWhy').onclick=()=>story(whyItems(a,b),[a,b]);
   $('#sdUse').onclick=()=>{if(gcd(a,b)<2){SFX.bad();speakSeq([`${a}和${b}互質，最大公因數是1。換兩個有共同因數的數，例如24和36，再試試看。`]);return}story(useItems(a,b),null)};$('#sdPb').onclick=()=>run([b],'pf');
   speakSeq(['選兩個數，再按最大公因數或最小公倍數，看短除法一步一步算。']);
@@ -2101,5 +2105,164 @@ function openChar(first){
   ptRefresh();
 })();
 </script>
+<!-- ===== 2026-10 修訂：名師教室、解說圖自動縮放、暫停／速度按鈕加文字 ===== -->
+<style id="patch-1029">
+/* 暫停、速度按鈕：圖示旁邊一定有文字 */
+.psbtn,.spdbtn{white-space:nowrap}
+.spdbtn .sl,.psbtn .sl{display:block;font-size:.72em;line-height:1.05;font-weight:800;opacity:.85}
+.spdbtn .sv,.psbtn .sv{display:block;line-height:1.1}
+.bar .psbtn,.bar .spdbtn{line-height:1.1}
+/* 舊版（四年級）解說視窗也加上暫停、速度 */
+.les-btns{flex-wrap:wrap}
+.spbar2{flex:1 1 100%;display:flex;gap:calc(var(--u)*.4);align-items:stretch}
+.spbar2 .btn{flex:1;min-height:calc(var(--u)*2.1)!important;padding:calc(var(--u)*.2) calc(var(--u)*.3)!important;font-size:calc(var(--u)*.9)!important}
+.spbar2 .psbtn{flex:0 0 auto!important;min-width:calc(var(--u)*5.2)}
+.spbar2 .spd2{background:#f1f3f5}
+.spbar2 .spd2.sel{background:var(--y,#ffd54f);outline:.15em solid #e8a800}
+.spbar2 .spl{align-self:center;font-weight:900;font-size:calc(var(--u)*.85);color:#495057;white-space:nowrap}
+.psbtn.y{background:var(--y,#ffd54f)}
+.exspd{white-space:nowrap;display:flex!important;flex-direction:column;align-items:center;justify-content:center;line-height:1.1}
+/* 第五、六冊的解說視窗：圖固定在上面（橫放時在左邊），文字自己捲動，圖不會被捲走 */
+.genC .exbody{overflow:hidden!important}
+.genC .exbody>.exfig{flex:0 0 auto;max-height:34vh;min-height:0;overflow:hidden;align-items:center;justify-content:center}
+.genC .exbody>.exl{flex:1 1 auto;min-height:0;overflow:auto;padding-left:2.2em;padding-right:.3em}
+@media (min-aspect-ratio:13/10){
+ .genC .exbody{grid-template-rows:minmax(0,1fr);align-items:stretch!important}
+ .genC .exbody>.exfig{max-height:none;height:100%}
+ .genC .exbody>.exl{max-height:100%;align-self:stretch;justify-content:flex-start}
+}
+@media (max-width:560px){#class .bar{gap:calc(var(--u)*.3)}#class .bar .btn{padding:calc(var(--u)*.3) calc(var(--u)*.45)!important;font-size:calc(var(--u)*.82)!important}}
+/* 帶分數：整數和分數之間留一點空隙，不會看成 11/2 */
+.mxw{margin-right:.14em}
+.frac+.frac{margin-left:.1em}
+</style>
+<script>
+(function(){
+'use strict';
+const GEN='C', KEYP='m';
+const qa=(s,r)=>[...(r||document).querySelectorAll(s)];
+
+/* ---------- 1. 解說圖、上課畫面：內容太大時自動縮小，不會被切掉 ---------- */
+document.documentElement.classList.add('gen'+GEN);
+const BOX='.les-stage,.clsfig,#lsStage,.les-scene'+(GEN==='C'?',.exbody>.exfig':'');
+function measure(kids){let t=1e9,b=-1e9,l=1e9,r=-1e9;kids.forEach(k=>{const R=k.getBoundingClientRect();if(!R.width&&!R.height)return;t=Math.min(t,R.top);b=Math.max(b,R.bottom);l=Math.min(l,R.left);r=Math.max(r,R.right)});return b<t?[0,0]:[b-t,r-l]}
+function fitBox(c){
+  if(!c.offsetParent)return;
+  const kids=[...c.children].filter(k=>{const p=getComputedStyle(k).position;return p!=='absolute'&&p!=='fixed'});
+  if(!kids.length)return;
+  kids.forEach(k=>{if(k.style.zoom)k.style.zoom=''});
+  const cs=getComputedStyle(c),aH=c.clientHeight-parseFloat(cs.paddingTop)-parseFloat(cs.paddingBottom)-4,aW=c.clientWidth-parseFloat(cs.paddingLeft)-parseFloat(cs.paddingRight)-4;
+  if(aH<20||aW<20)return;
+  let [h,w]=measure(kids);if(!h||(h<=aH+1&&w<=aW+1))return;
+  let z=Math.max(.4,Math.min(1,aH/h,aW/w));
+  for(let i=0;i<5;i++){kids.forEach(k=>k.style.zoom=z.toFixed(3));[h,w]=measure(kids);if((h<=aH+1&&w<=aW+1)||z<=.4)break;z=Math.max(.4,z*Math.min(.95,aH/h,aW/w))}
+}
+function fitScroll(c){ // 解說視窗：圖太大時，把圖縮小，讓字也看得到
+  if(!c.offsetParent)return;
+  const f=c.querySelector(':scope>.exfig');if(!f)return;
+  if(f.style.zoom)f.style.zoom='';
+  if(c.scrollHeight<=c.clientHeight+2)return;
+  let z=1;
+  for(let i=0;i<6;i++){z=Math.max(.5,z*Math.min(.93,c.clientHeight/c.scrollHeight));f.style.zoom=z.toFixed(3);if(c.scrollHeight<=c.clientHeight+2||z<=.5)break}
+}
+let fitQ=0;
+function fitAll(){fitQ=0;try{qa(BOX).forEach(fitBox);if(GEN!=='C')qa('.exbody').forEach(fitScroll)}catch(e){}}
+function fitSoon(){if(!fitQ)fitQ=requestAnimationFrame(()=>requestAnimationFrame(fitAll))}
+try{new MutationObserver(fitSoon).observe(document.getElementById('app')||document.body,{childList:true,subtree:true})}catch(e){}
+window.addEventListener('resize',fitSoon);
+window.addEventListener('orientationchange',()=>setTimeout(fitSoon,300));
+window.__fitAll=fitAll;
+
+/* ---------- 2. 暫停、速度按鈕都加上文字 ---------- */
+if(GEN==='C'&&typeof spSync==='function'){
+  const _sp=spSync;
+  spSync=function(){
+    _sp();
+    const k=spdIdx(),lab=SPD[k][1];
+    qa('.psbtn[data-short]').forEach(b=>{b.innerHTML=SP.paused?'▶ 繼續':'✋ 暫停'});
+    qa('.spdbtn[data-short]').forEach(b=>{b.innerHTML=`<span class="sl">說話速度</span><span class="sv">${lab}</span>`;b.title='按一下，換說話速度'});
+    qa('.spdbtn:not([data-short])').forEach(b=>{b.innerHTML=`說話速度：${lab}`});
+  };
+  setTimeout(()=>{try{spSync()}catch(e){}},50);
+}
+
+/* ---------- 3. 四年級版本：補上「可以暫停的語音」和速度按鈕 ---------- */
+if(GEN==='A'){
+  window.SP2={paused:false,cur:null};
+  const SPD2=[[0.62,'🐢 慢'],[0.8,'🚶 普通'],[1.0,'🐇 快']];
+  const idx=()=>{let k=0,d=9;SPD2.forEach((x,i)=>{const dd=Math.abs(x[0]-S.rate);if(dd<d){d=dd;k=i}});return k};
+  speakSeq=function(items,onAll,gap){
+    TTS.stop();const gen=TTS.gen;gap=gap==null?260:gap;SP2.paused=false;
+    const st={items,i:0,onAll,gap,gen,called:-1,waiting:false,ep:0};SP2.cur=st;sync();
+    const next=()=>{
+      if(gen!==TTS.gen)return;
+      if(SP2.paused){st.waiting=true;return}
+      if(st.i>=items.length){if(SP2.cur===st){SP2.cur=null;sync()}onAll&&onAll();return}
+      const it=items[st.i],t=typeof it==='string'?it:it.t,on=typeof it==='string'?null:it.on;
+      if(st.called<st.i){st.called=st.i;on&&on()}
+      const txt=spoken(t),ep=st.ep;
+      const done=()=>{if(gen!==TTS.gen||ep!==st.ep)return;if(SP2.paused){st.waiting=true;return}st.i++;later(()=>{if(gen===TTS.gen&&ep===st.ep)next()},gap)};
+      if(!S.voice||!TTS.ok||!txt.trim()){later(done,S.voice?TTS.est(txt)*0.5:350);return}
+      TTS.one(txt,gen,done);
+    };
+    st.next=next;if(CLK.paused)return;next();
+  };
+  say=function(t,cb){speakSeq([t],cb)};
+  function pause(){const c=SP2.cur;if(!c)return;SP2.paused=true;c.ep++;c.waiting=true;try{TTS.ok&&speechSynthesis.cancel()}catch(e){}sync()}
+  function resume(){SP2.paused=false;sync();const c=SP2.cur;if(c&&c.waiting&&c.gen===TTS.gen){c.waiting=false;c.next()}}
+  function setSpd(k){S.rate=SPD2[k][0];sync();try{SFX.tap()}catch(e){}
+    const c=SP2.cur;
+    if(c&&!SP2.paused&&c.gen===TTS.gen){c.ep++;try{TTS.ok&&speechSynthesis.cancel()}catch(e){}setTimeout(()=>{if(SP2.cur===c&&!SP2.paused)c.next()},150)}
+    else if(!c)speakSeq([['這樣唸，比較慢。','這樣唸，是普通的速度。','這樣唸，比較快。'][k]]);
+    qa('#spSeg .btn').forEach(b=>b.classList.toggle('sel',Math.abs(+b.dataset.v-S.rate)<.01));
+  }
+  function sync(){
+    qa('.psbtn').forEach(b=>{b.textContent=SP2.paused?'▶ 繼續':'✋ 暫停';b.classList.toggle('y',SP2.paused)});
+    const k=idx();
+    qa('.spd2').forEach(b=>b.classList.toggle('sel',+b.dataset.i===k));
+    qa('.spdbtn').forEach(b=>{b.innerHTML=`<span class="sl">說話速度</span><span class="sv">${SPD2[k][1]}</span>`});
+  }
+  window.spSync2=sync;
+  const BAR2='<div class="spbar2"><button class="btn psbtn">✋ 暫停</button><span class="spl">說話速度</span>'+SPD2.map((x,i)=>`<button class="btn spd2" data-i="${i}">${x[1]}</button>`).join('')+'</div>';
+  document.addEventListener('click',e=>{const b=e.target.closest('.psbtn,.spd2,.spdbtn');if(!b)return;e.stopPropagation();if(!guard(250))return;
+    if(b.classList.contains('psbtn')){if(SP2.paused)resume();else if(SP2.cur)pause();else{try{SFX.tap()}catch(er){}}}
+    else if(b.classList.contains('spd2'))setSpd(+b.dataset.i);else setSpd((idx()+1)%SPD2.length)},true);
+  function inject(){
+    qa('.les-btns').forEach(x=>{if(!x.querySelector('.spbar2')){x.insertAdjacentHTML('afterbegin',BAR2)}});
+    const bar=document.querySelector('#class .bar .sp');if(bar&&!document.querySelector('#class .bar .psbtn'))bar.insertAdjacentHTML('afterend','<button class="btn psbtn" data-short="1">✋ 暫停</button><button class="btn spdbtn" data-short="1"></button>');
+    sync();
+  }
+  let iq=0;try{new MutationObserver(()=>{if(!iq)iq=requestAnimationFrame(()=>{iq=0;inject()})}).observe(document.getElementById('app')||document.body,{childList:true,subtree:true})}catch(e){}
+  setTimeout(inject,0);
+}
+
+/* ---------- 4. 五年級（1～4單元）：解說、上課加上「說話速度」按鈕 ---------- */
+if(GEN==='B'){
+  const SPDB=[[0.7,'🐢 慢'],[0.85,'🚶 中'],[1,'🐇 快']];
+  const idx=()=>{let k=0,d=9;SPDB.forEach((x,i)=>{const dd=Math.abs(x[0]-S.rate);if(dd<d){d=dd;k=i}});return k};
+  const lab=()=>`<span class="sl">說話速度</span><span class="sv">${SPDB[idx()][1]}</span>`;
+  function sync(){qa('.exspd').forEach(b=>b.innerHTML=lab())}
+  function inject(){
+    const ep=document.getElementById('exPause');if(ep&&!document.getElementById('exSpd')){ep.insertAdjacentHTML('afterend','<button class="btn exspd" id="exSpd"></button>');ep.textContent=ep.textContent.replace(/^[✋▶]\s*/,'')}
+    const lp=document.getElementById('lsPause');if(lp&&!document.getElementById('lsSpd'))lp.insertAdjacentHTML('afterend','<button class="btn exspd" id="lsSpd"></button>');
+    sync();
+  }
+  document.addEventListener('click',e=>{const b=e.target.closest('.exspd');if(!b)return;e.stopPropagation();if(!guard(250))return;
+    S.rate=SPDB[(idx()+1)%SPDB.length][0];try{sset(KEYP+'-rate',S.rate)}catch(er){}try{SFX.tap()}catch(er){}sync();
+    if(!TTS.ok||!S.voice)return;},true);
+  let iq=0;try{new MutationObserver(()=>{if(!iq)iq=requestAnimationFrame(()=>{iq=0;inject()})}).observe(document.getElementById('app')||document.body,{childList:true,subtree:true})}catch(e){}
+  setTimeout(inject,0);
+}
+
+/* ---------- 5. 分數顯示：[算式/算式] 也可以排成上下的分數 ---------- */
+if(GEN==='C'&&typeof txtHtml==='function'&&typeof fracHTML==='function'){
+  const _t=txtHtml;
+  txtHtml=function(s){s=String(s==null?'':s);if(s.indexOf('[')<0)return _t(s);
+    return s.split(/(\[[^\[\]\/]+\/[^\[\]]+\])/).map(p=>{const m=p.match(/^\[([^\[\]\/]+)\/([^\[\]]+)\]$/);return m?fracHTML(_t(m[1]),_t(m[2])):_t(p)}).join('')};
+  if(typeof spoken==='function'){const _s=spoken;spoken=function(s){return _s(String(s).replace(/\[([^\[\]\/]+)\/([^\[\]]+)\]/g,'$2分之$1'))}}
+}
+})();
+</script>
+
 </body>
 </html>

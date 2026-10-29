@@ -511,6 +511,7 @@ button{font:inherit;color:inherit;border:0;cursor:pointer;touch-action:manipulat
 .ngrid span.cx{background:#dee2e6;color:#adb5bd;text-decoration:line-through}
 .ngrid span.one{background:#f1f3f5;color:#868e96}
 .ngrid span.hl{outline:.15em solid #e03131}
+.ceq{font-size:calc(var(--u)*1.35)!important;line-height:1.7!important}
 .bigeq{font-weight:900;font-size:calc(var(--u)*1.6);text-align:center;line-height:1.5}
 .bigeq .r{color:#e03131}.bigeq .b{color:#1971c2}
 .fig .bigeq{align-self:center}
@@ -571,7 +572,7 @@ button{font:inherit;color:inherit;border:0;cursor:pointer;touch-action:manipulat
   <div class="bar"><div><div class="ttl">🍫 巧克力工坊</div><div class="sub" id="homeSub">一站一站學會分數除法</div></div><span class="sp"></span><button class="btn vbtn"></button></div>
   <div id="bldg"><div class="roof" id="roof"></div><div class="awning"></div><div class="tower" id="tower"></div><div class="ground"></div></div>
   <div class="dock">
-   <button class="btn" id="dkClass"><span>👩‍🍳</span>巧克力教室</button>
+   <button class="btn" id="dkClass"><span>👩‍🏫</span>名師教室</button>
    <button class="btn" id="dkGroup"><span>👥</span>小組競賽</button>
    <button class="btn" id="dkDaily"><span>📅</span>今日挑戰</button>
    <button class="btn" id="dkSet"><span>⚙️</span>設定</button>
@@ -653,7 +654,7 @@ let _lastTap=0;
 function guard(ms){const n=Date.now();if(n-_lastTap<ms)return false;_lastTap=n;return true}
 
 /* ===== 設定 / 狀態（只存在這次開啟）===== */
-const S={voice:true,rate:0.72,count:6,sfx:true,done:{},stars:{},instrSeen:{},started:false,unlockAll:false,demoSeen:{},lesSeen:{}};
+const S={voice:true,rate:0.72,count:6,sfx:true,done:{},stars:{},instrSeen:{},started:false,unlockAll:true,demoSeen:{},lesSeen:{}};
 let _store=null;try{_store=window.localStorage}catch(e){}
 const dayKey=()=>{const d=new Date();return d.getFullYear()*10000+(d.getMonth()+1)*100+d.getDate()};
 function dailyDone(){try{return _store&&_store.getItem('m62-daily')==String(dayKey())}catch(e){return false}}
@@ -887,8 +888,8 @@ function rMatch(q,host,ctx){
   buildShell(q,host,ctx);
   const L=q.pairs.map((p,i)=>({t:p[0],i})),R=shuffle(q.pairs.map((p,i)=>({t:p[1],i})));
   const g=document.createElement('div');g.className='mt';
-  const lb=L.map(x=>{const b=document.createElement('button');b.textContent=x.t;b.dataset.i=x.i;return b});
-  const rb=R.map(x=>{const b=document.createElement('button');b.textContent=x.t;b.dataset.i=x.i;return b});
+  const lb=L.map(x=>{const b=document.createElement('button');b.innerHTML=txtHtml(x.t);b.dataset.i=x.i;return b});
+  const rb=R.map(x=>{const b=document.createElement('button');b.innerHTML=txtHtml(x.t);b.dataset.i=x.i;return b});
   lb.forEach((b,k)=>{g.appendChild(b);g.appendChild(rb[k])});
   host.appendChild(g);fbEl(host);
   let sel=null,bad=0,left=q.pairs.length,locked=false;
@@ -1009,9 +1010,13 @@ function primeSteps(n){
   return st;
 }
 /* ================= 圖：點點排長方形 ================= */
-function arrFig(r,c,o){o=o||{};const W=o.W||220,H=o.H||140,s=Math.min((W-16)/c,(H-(o.lbl?34:16))/r,26),ox=(W-s*c)/2,oy=(H-(o.lbl?20:0)-s*r)/2;
+function arrFig(r,c,o){o=o||{};const W=o.W||220,H=o.H||140;let num=o.num!==false,M=num?12:0,s=Math.min((W-16-M)/c,(H-(o.lbl?34:16)-M)/r,26);
+  if(num&&s<9){num=false;M=0;s=Math.min((W-16)/c,(H-(o.lbl?34:16))/r,26)}
+  const ox=(W-s*c+M)/2,oy=(H-(o.lbl?20:0)-s*r+M)/2;
   let h=`<svg viewBox="0 0 ${W} ${H}" class="gf">`;
   for(let i=0;i<r;i++)for(let j=0;j<c;j++)h+=`<circle cx="${f1(ox+s*(j+.5))}" cy="${f1(oy+s*(i+.5))}" r="${f1(s*.4)}" fill="${o.col||'#ff922b'}"/>`;
+  if(num){const fs=Math.min(10,s*.72);for(let j=0;j<c;j++)h+=`<text x="${f1(ox+s*(j+.5))}" y="${f1(oy-3)}" text-anchor="middle" font-size="${f1(fs)}" font-weight="700" fill="#868e96">${j+1}</text>`;
+    for(let i=0;i<r;i++)h+=`<text x="${f1(ox-4)}" y="${f1(oy+s*(i+.5)+fs*.36)}" text-anchor="end" font-size="${f1(fs)}" font-weight="700" fill="#868e96">${i+1}</text>`}
   if(o.lbl)h+=`<text x="${W/2}" y="${H-4}" text-anchor="middle" font-size="16" fill="#1d2b3a">${o.lbl}</text>`;
   return h+'</svg>';
 }
@@ -1165,7 +1170,7 @@ function fmtImp(r){const [n,d]=R(r[0],r[1]);return FS(n,d)}
 function toImp(w,n,d){return [w*d+n,d]}
 // 顯示：帶分數；唸：幾又幾分之幾
 const _txtHtml0=txtHtml;
-txtHtml=function(s){return esc(s).replace(new RegExp(`(\\d+)${WJ}(\\d+)\\/(\\d+)`,'g'),(m,w,a,b)=>`${w}${fracHTML(a,b)}`).replace(/(\d+)\/(\d+)/g,(m,a,b)=>fracHTML(a,b)).replace(/\n/g,'<br>')};
+txtHtml=function(s){return esc(s).replace(new RegExp(`(\\d+)${WJ}(\\d+)\\/(\\d+)`,'g'),(m,w,a,b)=>`<span class="mxw">${w}</span>${fracHTML(a,b)}`).replace(/(\d+)\/(\d+)/g,(m,a,b)=>fracHTML(a,b)).replace(/\n/g,'<br>')};
 const _spoken0=spoken;
 spoken=function(s){return _spoken0(String(s).replace(new RegExp(`(\\d+)${WJ}(\\d+)\\/(\\d+)`,'g'),(m,w,a,b)=>`${w}又${b}分之${a}`))};
 
@@ -1215,9 +1220,13 @@ function FQ(stem,ans,o){return Object.assign({type:'frac',stem,ans:R(ans[0],ans[
 /* ================= 圖：巧克力條 ================= */
 const GPC=['#f59f00','#e64980','#4dabf7','#40c057','#9775fa','#ff922b','#20c997','#fcc419','#f06595','#339af0','#94d82d','#be4bdb'];
 function chocFig(total,d,grp,o){
-  o=o||{};const bars=o.bars||Math.max(1,Math.ceil(total/d)),W=320,pw=Math.min(40,(W-24)/d),bw=pw*d,bh=Math.max(14,Math.min(36,150/bars-8)),H=bars*(bh+10)+14+(o.cap?20:0),ox=(W-bw)/2;
+  // 巧克力條：上面標「第幾小塊」的數字，左邊標「第幾條」
+  o=o||{};const bars=o.bars||Math.max(1,Math.ceil(total/d)),num=o.num!==false,
+    LW=num?46:0,TH=num?18:0,BW=320,W=BW+LW,pw=Math.min(40,(BW-24)/d),bw=pw*d,bh=Math.max(14,Math.min(36,150/bars-8)),H=TH+bars*(bh+10)+14+(o.cap?20:0),ox=LW+(BW-bw)/2;
   let s=`<svg viewBox="0 0 ${W} ${H}" class="gf">`;const lbl=[];
-  for(let b=0;b<bars;b++){const y=8+b*(bh+10);
+  if(num&&pw>=9){const fs=Math.min(13,pw*.62);for(let i=0;i<d;i++)s+=`<text x="${f1(ox+i*pw+pw/2)}" y="${f1(TH-4)}" text-anchor="middle" font-size="${f1(fs)}" font-weight="700" fill="#8a5a3c">${i+1}</text>`}
+  for(let b=0;b<bars;b++){const y=TH+8+b*(bh+10);
+    if(num)s+=`<text x="${f1(ox-6)}" y="${f1(y+bh/2+4.5)}" text-anchor="end" font-size="${f1(Math.min(13,bh*.62))}" font-weight="700" fill="#5c3d2e">第${b+1}條</text>`;
     for(let i=0;i<d;i++){const idx=b*d+i,x=ox+i*pw;
       if(idx<total){s+=`<rect x="${f1(x+1)}" y="${f1(y)}" width="${f1(pw-2)}" height="${f1(bh)}" rx="3" fill="#7b4a2a" stroke="#4a2a14" stroke-width="1"/><rect x="${f1(x+3)}" y="${f1(y+2)}" width="${f1(pw-6)}" height="${f1(bh*.35)}" rx="2" fill="#9c6644" opacity=".7"/>`;
         if(grp){const k=Math.floor(idx/grp),full=(k+1)*grp<=total;s+=`<rect class="exh ${full?'gp'+k:'lo'}" x="${f1(x+1)}" y="${f1(y)}" width="${f1(pw-2)}" height="${f1(bh)}" rx="3" fill="${full?GPC[k%GPC.length]:'#ced4da'}" opacity=".9"/>`;
@@ -1229,6 +1238,50 @@ function chocFig(total,d,grp,o){
   s+=lbl.join('');
   if(o.cap)s+=`<text x="${W/2}" y="${H-5}" text-anchor="middle" font-size="13" fill="#5c3d2e">${o.cap}</text>`;
   return s+'</svg>';
+}
+/* 兩條一樣長的巧克力，比一比：約分前、約分後一樣大 */
+function redFig(n,d,g){
+  const N=n/g,D=d/g,bars=Math.max(1,Math.ceil(n/d)),LW=58,BW=300,W=LW+BW+8,bh=Math.max(16,Math.min(30,70/bars-6)),TH=16,rowH=bars*(bh+6),H=TH+rowH+30+TH+rowH+12;
+  const one=(nn,dd,y0,cls,grpk)=>{let s='';const pw=BW/dd;
+    if(pw>=9){const fs=Math.min(12,pw*.6);for(let i=0;i<dd;i++)s+=`<text class="${cls}" x="${f1(LW+i*pw+pw/2)}" y="${f1(y0-4)}" text-anchor="middle" font-size="${f1(fs)}" font-weight="700" fill="#8a5a3c">${i+1}</text>`}
+    for(let b=0;b<bars;b++){const y=y0+b*(bh+6);
+      for(let i=0;i<dd;i++){const idx=b*dd+i,x=LW+i*pw,on=idx<nn;
+        s+=`<rect class="${cls}" x="${f1(x+.8)}" y="${f1(y)}" width="${f1(Math.max(1,pw-1.6))}" height="${f1(bh)}" rx="2" fill="${on?'#7b4a2a':'#fff'}" stroke="${on?'#4a2a14':'#ced4da'}" stroke-width="1"/>`}
+      if(grpk>1)for(let k=0;k<dd/grpk;k++){const idx=b*dd+k*grpk;s+=`<rect class="exh gpx" x="${f1(LW+k*grpk*pw+1)}" y="${f1(y-2)}" width="${f1(grpk*pw-2)}" height="${f1(bh+4)}" rx="4" fill="none" stroke="${GPC[k%GPC.length]}" stroke-width="3"/>`}
+      s+=`<rect class="${cls}" x="${LW}" y="${f1(y-1)}" width="${BW}" height="${f1(bh+2)}" rx="3" fill="none" stroke="#2b1a0e" stroke-width="1.8"/>`}
+    const cy=y0+rowH/2-3;
+    s+=`<g class="${cls}"><text x="${LW/2-4}" y="${f1(cy-3)}" text-anchor="middle" font-size="15" font-weight="900" fill="#2b1a0e">${nn}</text><line x1="${LW/2-18}" y1="${f1(cy+1)}" x2="${LW/2+10}" y2="${f1(cy+1)}" stroke="#2b1a0e" stroke-width="2"/><text x="${LW/2-4}" y="${f1(cy+16)}" text-anchor="middle" font-size="15" font-weight="900" fill="#2b1a0e">${dd}</text></g>`;
+    return s};
+  let s=`<svg viewBox="0 0 ${W} ${H}" class="gf">`;
+  s+=one(n,d,TH,'',g);
+  if(g>1){const y2=TH+rowH+30+TH;s+=`<text class="exh r2" x="${LW+BW/2}" y="${f1(TH+rowH+16)}" text-anchor="middle" font-size="13" font-weight="800" fill="#c2410c">↓ 每 ${g} 小塊合成 1 大塊，一樣長、一樣大</text>`+one(N,D,y2,'exh r2',0)}
+  return s+'</svg>';
+}
+/* 假分數 → 帶分數，一步一步說 */
+function mixSteps(n,d,u){
+  u=u||'';const q=Math.floor(n/d),r=n%d,st=[];
+  if(n<=d)return st;
+  st.push({t:`${n}/${d} 的分子比分母大，比1還多，叫做「假分數」。可以寫成帶分數。`,eq:`${n}/${d} ＝ ？`});
+  if(n<=30)st.push({t:`${n}/${d} 就是 ${n} 個 1/${d}。每 ${d} 個 1/${d} 合起來，就是 1 個整數。`});
+  st.push({t:`用除法算：${n}÷${d}＝${q}${r?`……${r}`:''}。`,eq:`${n} ÷ ${d} ＝ ${q}${r?` …… ${r}`:''}`});
+  if(!r){st.push({t:`剛好除完，${n}/${d} ＝ ${q}${u}。`,eq:`${n}/${d} ＝ ${q}`});return st}
+  st.push({t:`商是${q}：可以合成${q}個整數。餘數是${r}：還剩${r}個 1/${d}。`});
+  st.push({t:`整數寫${q}，分子寫餘數${r}，分母還是${d}。所以 ${n}/${d} ＝ ${MX(q,r,d)}${u}，唸作「${q}又${d}分之${r}」。`,eq:`${n}/${d} ＝ ${MX(q,r,d)}`});
+  return st;
+}
+/* 約分：一步一步，用「÷1」來想 */
+function reduceSteps(n,d,o){
+  o=o||{};const g=gcd(n,d),st=[];
+  const fn=factors(n),fd=factors(d),cm=fn.filter(x=>fd.includes(x));
+  st.push({t:`先找${n}和${d}的公因數。${n}的因數：${fn.join('、')}。${d}的因數：${fd.join('、')}。`,eq:`${n}/${d}`});
+  if(g===1){st.push({t:`${n}和${d}，除了1以外沒有公因數，已經是最簡分數了，不用約分。`,eq:`${n}/${d} 是最簡分數`});
+    if(n>d&&!o.noMix)mixSteps(n,d).forEach(x=>st.push(x));return st}
+  st.push({t:`兩個都有的公因數是：${cm.join('、')}。最大的是${g}，叫做最大公因數。`,eq:`${n} 和 ${d} 的最大公因數是 ${g}`});
+  st.push({t:`${g}/${g} 就是 1。分數除以 1，大小不會變。所以可以把 ${n}/${d} 除以 ${g}/${g}。`,eq:`${n}/${d} ＝ ${n}/${d} ÷ 1 ＝ ${n}/${d} ÷ ${g}/${g}`});
+  st.push({t:`分子除以${g}：${n}÷${g}＝${n/g}。分母除以${g}：${d}÷${g}＝${d/g}。`,eq:`${n}/${d} ÷ ${g}/${g} ＝ [${n}÷${g}/${d}÷${g}] ＝ ${n/g}/${d/g}`,show:'.gpx,.r2'});
+  st.push({t:`${n/g}和${d/g}，除了1以外沒有公因數，不能再約了，這就是最簡分數。`,eq:`${n}/${d} ＝ ${n/g}/${d/g}`});
+  if(n>d&&!o.noMix)mixSteps(n/g,d/g).forEach(x=>st.push(x));
+  return st;
 }
 function groupSteps(total,grp,full){ // 一組一組圈出來
   const n=Math.floor(total/grp),st=[];
@@ -1242,23 +1295,32 @@ function rv(x){return x.d?[(x.w||0)*x.d+x.n,x.d]:[x.w,1]}
 function xs(x){return x.d?(x.w?MX(x.w,x.n,x.d):`${x.n}/${x.d}`):`${x.w}`}
 function divEx(x,y,o){
   o=o||{};const st=[],X=rv(x),Y=rv(y),ans=rDiv(X,Y);
-  if(x.w&&x.d)st.push({t:`先把帶分數化成假分數：${xs(x)}，${x.w}×${x.d}＋${x.n}＝${X[0]}，是${X[0]}/${X[1]}。`,eq:`${xs(x)}＝${X[0]}/${X[1]}`});
-  if(y.w&&y.d)st.push({t:`${xs(y)}，${y.w}×${y.d}＋${y.n}＝${Y[0]}，是${Y[0]}/${Y[1]}。`,eq:`${xs(y)}＝${Y[0]}/${Y[1]}`});
-  const L=lcm(X[1],Y[1]),A=X[0]*L/X[1],B=Y[0]*L/Y[1];
-  if(L===1){st.push({t:`${X[0]}÷${Y[0]}＝${fmtR(ans)}。`,eq:fmtR(ans)});return {fig:'',steps:st,ans}}
-  if(X[1]===1)st.push({t:`整數${X[0]}，化成分母是${L}的分數：${X[0]}＝${A}/${L}。`,eq:`${X[0]}＝${A}/${L}`});
-  else if(X[1]!==Y[1])st.push({t:`兩個分數的分母不一樣，小塊的大小不一樣，先通分：${X[0]}/${X[1]}＝${A}/${L}，${Y[0]}/${Y[1]}＝${B}/${L}。`,eq:`${A}/${L} ÷ ${B}/${L}`});
-  if(Y[1]===1&&X[1]!==1)st.push({t:`除數${Y[0]}，也化成分母是${L}的分數：${B}/${L}。`});
+  if(x.w&&x.d)st.push({t:`先把帶分數化成假分數：${xs(x)}，整數×分母＋分子：${x.w}×${x.d}＋${x.n}＝${X[0]}，分母不變，是${X[0]}/${X[1]}。`,eq:`${xs(x)} ＝ [${x.w}×${x.d}＋${x.n}/${x.d}] ＝ ${X[0]}/${X[1]}`});
+  if(y.w&&y.d)st.push({t:`${xs(y)}也一樣：${y.w}×${y.d}＋${y.n}＝${Y[0]}，是${Y[0]}/${Y[1]}。`,eq:`${xs(y)} ＝ [${y.w}×${y.d}＋${y.n}/${y.d}] ＝ ${Y[0]}/${Y[1]}`});
+  const L=lcm(X[1],Y[1]),A=X[0]*L/X[1],B=Y[0]*L/Y[1],kx=L/X[1],ky=L/Y[1];
+  if(L===1){st.push({t:`${X[0]}÷${Y[0]}＝${fmtR(ans)}。`,eq:`${X[0]} ÷ ${Y[0]} ＝ ${fmtR(ans)}`});return {fig:'',steps:st,ans}}
+  if(X[1]===1)st.push({t:`整數${X[0]}，先寫成分數：${X[0]}＝${X[0]}/1。分子、分母都乘以${L}，${L}/${L}就是1，乘以1大小不變：${X[0]}＝${A}/${L}。`,eq:`${X[0]} ＝ ${X[0]}/1 ＝ [${X[0]}×${L}/1×${L}] ＝ ${A}/${L}`});
+  else if(X[1]!==Y[1]){
+    st.push({t:`兩個分數的分母不一樣，小塊的大小不一樣，要先通分：分母都變成${L}。`,eq:`${X[1]} 和 ${Y[1]} 的最小公倍數是 ${L}`});
+    if(kx>1)st.push({t:`${X[0]}/${X[1]}：分子、分母都乘以${kx}（${kx}/${kx}就是1，大小不變），變成${A}/${L}。`,eq:`${X[0]}/${X[1]} ＝ [${X[0]}×${kx}/${X[1]}×${kx}] ＝ ${A}/${L}`});
+    if(ky>1)st.push({t:`${Y[0]}/${Y[1]}：分子、分母都乘以${ky}（${ky}/${ky}就是1，大小不變），變成${B}/${L}。`,eq:`${Y[0]}/${Y[1]} ＝ [${Y[0]}×${ky}/${Y[1]}×${ky}] ＝ ${B}/${L}`});
+    st.push({t:`算式變成：${A}/${L} ÷ ${B}/${L}。`,eq:`${A}/${L} ÷ ${B}/${L}`});
+  }
+  if(Y[1]===1&&X[1]!==1)st.push({t:`除數${Y[0]}，也寫成分母是${L}的分數：分子、分母都乘以${L}，變成${B}/${L}。`,eq:`${Y[0]} ＝ ${Y[0]}/1 ＝ [${Y[0]}×${L}/1×${L}] ＝ ${B}/${L}`});
   const pic=A<=72&&L<=12&&A/L<=6;
   st.push({t:`現在分母一樣了：${A}/${L}就是${A}個1/${L}小塊，${B}/${L}就是${B}個1/${L}小塊。`});
   st.push({t:`問題變成：${A}小塊裡面，有幾個${B}小塊？每${B}小塊圈一組。`});
   if(pic)groupSteps(A,B).forEach(s=>st.push(s));
-  st.push({t:`就是${A}÷${B}＝${FS(...R(A,B))}${R(A,B)[1]>1&&A>B?`，也就是${fmtR(ans)}`:''}。`,eq:`${A}÷${B}＝${fmtR(ans)}`});
+  const rr=R(A,B);
+  if(A%B===0)st.push({t:`分母一樣，只要分子相除：${A}÷${B}＝${A/B}。`,eq:`${A}/${L} ÷ ${B}/${L} ＝ ${A} ÷ ${B} ＝ ${A/B}`});
+  else{
+    st.push({t:`分母一樣，只要分子相除：${A}÷${B}＝${A}/${B}。`,eq:`${A}/${L} ÷ ${B}/${L} ＝ ${A} ÷ ${B} ＝ ${A}/${B}`});
+    if(gcd(A,B)>1){st.push({t:`${A}/${B} 還可以約分。`});reduceSteps(A,B,{noMix:true}).forEach(s=>st.push(s))}
+    if(rr[0]>rr[1])mixSteps(rr[0],rr[1]).forEach(s=>st.push(s));
+  }
   if(!o.noFlip)st.push({t:`快速的方法：除以${Y[0]}/${Y[1]}，就是乘以它顛倒過來的${Y[1]}/${Y[0]}：${X[0]}/${X[1]}×${Y[1]}/${Y[0]}＝${fmtR(ans)}。`,eq:`${FS(X[0],X[1])} × ${Y[1]}/${Y[0]} ＝ ${fmtR(ans)}`});
   return {fig:pic?chocFig(A,L,B):'',steps:st,ans};
 }
-function reduceSteps(n,d){const g=gcd(n,d);if(g===1)return [{t:`${n}和${d}，除了1以外沒有公因數，已經是最簡分數了。`,eq:`${n}/${d} 是最簡分數`}];
-  return [{t:`找${n}和${d}的最大公因數：${g}。`},{t:`分子和分母，同時除以${g}：${n}÷${g}＝${n/g}，${d}÷${g}＝${d/g}。`,eq:`${n}/${d}＝${n/g}/${d/g}`},{t:`${n/g}和${d/g}不能再約了，這就是最簡分數。`}]}
 const _caseFig0=caseFig;
 caseFig=function(q){if(/\//.test(q.stem))return null;return _caseFig0(q)};
 
@@ -1406,7 +1468,7 @@ const HINTDIV='分母一樣，就看分子；分母不一樣，先通分。也�
 /* ===== 第1層：最簡分數 ===== */
 function redPair(maxd){for(;;){const [a,b]=cop(9),k=rnd(2,6);if(b*k<=maxd)return [a*k,b*k]}}
 function F1_red(t){const [n,d]=redPair(t===1?24:60);
-  return FQ(`把 ${n}/${d} 化成最簡分數。`,[n,d],{fig:d<=12?chocFig(n,d,0,{bars:1,cap:`一條巧克力切成${d}小塊，拿了${n}小塊`}):null,hint:'分子和分母，同時除以它們的最大公因數。',why:`${n}和${d}的最大公因數是${gcd(n,d)}，${n}/${d}＝${fmtR([n,d])}。`,ex:{steps:reduceSteps(n,d)}})}
+  return FQ(`把 ${n}/${d} 化成最簡分數。`,[n,d],{fig:d<=12?chocFig(n,d,0,{bars:1,cap:`一條巧克力切成${d}小塊，拿了${n}小塊`}):null,hint:'分子和分母，同時除以它們的最大公因數。',why:`${n}和${d}的最大公因數是${gcd(n,d)}，${n}/${d}＝${fmtR([n,d])}。`,ex:{fig:n<=d*3?redFig(n,d,gcd(n,d)):'',steps:reduceSteps(n,d)}})}
 function F1_pick(){for(let t=0;t<50;t++){const vals=[];const ok=[];
   for(let i=0;i<6;i++){let n,d,w=Math.random()<.25?rnd(1,3):0;if(Math.random()<.5){[n,d]=cop(30,5)}else{[n,d]=redPair(60)}const s=w?MX(w,n,d):`${n}/${d}`;if(vals.includes(s))continue;vals.push(s);ok.push(gcd(n,d)===1)}
   const c=ok.filter(Boolean).length;if(vals.length<5||c<2||c>4)continue;
@@ -1416,7 +1478,7 @@ const F1TF=[['最簡分數的分子和分母，最大公因數是1。',true,'不
  ['8/9 和 2${WJ}3/7 這兩個分數都是最簡分數。'.replace('${WJ}',WJ),true,'8和9互質，3和7互質。'],['最簡分數的分子和分母，最小公倍數是1。',false,'是「最大公因數」是1，不是最小公倍數。'],['12/18 是最簡分數。',false,'12和18都有因數6，12/18＝2/3。']];
 function F1_tf(){return pickTF(F1TF)}
 function F1_box(){const tot=pick([18,24,12,30,16,20]),k=pick(factors(tot).filter(v=>v>1&&v<tot)),left=tot-tot/k*rnd(1,k-1);if(left<=0||left>=tot)return F1_box();
-  return FQ(`一盒巧克力有${tot}塊，吃掉一些後，還剩下${left}塊。剩下的是幾盒？（用最簡分數）`,[left,tot],{fig:tot<=24?chocFig(left,tot<=12?tot:tot/2,0,{bars:tot<=12?1:2,cap:'剩下的巧克力'}):null,hint:`${left}塊是${tot}塊的幾分之幾？再約分。`,why:`${left}/${tot}＝${fmtR([left,tot])}盒。`,ex:{steps:[{t:`一盒是${tot}塊，剩下${left}塊，就是${left}/${tot}盒。`}].concat(reduceSteps(left,tot))},unit:'盒'})}
+  return FQ(`一盒巧克力有${tot}塊，吃掉一些後，還剩下${left}塊。剩下的是幾盒？（用最簡分數）`,[left,tot],{fig:tot<=24?chocFig(left,tot<=12?tot:tot/2,0,{bars:tot<=12?1:2,cap:'剩下的巧克力'}):null,hint:`${left}塊是${tot}塊的幾分之幾？再約分。`,why:`${left}/${tot}＝${fmtR([left,tot])}盒。`,ex:{fig:redFig(left,tot,gcd(left,tot)),steps:[{t:`一盒是${tot}塊，剩下${left}塊，就是${left}/${tot}盒。`}].concat(reduceSteps(left,tot))},unit:'盒'})}
 function F1_mix(){const w=rnd(1,4),[n,d]=redPair(60);return FQ(`把 ${MX(w,n,d)} 約分成最簡分數。`,[w*d+n,d],{hint:'整數部分不變，只要約分數的部分。',why:`${MX(w,n,d)}＝${fmtR([w*d+n,d])}。`,ex:{steps:[{t:`整數${w}不用動，只要約${n}/${d}。`}].concat(reduceSteps(n,d)).concat([{t:`所以是${fmtR([w*d+n,d])}。`,eq:fmtR([w*d+n,d])}])}})}
 const LV1={id:1,ic:'🍫',name:'最簡分數',sub:'約到不能再約',story:'第一站：把巧克力分數，約成最簡單的樣子！',mk:[[1,()=>F1_red(1)],[1,F1_pick],[1,F1_box],[2,()=>F1_red(2)],[2,F1_tf],[2,F1_pick],[3,F1_mix],[3,F1_box],[3,F1_tf]]};
 
@@ -1530,7 +1592,7 @@ const PRIZEN=[0,'黑巧克力','牛奶糖','餅乾','杯子蛋糕','甜甜圈','
 /* ================= 巧克力老師上課 ================= */
 const row3=items=>`<div class="row3">${items.map(([svg,cap,cls])=>`<div class="${cls||''}">${svg}<span>${cap}</span></div>`).join('')}</div>`;
 const card=html=>`<div class="bigeq" style="line-height:1.7;padding:.3em">${html}</div>`;
-const T=s=>s.replace(new RegExp(`(\\d+)${WJ}(\\d+)\\/(\\d+)`,'g'),(m,w,a,b)=>`${w}${fracHTML(a,b)}`).replace(/(\d+)\/(\d+)/g,(m,a,b)=>fracHTML(a,b));
+const T=s=>s.replace(new RegExp(`(\\d+)${WJ}(\\d+)\\/(\\d+)`,'g'),(m,w,a,b)=>`<span class="mxw">${w}</span>${fracHTML(a,b)}`).replace(/(\d+)\/(\d+)/g,(m,a,b)=>fracHTML(a,b));
 const cnt=(n,from)=>Array.from({length:n},(_,k)=>({t:String(k+1),a:ON(`.gp${k+(from||0)},.gl${k+(from||0)}`)}));
 const dots=(n,g)=>{const W=300,H=90,s=Math.min(36,(W-20)/n);let h=`<svg viewBox="0 0 ${W} ${H}" class="gf">`;for(let i=0;i<n;i++){const k=Math.floor(i/g),x=(W-s*n)/2+s*(i+.5);h+=`<circle cx="${f1(x)}" cy="40" r="${f1(s*.38)}" fill="#7b4a2a"/>`;if(i%g===0)h+=`<rect class="exh gp${k}" x="${f1(x-s/2+2)}" y="${f1(40-s/2-2)}" width="${f1(s*g-4)}" height="${f1(s+4)}" rx="10" fill="none" stroke="${GPC[k%12]}" stroke-width="4"/><text class="exh gl${k}" x="${f1(x-s/2+s*g/2)}" y="${f1(40+s/2+18)}" text-anchor="middle" font-size="15" fill="${GPC[k%12]}">${k+1}盒</text>`}return h+'</svg>'};
 
@@ -1538,7 +1600,7 @@ const LESSONS={
 1:[
  {stage:chocFig(12,18,0,{bars:1,cap:'一盒18塊，剩下12塊'}),say:['嗨！我是巧克力工坊的可可老師。今天我們要學分數的除法！','先暖身：一盒巧克力有18塊，吃掉一些，還剩下12塊。',{t:'剩下的是 12/18 盒。',eq:'12/18 盒'}]},
  {stage:chocFig(12,18,6,{bars:1}),say:['12和18，都可以被6整除。我們把每6塊包成一包。',{t:'剩下的巧克力有2包。',a:ON('.gp0,.gp1,.gl0,.gl1')},{t:'一盒有3包，剩下2包，就是 2/3 盒。',eq:'12/18 ＝ 2/3'}]},
- {stage:card('12/18 ＝ (12÷6)/(18÷6) ＝ <span class="r">2/3</span>'.replace(/(\d+)\/(\d+)/g,'§$1/$2§')).replace(/§([^§]+)§/g,(m,x)=>T(x)),say:[{t:'分子和分母，同時除以同一個數，分數的大小不會變，這叫做「約分」。'},{t:'用最大公因數6去約，一次就約好了：2/3。',eq:'12/18 ＝ 2/3'},{t:'2和3，除了1以外，沒有公因數，不能再約了，叫做「最簡分數」。'}]},
+ {stage:card('12/18 ＝ (12÷6)/(18÷6) ＝ <span class="r">2/3</span>'.replace(/(\d+)\/(\d+)/g,'§$1/$2§')).replace(/§([^§]+)§/g,(m,x)=>T(x)),say:[{t:'分子和分母，同時除以同一個數，分數的大小不會變，這叫做「約分」。'},{t:'為什麼大小不會變？6/6 就是 1。除以 1，大小不變。',eq:'12/18 ＝ 12/18 ÷ 1 ＝ 12/18 ÷ 6/6'},{t:'分子 12÷6＝2，分母 18÷6＝3。',eq:'12/18 ÷ 6/6 ＝ [12÷6/18÷6] ＝ 2/3'},{t:'用最大公因數6去約，一次就約好了：2/3。數字變小了，比較好看懂，也比較好計算。',eq:'12/18 ＝ 2/3'},{t:'2和3，除了1以外，沒有公因數，不能再約了，叫做「最簡分數」。'}]},
  {stage:card(T('8/12 ＝ ？')),say:['考考你！'],q:{ask:'8/12 的最簡分數是多少？',opts:['4/6','2/3','8/12'],ans:1,ok:'8和12的最大公因數是4，8÷4＝2，12÷4＝3，是2/3！',no:'用8和12的最大公因數去約。'}}
 ],
 2:[
@@ -1553,30 +1615,30 @@ const LESSONS={
  {stage:chocFig(6,8,0,{bars:1,cap:'一條巧克力切成8小塊，有6小塊'}),say:['現在被除數也是分數：6/8 ÷ 2/8。','6/8，就是6個 1/8 小塊；2/8，就是2個 1/8 小塊。',{t:'問題就變成：6小塊裡面，有幾個2小塊？'}]},
  {stage:chocFig(6,8,2,{bars:1}),say:['每2小塊圈一組。',...cnt(3),{t:'3組！6/8 ÷ 2/8 ＝ 6 ÷ 2 ＝ 3。',eq:'6/8 ÷ 2/8 ＝ 6 ÷ 2 ＝ 3'}]},
  {stage:card(T('分母一樣 → 小塊一樣大<br>只要<span class="r">分子相除</span>')),say:['分母一樣，表示每一小塊一樣大。','所以只要數小塊的個數：把分子相除就好了！',{t:'同分母分數相除，等於分子相除。',eq:'a/□ ÷ b/□ ＝ a ÷ b'}]},
- {stage:chocFig(7,8,2,{bars:1}),say:['如果不能剛好分完呢？7/8 ÷ 2/8。','7小塊裡面有幾個2小塊？',...cnt(3),{t:'3組，還剩1小塊，是半組。',a:ON('.lo')},{t:'7 ÷ 2 ＝ 7/2，也就是 3又1/2。',eq:'7/8 ÷ 2/8 ＝ 7/2 ＝ 3 1/2'.replace('3 1/2',MX(3,1,2))}]},
+ {stage:chocFig(7,8,2,{bars:1}),say:['如果不能剛好分完呢？7/8 ÷ 2/8。','7小塊裡面有幾個2小塊？',...cnt(3),{t:'3組，還剩1小塊，是半組。',a:ON('.lo')},{t:'分母一樣，分子相除：7 ÷ 2 ＝ 7/2。',eq:'7/8 ÷ 2/8 ＝ 7 ÷ 2 ＝ 7/2'},...mixSteps(7,2),{t:'所以 7/8 ÷ 2/8 ＝ 3又1/2。',eq:'7/8 ÷ 2/8 ＝ 7/2 ＝ '+MX(3,1,2)}]},
  {stage:chocFig(9,10,3,{bars:1}),say:['考考你！'],q:{ask:'9/10 ÷ 3/10 ＝ ？',opts:['3','9/30','27'],ans:0,ok:'分母一樣，9÷3＝3！',no:'分母一樣，只要把分子相除。'}}
 ],
 4:[
  {stage:row3([[chocFig(3,4,0,{bars:1}),'3/4'],[chocFig(1,2,0,{bars:1}),'1/2']]).replace(/>(\d+)\/(\d+)</g,(m,a,b)=>'>'+T(a+'/'+b)+'<'),say:['如果分母不一樣呢？3/4 ÷ 1/2。','一個是切成4小塊，一個是切成2大塊，大小不一樣，沒辦法直接數。']},
- {stage:chocFig(3,4,2,{bars:1,cap:'都切成 1/4 小塊'}),say:[{t:'先把它們切成一樣大：通分！1/2 ＝ 2/4。',eq:'3/4 ÷ 1/2 ＝ 3/4 ÷ 2/4'},'現在問：3小塊裡面，有幾個2小塊？',...cnt(1),{t:'1組，還剩1小塊，是半組。',a:ON('.lo')},{t:'3 ÷ 2 ＝ 3/2，也就是 1又1/2。',eq:'3/4 ÷ 1/2 ＝ 3/2 ＝ '+MX(1,1,2)}]},
- {stage:chocFig(15,3,1,{cap:'5條巧克力，每條切成3小塊'}),say:['整數除以分數也一樣：5 ÷ 1/3。',{t:'把5化成分母是3的分數：5 ＝ 15/3。',eq:'5 ÷ 1/3 ＝ 15/3 ÷ 1/3'},{t:'15小塊裡面，有15個1小塊。'},{t:'所以 5 ÷ 1/3 ＝ 15。',a:ON('.exh'),eq:'5 ÷ 1/3 ＝ 15'}]},
+ {stage:chocFig(3,4,2,{bars:1,cap:'都切成 1/4 小塊'}),say:[{t:'先把它們切成一樣大：通分！1/2 的分子、分母都乘以2。2/2 就是 1，乘以 1 大小不變：1/2 ＝ 2/4。',eq:'1/2 ＝ [1×2/2×2] ＝ 2/4'},{t:'算式變成 3/4 ÷ 2/4。',eq:'3/4 ÷ 1/2 ＝ 3/4 ÷ 2/4'},'現在問：3小塊裡面，有幾個2小塊？',...cnt(1),{t:'1組，還剩1小塊，是半組。',a:ON('.lo')},{t:'分母一樣，分子相除：3 ÷ 2 ＝ 3/2。',eq:'3/4 ÷ 2/4 ＝ 3 ÷ 2 ＝ 3/2'},...mixSteps(3,2),{t:'所以 3/4 ÷ 1/2 ＝ 1又1/2。',eq:'3/4 ÷ 1/2 ＝ 3/2 ＝ '+MX(1,1,2)}]},
+ {stage:chocFig(15,3,1,{cap:'5條巧克力，每條切成3小塊'}),say:['整數除以分數也一樣：5 ÷ 1/3。',{t:'把5化成分母是3的分數：5 ＝ 5/1，分子、分母都乘以3。3/3 就是 1，大小不變，5 ＝ 15/3。',eq:'5 ＝ 5/1 ＝ [5×3/1×3] ＝ 15/3'},{t:'算式變成 15/3 ÷ 1/3。',eq:'5 ÷ 1/3 ＝ 15/3 ÷ 1/3'},{t:'15小塊裡面，有15個1小塊。'},{t:'所以 5 ÷ 1/3 ＝ 15。',a:ON('.exh'),eq:'5 ÷ 1/3 ＝ 15'}]},
  {stage:card(T('2/3 ÷ 1/6 ＝ ？')),say:['考考你！'],q:{ask:'2/3 ÷ 1/6，先通分會變成哪一個？',opts:['4/6 ÷ 1/6','2/6 ÷ 1/6','2/3 ÷ 1/3'],ans:0,ok:'2/3＝4/6，4/6 ÷ 1/6 ＝ 4÷1 ＝ 4！',no:'2/3 的分母要變成6，分子也要一起乘2。'}}
 ],
 5:[
  {stage:card(T('3 ÷ 1/2 ＝ 6 ＝ 3 × <span class="r">2</span><br>3 ÷ 1/4 ＝ 12 ＝ 3 × <span class="r">4</span><br>2 ÷ 2/3 ＝ 3 ＝ 2 × <span class="r">3/2</span>')),say:['我們把前面算過的排在一起，找找看規律。',{t:'3 ÷ 1/2 ＝ 6，剛好是 3 × 2。'},{t:'3 ÷ 1/4 ＝ 12，剛好是 3 × 4。'},{t:'2 ÷ 2/3 ＝ 3，剛好是 2 × 3/2。'},{t:'發現了嗎？除以一個分數，等於乘以把它「上下顛倒」的分數！',eq:'÷ 1/2 → × 2/1　÷ 2/3 → × 3/2'}]},
  {stage:chocFig(6,3,2,{cap:'每條切成3小塊，每2小塊一組'}),say:['為什麼可以這樣？看 ÷ 2/3。','每一條切成3小塊，所以先乘以3，變成小塊的個數。',{t:'每2小塊才算一組，所以再除以2。',a:ON('.exh')},{t:'乘以3、再除以2，就是乘以 3/2！',eq:'÷ 2/3 ＝ × 3 ÷ 2 ＝ × 3/2'}]},
- {stage:card(T('3/5 ÷ 7/4<br>＝ 3/5 × <span class="r">4/7</span><br>＝ 12/35')),say:['顛倒相乘的三個步驟：',{t:'一、被除數不動。'},{t:'二、除號變成乘號。'},{t:'三、除數上下顛倒：7/4 變成 4/7。'},{t:'3/5 × 4/7 ＝ 12/35。最後記得檢查能不能約分。',eq:'3/5 ÷ 7/4 ＝ 12/35'}]},
+ {stage:card(T('3/5 ÷ 7/4<br>＝ 3/5 × <span class="r">4/7</span><br>＝ 12/35')),say:['顛倒相乘的三個步驟：',{t:'一、被除數不動。'},{t:'二、除號變成乘號。'},{t:'三、除數上下顛倒：7/4 變成 4/7。'},{t:'分子乘分子：3×4＝12。分母乘分母：5×7＝35。',eq:'3/5 × 4/7 ＝ [3×4/5×7] ＝ 12/35'},{t:'最後檢查能不能約分：12和35除了1沒有公因數，不能再約了。',eq:'3/5 ÷ 7/4 ＝ 12/35'}]},
  {stage:card(T('4/9 ÷ 2/3 ＝ ？')),say:['考考你！'],q:{ask:'4/9 ÷ 2/3 ＝ ？',opts:['8/27','2/3','2'],ans:1,ok:'4/9 × 3/2 ＝ 12/18 ＝ 2/3！',no:'把2/3顛倒成3/2，再相乘，最後約分。'}}
 ],
 6:[
  {stage:chocFig(11,4,0,{cap:'2條又3小塊（每條4小塊）'}),say:[{t:'遇到帶分數，例如 2又3/4，要先變成假分數。'},'2又3/4，就是2條巧克力，再加3小塊，每條切成4小塊。',{t:'2條有2×4＝8小塊，再加3小塊，一共11小塊，就是 11/4。',eq:MX(2,3,4)+' ＝ 11/4'},{t:'口訣：整數×分母，再加分子，分母不變。'}]},
- {stage:card(T(`${MX(2,3,4)} ÷ ${MX(1,1,6)}<br>＝ 11/4 ÷ 7/6<br>＝ 11/4 × 6/7 ＝ 33/14`)),say:['再來，就和前面一樣顛倒相乘。',{t:'2又3/4 ＝ 11/4，1又1/6 ＝ 7/6。'},{t:'11/4 × 6/7 ＝ 66/28 ＝ 33/14，也就是 2又5/14。',eq:'＝ 33/14 ＝ '+MX(2,5,14)}]},
+ {stage:card(T(`${MX(2,3,4)} ÷ ${MX(1,1,6)}<br>＝ 11/4 ÷ 7/6<br>＝ 11/4 × 6/7 ＝ 33/14`)),say:['再來，就和前面一樣顛倒相乘。',{t:'2又3/4 ＝ 11/4，1又1/6 ＝ 7/6。'},{t:'分子乘分子：11×6＝66。分母乘分母：4×7＝28。',eq:'11/4 × 6/7 ＝ [11×6/4×7] ＝ 66/28'},{t:'66和28都可以被2整除，約分：66÷2＝33，28÷2＝14。',eq:'66/28 ＝ [66÷2/28÷2] ＝ 33/14'},...mixSteps(33,14),{t:'所以答案是 2又5/14。',eq:'＝ 33/14 ＝ '+MX(2,5,14)}]},
  {stage:card(T(`${MX(4,1,5)} ÷ ${MX(2,1,3)}<br>❌ ＝ 1/5 ÷ 1/3`)),say:['小心常見的錯誤！',{t:'有人把整數部分丟掉，只算分數部分，這樣就錯了！'},{t:'一定要先把整個帶分數化成假分數。'}]},
  {stage:card(T(`${MX(1,1,2)} ＝ ？`)),say:['考考你！'],q:{ask:'1又1/2 化成假分數是多少？',opts:['2/2','3/2','1/2'],ans:1,ok:'1×2＋1＝3，是3/2！',no:'整數×分母，再加分子。'}}
 ],
 7:[
  {stage:chocFig(12,3,4,{cap:'4公尺的紙帶，每 4/3 公尺剪一段'}),say:['應用題第一種：「可以分成幾份？」','一條紙帶長4公尺，每 4/3 公尺剪成一段，可以剪幾段？',{t:'把4公尺切成 1/3 公尺的小段，有12小段；每4小段剪一段。'},...cnt(3),{t:'全部 ÷ 每一份：4 ÷ 4/3 ＝ 3段。',eq:'4 ÷ 4/3 ＝ 3'}]},
- {stage:card(T('紅緞帶 7/5 公尺<br>綠緞帶 4/5 公尺')),say:['應用題第二種：「是幾倍？」',{t:'紅緞帶是綠緞帶的幾倍？就是 紅 ÷ 綠。'},{t:'7/5 ÷ 4/5 ＝ 7÷4 ＝ 7/4 倍。',eq:'7/5 ÷ 4/5 ＝ 7/4 倍'}]},
+ {stage:card(T('紅緞帶 7/5 公尺<br>綠緞帶 4/5 公尺')),say:['應用題第二種：「是幾倍？」',{t:'紅緞帶是綠緞帶的幾倍？就是 紅 ÷ 綠。'},{t:'分母一樣，分子相除：7/5 ÷ 4/5 ＝ 7÷4 ＝ 7/4 倍。',eq:'7/5 ÷ 4/5 ＝ 7 ÷ 4 ＝ 7/4'},...mixSteps(7,4,'倍')]},
  {stage:chocFig(7,10,2,{bars:1,cap:'7/10 公升，每 2/10 公升一瓶'}),say:['如果有剩下呢？7/10 公升的醬油，每 2/10 公升裝一瓶。',...cnt(3),{t:'裝滿3瓶，還剩1小塊。',a:ON('.lo')},{t:'剩下的1小塊是 1/10 公升。要用原來的分母10，不是2喔！',eq:'3瓶，剩 1/10 公升'}]},
  {stage:card(T('3公升，每 1/2 公升一瓶')),say:['考考你！'],q:{ask:'3公升的果汁，每 1/2 公升裝一瓶，可以裝幾瓶？',opts:['3/2瓶','6瓶','5瓶'],ans:1,ok:'3 ÷ 1/2 ＝ 6瓶！',no:'1公升可以裝2瓶，3公升呢？'}}
 ],
@@ -1887,7 +1949,7 @@ function endGroup(){
 /* ================= 巧克力教室 ================= */
 const CLS={scene:0,k:3,d:2,g:1,rn:12,rd:18,x:[3,4],y:[1,2]};
 function lessonStop(){TTS.mult=1;LES.tok++}
-function openClass(){go('class');CLS.scene=0;renderClass();speakSeq(['歡迎來到巧克力教室！上面有四個按鈕：巧克力裝盒子、約分機、除法一步一步，還有重聽上課。'])}
+function openClass(){go('class');CLS.scene=0;renderClass();speakSeq(['歡迎來到名師教室！上面有四個按鈕：巧克力裝盒子、約分機、除法一步一步，還有重聽上課。'])}
 function renderClass(){
   $$('#clsTabs .btn').forEach((b,i)=>b.classList.toggle('sel',i===CLS.scene));
   const st=$('#clsStage');st.classList.remove('lesmode');TTS.stop();LES.tok++;
@@ -1900,17 +1962,29 @@ function clsChoc(st){
   const {k,d,g}=CLS,tot=k*d,n=Math.floor(tot/g),rem=tot%g,ans=R(tot,g);
   st.innerHTML=`<div class="cl-a"><div class="say" id="ccSay">有幾條巧克力？每條切幾小塊？每盒裝幾小塊？</div>
    <div class="stw">${ctlRow('巧克力','k',k,' 條')}${ctlRow('每條切成','d',d,' 塊')}${ctlRow('每盒裝','g',g,' 塊')}</div>
-   <div class="bigeq" id="ccEq">${txtHtml(`${k} ÷ ${g}/${d} ＝ ？`)}</div>
+   <div class="bigeq ceq" id="ccEq">${txtHtml(`${k} ÷ ${g}/${d} ＝ ？`)}</div>
    <div class="cbtns"><button class="btn y big" id="ccGo">裝盒子！</button></div></div>
    <div class="cl-b"><div class="clsfig" id="ccFig">${chocFig(tot,d,g)}</div><div class="read" id="ccRes"></div></div>`;
   bindCtl(st,{k:[1,4],d:[2,6],g:[1,8]},()=>clsChoc(st));
   $('#ccGo').onclick=()=>{if(!guard(500))return;const f=$('#ccFig');f.innerHTML=chocFig(tot,d,g);$('#ccRes').textContent='';
-    const items=[{t:`${k}條巧克力，每條切成${d}小塊，一共有${k}×${d}＝${tot}小塊。`},{t:`每盒裝${g}小塊，也就是每盒裝 ${g}/${d} 條。我們一盒一盒裝。`}]
-      .concat(Array.from({length:n},(_,i)=>({t:String(i+1),on:()=>exApply(f,{show:`.gp${i},.gl${i}`})})))
+    const E=h=>()=>{$('#ccEq').innerHTML=txtHtml(h)};
+    const what=[];const gg=gcd(g,d);
+    if(g===d)what.push({t:`${g}/${d} 條是多少？一條切成${d}小塊，${d}小塊全部放進盒子，就是一整條。所以 ${d}/${d} ＝ 1，每盒剛好裝1條。`,on:E(`${d}/${d} ＝ ${d} ÷ ${d} ＝ 1`)});
+    else if(g>d){const q=Math.floor(g/d),r=g%d;what.push({t:`${g}/${d} 的分子比分母大，比1條還多：${g}÷${d}＝${q}${r?`……${r}`:''}，每盒裝${r?MX(q,r,d):q}條。`,on:E(`${g}/${d} ＝ ${r?MX(q,r,d):q}`)})}
+    else if(gg>1)what.push({t:`${g}/${d} 還可以約分：分子、分母都除以${gg}，${g}/${d} ＝ ${g/gg}/${d/gg}，一樣大。`,on:E(`${g}/${d} ＝ [${g}÷${gg}/${d}÷${gg}] ＝ ${g/gg}/${d/gg}`)});
+    const items=[{t:`${k}條巧克力，每條切成${d}小塊。看圖：上面的數字是第幾小塊，左邊是第幾條。`,on:E(`${k} ÷ ${g}/${d} ＝ ？`)},
+      {t:`一條有${d}小塊，${k}條一共有 ${k}×${d}＝${tot} 小塊。`,on:E(`${k} × ${d} ＝ ${tot}（小塊）`)},
+      {t:`每盒裝${g}小塊。1小塊是 1/${d} 條，${g}小塊就是 ${g}/${d} 條。`,on:E(`每盒裝 ${g}/${d} 條`)}]
+      .concat(what)
+      .concat([{t:`我們一盒一盒裝，每${g}小塊裝一盒。`}])
+      .concat(Array.from({length:n},(_,i)=>({t:`${i+1}`,on:()=>exApply(f,{show:`.gp${i},.gl${i}`})})))
       .concat(rem?[{t:`還剩${rem}小塊，不夠一盒，是 ${rem}/${g} 盒。`,on:()=>exApply(f,{show:'.lo'})}]:[])
+      .concat([{t:`用算式算一次：先把${k}寫成分數，${k}＝${k}/1。分子、分母都乘以${d}，${d}/${d}就是1，大小不變，${k}＝${tot}/${d}。`,on:E(`${k} ＝ ${k}/1 ＝ [${k}×${d}/1×${d}] ＝ ${tot}/${d}`)},
+        {t:`${tot}/${d} ÷ ${g}/${d}，分母一樣，只要分子相除：${tot}÷${g}。`,on:E(`${k} ÷ ${g}/${d} ＝ ${tot}/${d} ÷ ${g}/${d} ＝ ${tot} ÷ ${g}`)}])
+      .concat(ans[1]>1&&ans[0]>ans[1]?mixSteps(tot,g).map(x=>({t:x.t,on:x.eq?E(x.eq):null})):[])
       .concat([{t:`所以 ${k} ÷ ${g}/${d} ＝ ${fmtR(ans)} 盒。`,on:()=>{$('#ccEq').innerHTML=txtHtml(`${k} ÷ ${g}/${d} ＝ ${fmtR(ans)}`);$('#ccRes').innerHTML=txtHtml(`${fmtR(ans)} 盒`);SFX.ok()}}])
-      .concat(g<d?[{t:`每盒裝得比一條少，所以盒子比${k}還多！`}]:g>d?[{t:`每盒裝得比一條多，所以盒子比${k}少。`}]:[{t:'每盒剛好裝一條，盒子和條數一樣多。'}]);
-    speakSeq(items.map(x=>({t:x.t,on:()=>{if(CURSCR!=='class')return;x.on&&x.on();$('#ccSay').textContent=x.t}})))};
+      .concat(g<d?[{t:`每盒裝得比一條少，所以盒子比${k}還多！`}]:g>d?[{t:`每盒裝得比一條多，所以盒子比${k}少。`}]:[{t:`除以1，答案不變：${k} ÷ 1 ＝ ${k}。每盒剛好裝一條，盒子和條數一樣多。`}]);
+    speakSeq(items.map(x=>({t:x.t,on:()=>{if(CURSCR!=='class')return;x.on&&x.on();if(!/^\d+$/.test(x.t))$('#ccSay').innerHTML=txtHtml(x.t)}})))};
   speakSeq(['用加號、減號調整，再按裝盒子！看看除以分數，可以裝成幾盒。']);
 }
 /* ---- 約分機 ---- */
@@ -1918,13 +1992,29 @@ function clsRed(st){
   const {rn,rd}=CLS,g=gcd(rn,rd);
   st.innerHTML=`<div class="cl-a"><div class="say" id="crSay">調整分子和分母，再按「約分」。</div>
    <div class="stw">${ctlRow('分子','rn',rn)}${ctlRow('分母','rd',rd)}</div>
-   <div class="bigeq" id="crEq" style="font-size:calc(var(--u)*2.4)">${txtHtml(`${rn}/${rd}`)}</div>
-   <div class="cbtns"><button class="btn y big" id="crGo">約分！</button><button class="btn" id="crRnd">🎲 換一個</button></div></div>
-   <div class="cl-b"><div class="clsfig">${rd<=24?chocFig(rn,rd<=12?rd:rd/2,0,{bars:Math.ceil(rn/(rd<=12?rd:rd/2))||1}):'<div class="bigeq">'+txtHtml(`${rn}/${rd}`)+'</div>'}</div><div class="read" id="crRes"></div></div>`;
+   <div class="bigeq ceq" id="crEq">${txtHtml(`${rn}/${rd}`)}</div>
+   <div class="cbtns"><button class="btn y big" id="crGo">約分！</button><button class="btn b" id="crWhy">為什麼要約分？</button><button class="btn" id="crRnd">🎲 換一個</button></div></div>
+   <div class="cl-b"><div class="clsfig" id="crFig">${rn<=rd*3&&rd<=60?redFig(rn,rd,g):'<div class="bigeq">'+txtHtml(`${rn}/${rd}`)+'</div>'}</div><div class="read" id="crRes"></div></div>`;
   bindCtl(st,{rn:[1,60],rd:[2,60]},()=>clsRed(st));
+  const fig=$('#crFig'),E=h=>{$('#crEq').innerHTML=txtHtml(h);$('#crRes').innerHTML=''};
+  const run=items=>speakSeq(items.map(x=>({t:x.t,on:()=>{if(CURSCR!=='class')return;$('#crSay').innerHTML=txtHtml(x.t);if(x.eq!=null)E(x.eq);if(x.show)exApply(fig,{show:x.show})}})));
   $('#crRnd').onclick=()=>{if(!guard(300))return;const [a,b]=cop(9),k=rnd(2,6);CLS.rn=a*k;CLS.rd=b*k;SFX.swap();clsRed(st)};
-  $('#crGo').onclick=()=>{if(!guard(400))return;const S2=reduceSteps(rn,rd);speakSeq(S2.map(x=>({t:x.t,on:()=>{if(CURSCR!=='class')return;$('#crSay').textContent=x.t;if(x.eq){$('#crEq').innerHTML=txtHtml(x.eq);$('#crRes').innerHTML=txtHtml(x.eq)}}})).concat(rn>rd&&g<rd?[{t:`${fmtR([rn,rd])}，分子比分母大，也可以寫成帶分數：${fmtR([rn,rd])}。`,on:()=>{$('#crEq').innerHTML=txtHtml(`${rn}/${rd} ＝ ${fmtR([rn,rd])}`)}}]:[]))};
-  speakSeq(['調整分子和分母，再按約分。']);
+  $('#crGo').onclick=()=>{if(!guard(400))return;
+    const S2=reduceSteps(rn,rd).map(x=>Object.assign({},x));
+    S2.push(g>1?{t:`看圖：${rn}/${rd} 和 ${rn/g}/${rd/g} 一樣長、一樣大。約分以後，數字變小了，比較容易看懂，也比較容易計算。`,show:'.gpx,.r2'}:{t:'這個分數已經是最簡單的樣子了。'});
+    S2.push({t:'答案寫好了！',eq:g>1?`${rn}/${rd} ＝ ${rn/g}/${rd/g}${rn>rd&&rd/g>1?' ＝ '+fmtR([rn,rd]):''}`:`${rn}/${rd}${rn>rd?' ＝ '+fmtR([rn,rd]):''}`});
+    run(S2)};
+  $('#crWhy').onclick=()=>{if(!guard(400))return;
+    const n=g>1?rn:12,d=g>1?rd:18,G=gcd(n,d);
+    if(g===1){fig.innerHTML=redFig(12,18,6)}
+    run([{t:`為什麼要約分？我們用 ${n}/${d} 來看。`,eq:`${n}/${d}`},
+      {t:`${n}/${d} 條巧克力：一條切成${d}小塊，拿${n}小塊。`},
+      {t:`每${G}小塊合成一大塊，就變成 ${n/G}/${d/G} 條。`,show:'.gpx,.r2',eq:`${n}/${d} ＝ ${n/G}/${d/G}`},
+      {t:`看圖，兩條一樣長！約分以後，大小沒有變。`},
+      {t:`可是 ${n/G}/${d/G} 的數字比較小，一看就知道大約是多少。`},
+      {t:`數字小，計算也比較快，比較不會算錯。例如 ${n}/${d} 加 1/${d/G}，約分成 ${n/G}/${d/G} 加 1/${d/G}，馬上就算出來。`,eq:`${n/G}/${d/G} ＋ 1/${d/G} ＝ ${fmtR([n/G+1,d/G])}`},
+      {t:'所以算完的答案，都要約成最簡分數。大家的答案寫法一樣，一看就知道對不對。'}])};
+  speakSeq(['調整分子和分母，再按約分。想知道為什麼要約分，就按「為什麼要約分」。']);
 }
 /* ---- 除法一步一步 ---- */
 function clsDiv(st){
@@ -1938,7 +2028,7 @@ function clsDiv(st){
   st.querySelectorAll('[data-k]').forEach(btn=>btn.onclick=()=>{if(!guard(150))return;const k=btn.dataset.k,v=CLS[k]+ +btn.dataset.d;if(v<1||v>(k[1]==='b'||k[1]==='d'?12:20)){SFX.bad();return}CLS[k]=v;CLS.x=[CLS.xa,CLS.xb];CLS.y=[CLS.yc,CLS.yd];SFX.tap();clsDiv(st)});
   $('#cdRnd').onclick=()=>{if(!guard(300))return;CLS.x=cop(9);CLS.y=cop(9);SFX.swap();clsDiv(st)};
   $('#cdGo').onclick=()=>{if(!guard(400))return;const e=divEx(F(a,b),F(c,d)),f=$('#cdFig');f.innerHTML=e.fig||`<div class="bigeq">${txtHtml(`${a}/${b} ÷ ${c}/${d}`)}</div>`;
-    speakSeq(e.steps.map(x=>({t:x.t,on:()=>{if(CURSCR!=='class')return;exApply(f,x);if(!x.quiet)$('#cdSay').textContent=x.t;if(x.eq)$('#cdRes').innerHTML=txtHtml(x.eq)}})).concat([{t:`答案是 ${fmtR(e.ans)}。`,on:()=>{$('#cdEq').innerHTML=txtHtml(`${a}/${b} ÷ ${c}/${d} ＝ ${fmtR(e.ans)}`);SFX.ok()}}]))};
+    speakSeq(e.steps.map(x=>({t:x.t,on:()=>{if(CURSCR!=='class')return;exApply(f,x);if(!x.quiet)$('#cdSay').innerHTML=txtHtml(x.t);if(x.eq)$('#cdRes').innerHTML=txtHtml(x.eq)}})).concat([{t:`答案是 ${fmtR(e.ans)}。`,on:()=>{$('#cdEq').innerHTML=txtHtml(`${a}/${b} ÷ ${c}/${d} ＝ ${fmtR(e.ans)}`);SFX.ok()}}]))};
   speakSeq(['設定兩個分數，再按一步一步算。']);
 }
 /* ---- 重聽上課 ---- */
@@ -2119,5 +2209,164 @@ function openChar(first){
   ptRefresh();
 })();
 </script>
+<!-- ===== 2026-10 修訂：名師教室、解說圖自動縮放、暫停／速度按鈕加文字 ===== -->
+<style id="patch-1029">
+/* 暫停、速度按鈕：圖示旁邊一定有文字 */
+.psbtn,.spdbtn{white-space:nowrap}
+.spdbtn .sl,.psbtn .sl{display:block;font-size:.72em;line-height:1.05;font-weight:800;opacity:.85}
+.spdbtn .sv,.psbtn .sv{display:block;line-height:1.1}
+.bar .psbtn,.bar .spdbtn{line-height:1.1}
+/* 舊版（四年級）解說視窗也加上暫停、速度 */
+.les-btns{flex-wrap:wrap}
+.spbar2{flex:1 1 100%;display:flex;gap:calc(var(--u)*.4);align-items:stretch}
+.spbar2 .btn{flex:1;min-height:calc(var(--u)*2.1)!important;padding:calc(var(--u)*.2) calc(var(--u)*.3)!important;font-size:calc(var(--u)*.9)!important}
+.spbar2 .psbtn{flex:0 0 auto!important;min-width:calc(var(--u)*5.2)}
+.spbar2 .spd2{background:#f1f3f5}
+.spbar2 .spd2.sel{background:var(--y,#ffd54f);outline:.15em solid #e8a800}
+.spbar2 .spl{align-self:center;font-weight:900;font-size:calc(var(--u)*.85);color:#495057;white-space:nowrap}
+.psbtn.y{background:var(--y,#ffd54f)}
+.exspd{white-space:nowrap;display:flex!important;flex-direction:column;align-items:center;justify-content:center;line-height:1.1}
+/* 第五、六冊的解說視窗：圖固定在上面（橫放時在左邊），文字自己捲動，圖不會被捲走 */
+.genC .exbody{overflow:hidden!important}
+.genC .exbody>.exfig{flex:0 0 auto;max-height:34vh;min-height:0;overflow:hidden;align-items:center;justify-content:center}
+.genC .exbody>.exl{flex:1 1 auto;min-height:0;overflow:auto;padding-left:2.2em;padding-right:.3em}
+@media (min-aspect-ratio:13/10){
+ .genC .exbody{grid-template-rows:minmax(0,1fr);align-items:stretch!important}
+ .genC .exbody>.exfig{max-height:none;height:100%}
+ .genC .exbody>.exl{max-height:100%;align-self:stretch;justify-content:flex-start}
+}
+@media (max-width:560px){#class .bar{gap:calc(var(--u)*.3)}#class .bar .btn{padding:calc(var(--u)*.3) calc(var(--u)*.45)!important;font-size:calc(var(--u)*.82)!important}}
+/* 帶分數：整數和分數之間留一點空隙，不會看成 11/2 */
+.mxw{margin-right:.14em}
+.frac+.frac{margin-left:.1em}
+</style>
+<script>
+(function(){
+'use strict';
+const GEN='C', KEYP='m';
+const qa=(s,r)=>[...(r||document).querySelectorAll(s)];
+
+/* ---------- 1. 解說圖、上課畫面：內容太大時自動縮小，不會被切掉 ---------- */
+document.documentElement.classList.add('gen'+GEN);
+const BOX='.les-stage,.clsfig,#lsStage,.les-scene'+(GEN==='C'?',.exbody>.exfig':'');
+function measure(kids){let t=1e9,b=-1e9,l=1e9,r=-1e9;kids.forEach(k=>{const R=k.getBoundingClientRect();if(!R.width&&!R.height)return;t=Math.min(t,R.top);b=Math.max(b,R.bottom);l=Math.min(l,R.left);r=Math.max(r,R.right)});return b<t?[0,0]:[b-t,r-l]}
+function fitBox(c){
+  if(!c.offsetParent)return;
+  const kids=[...c.children].filter(k=>{const p=getComputedStyle(k).position;return p!=='absolute'&&p!=='fixed'});
+  if(!kids.length)return;
+  kids.forEach(k=>{if(k.style.zoom)k.style.zoom=''});
+  const cs=getComputedStyle(c),aH=c.clientHeight-parseFloat(cs.paddingTop)-parseFloat(cs.paddingBottom)-4,aW=c.clientWidth-parseFloat(cs.paddingLeft)-parseFloat(cs.paddingRight)-4;
+  if(aH<20||aW<20)return;
+  let [h,w]=measure(kids);if(!h||(h<=aH+1&&w<=aW+1))return;
+  let z=Math.max(.4,Math.min(1,aH/h,aW/w));
+  for(let i=0;i<5;i++){kids.forEach(k=>k.style.zoom=z.toFixed(3));[h,w]=measure(kids);if((h<=aH+1&&w<=aW+1)||z<=.4)break;z=Math.max(.4,z*Math.min(.95,aH/h,aW/w))}
+}
+function fitScroll(c){ // 解說視窗：圖太大時，把圖縮小，讓字也看得到
+  if(!c.offsetParent)return;
+  const f=c.querySelector(':scope>.exfig');if(!f)return;
+  if(f.style.zoom)f.style.zoom='';
+  if(c.scrollHeight<=c.clientHeight+2)return;
+  let z=1;
+  for(let i=0;i<6;i++){z=Math.max(.5,z*Math.min(.93,c.clientHeight/c.scrollHeight));f.style.zoom=z.toFixed(3);if(c.scrollHeight<=c.clientHeight+2||z<=.5)break}
+}
+let fitQ=0;
+function fitAll(){fitQ=0;try{qa(BOX).forEach(fitBox);if(GEN!=='C')qa('.exbody').forEach(fitScroll)}catch(e){}}
+function fitSoon(){if(!fitQ)fitQ=requestAnimationFrame(()=>requestAnimationFrame(fitAll))}
+try{new MutationObserver(fitSoon).observe(document.getElementById('app')||document.body,{childList:true,subtree:true})}catch(e){}
+window.addEventListener('resize',fitSoon);
+window.addEventListener('orientationchange',()=>setTimeout(fitSoon,300));
+window.__fitAll=fitAll;
+
+/* ---------- 2. 暫停、速度按鈕都加上文字 ---------- */
+if(GEN==='C'&&typeof spSync==='function'){
+  const _sp=spSync;
+  spSync=function(){
+    _sp();
+    const k=spdIdx(),lab=SPD[k][1];
+    qa('.psbtn[data-short]').forEach(b=>{b.innerHTML=SP.paused?'▶ 繼續':'✋ 暫停'});
+    qa('.spdbtn[data-short]').forEach(b=>{b.innerHTML=`<span class="sl">說話速度</span><span class="sv">${lab}</span>`;b.title='按一下，換說話速度'});
+    qa('.spdbtn:not([data-short])').forEach(b=>{b.innerHTML=`說話速度：${lab}`});
+  };
+  setTimeout(()=>{try{spSync()}catch(e){}},50);
+}
+
+/* ---------- 3. 四年級版本：補上「可以暫停的語音」和速度按鈕 ---------- */
+if(GEN==='A'){
+  window.SP2={paused:false,cur:null};
+  const SPD2=[[0.62,'🐢 慢'],[0.8,'🚶 普通'],[1.0,'🐇 快']];
+  const idx=()=>{let k=0,d=9;SPD2.forEach((x,i)=>{const dd=Math.abs(x[0]-S.rate);if(dd<d){d=dd;k=i}});return k};
+  speakSeq=function(items,onAll,gap){
+    TTS.stop();const gen=TTS.gen;gap=gap==null?260:gap;SP2.paused=false;
+    const st={items,i:0,onAll,gap,gen,called:-1,waiting:false,ep:0};SP2.cur=st;sync();
+    const next=()=>{
+      if(gen!==TTS.gen)return;
+      if(SP2.paused){st.waiting=true;return}
+      if(st.i>=items.length){if(SP2.cur===st){SP2.cur=null;sync()}onAll&&onAll();return}
+      const it=items[st.i],t=typeof it==='string'?it:it.t,on=typeof it==='string'?null:it.on;
+      if(st.called<st.i){st.called=st.i;on&&on()}
+      const txt=spoken(t),ep=st.ep;
+      const done=()=>{if(gen!==TTS.gen||ep!==st.ep)return;if(SP2.paused){st.waiting=true;return}st.i++;later(()=>{if(gen===TTS.gen&&ep===st.ep)next()},gap)};
+      if(!S.voice||!TTS.ok||!txt.trim()){later(done,S.voice?TTS.est(txt)*0.5:350);return}
+      TTS.one(txt,gen,done);
+    };
+    st.next=next;if(CLK.paused)return;next();
+  };
+  say=function(t,cb){speakSeq([t],cb)};
+  function pause(){const c=SP2.cur;if(!c)return;SP2.paused=true;c.ep++;c.waiting=true;try{TTS.ok&&speechSynthesis.cancel()}catch(e){}sync()}
+  function resume(){SP2.paused=false;sync();const c=SP2.cur;if(c&&c.waiting&&c.gen===TTS.gen){c.waiting=false;c.next()}}
+  function setSpd(k){S.rate=SPD2[k][0];sync();try{SFX.tap()}catch(e){}
+    const c=SP2.cur;
+    if(c&&!SP2.paused&&c.gen===TTS.gen){c.ep++;try{TTS.ok&&speechSynthesis.cancel()}catch(e){}setTimeout(()=>{if(SP2.cur===c&&!SP2.paused)c.next()},150)}
+    else if(!c)speakSeq([['這樣唸，比較慢。','這樣唸，是普通的速度。','這樣唸，比較快。'][k]]);
+    qa('#spSeg .btn').forEach(b=>b.classList.toggle('sel',Math.abs(+b.dataset.v-S.rate)<.01));
+  }
+  function sync(){
+    qa('.psbtn').forEach(b=>{b.textContent=SP2.paused?'▶ 繼續':'✋ 暫停';b.classList.toggle('y',SP2.paused)});
+    const k=idx();
+    qa('.spd2').forEach(b=>b.classList.toggle('sel',+b.dataset.i===k));
+    qa('.spdbtn').forEach(b=>{b.innerHTML=`<span class="sl">說話速度</span><span class="sv">${SPD2[k][1]}</span>`});
+  }
+  window.spSync2=sync;
+  const BAR2='<div class="spbar2"><button class="btn psbtn">✋ 暫停</button><span class="spl">說話速度</span>'+SPD2.map((x,i)=>`<button class="btn spd2" data-i="${i}">${x[1]}</button>`).join('')+'</div>';
+  document.addEventListener('click',e=>{const b=e.target.closest('.psbtn,.spd2,.spdbtn');if(!b)return;e.stopPropagation();if(!guard(250))return;
+    if(b.classList.contains('psbtn')){if(SP2.paused)resume();else if(SP2.cur)pause();else{try{SFX.tap()}catch(er){}}}
+    else if(b.classList.contains('spd2'))setSpd(+b.dataset.i);else setSpd((idx()+1)%SPD2.length)},true);
+  function inject(){
+    qa('.les-btns').forEach(x=>{if(!x.querySelector('.spbar2')){x.insertAdjacentHTML('afterbegin',BAR2)}});
+    const bar=document.querySelector('#class .bar .sp');if(bar&&!document.querySelector('#class .bar .psbtn'))bar.insertAdjacentHTML('afterend','<button class="btn psbtn" data-short="1">✋ 暫停</button><button class="btn spdbtn" data-short="1"></button>');
+    sync();
+  }
+  let iq=0;try{new MutationObserver(()=>{if(!iq)iq=requestAnimationFrame(()=>{iq=0;inject()})}).observe(document.getElementById('app')||document.body,{childList:true,subtree:true})}catch(e){}
+  setTimeout(inject,0);
+}
+
+/* ---------- 4. 五年級（1～4單元）：解說、上課加上「說話速度」按鈕 ---------- */
+if(GEN==='B'){
+  const SPDB=[[0.7,'🐢 慢'],[0.85,'🚶 中'],[1,'🐇 快']];
+  const idx=()=>{let k=0,d=9;SPDB.forEach((x,i)=>{const dd=Math.abs(x[0]-S.rate);if(dd<d){d=dd;k=i}});return k};
+  const lab=()=>`<span class="sl">說話速度</span><span class="sv">${SPDB[idx()][1]}</span>`;
+  function sync(){qa('.exspd').forEach(b=>b.innerHTML=lab())}
+  function inject(){
+    const ep=document.getElementById('exPause');if(ep&&!document.getElementById('exSpd')){ep.insertAdjacentHTML('afterend','<button class="btn exspd" id="exSpd"></button>');ep.textContent=ep.textContent.replace(/^[✋▶]\s*/,'')}
+    const lp=document.getElementById('lsPause');if(lp&&!document.getElementById('lsSpd'))lp.insertAdjacentHTML('afterend','<button class="btn exspd" id="lsSpd"></button>');
+    sync();
+  }
+  document.addEventListener('click',e=>{const b=e.target.closest('.exspd');if(!b)return;e.stopPropagation();if(!guard(250))return;
+    S.rate=SPDB[(idx()+1)%SPDB.length][0];try{sset(KEYP+'-rate',S.rate)}catch(er){}try{SFX.tap()}catch(er){}sync();
+    if(!TTS.ok||!S.voice)return;},true);
+  let iq=0;try{new MutationObserver(()=>{if(!iq)iq=requestAnimationFrame(()=>{iq=0;inject()})}).observe(document.getElementById('app')||document.body,{childList:true,subtree:true})}catch(e){}
+  setTimeout(inject,0);
+}
+
+/* ---------- 5. 分數顯示：[算式/算式] 也可以排成上下的分數 ---------- */
+if(GEN==='C'&&typeof txtHtml==='function'&&typeof fracHTML==='function'){
+  const _t=txtHtml;
+  txtHtml=function(s){s=String(s==null?'':s);if(s.indexOf('[')<0)return _t(s);
+    return s.split(/(\[[^\[\]\/]+\/[^\[\]]+\])/).map(p=>{const m=p.match(/^\[([^\[\]\/]+)\/([^\[\]]+)\]$/);return m?fracHTML(_t(m[1]),_t(m[2])):_t(p)}).join('')};
+  if(typeof spoken==='function'){const _s=spoken;spoken=function(s){return _s(String(s).replace(/\[([^\[\]\/]+)\/([^\[\]]+)\]/g,'$2分之$1'))}}
+}
+})();
+</script>
+
 </body>
 </html>
