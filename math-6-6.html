@@ -2878,13 +2878,16 @@ function secFig(o){
   const A=P2(cx,cy,R2,a0),B=P2(cx,cy,R2,a0+deg);let s='';
   if(deg<360&&!o.noFull)s+=`<path d="${arcD(cx,cy,R2,0,360)}" fill="none" stroke="${CC.dash}" stroke-width="2" stroke-dasharray="6 5"/>`;
   if(o.slices){for(let k=0;k<o.slices;k++){const p=P2(cx,cy,R2,a0+k*360/o.slices);s+=`<line x1="${cx}" y1="${cy}" x2="${f1(p[0])}" y2="${f1(p[1])}" stroke="${CC.dash}" stroke-width="2" stroke-dasharray="5 4"/>`}}
+  let snum='';if(o.slices&&o.snum!==false){const n=o.slices,inN=Math.round(deg/(360/n)),fs=n>=10?12:n>=7?13:15,rr=n>=4?R2+fs*.75+4:R2*.74;for(let k=0;k<n;k++){const p=P2(cx,cy,rr,a0+(k+.5)*360/n),on=k<inN;snum+=`<g class="snum"><circle cx="${f1(p[0])}" cy="${f1(p[1])}" r="${fs*.72}" fill="${on?'#fff':'#f1f3f5'}" stroke="${on?'#e8590c':'#adb5bd'}" stroke-width="2"/><text x="${f1(p[0])}" y="${f1(p[1])}" font-size="${fs}" font-weight="900" text-anchor="middle" dominant-baseline="central" fill="${on?'#d9480f':'#868e96'}">${k+1}</text></g>`}}
   const body=deg>=360?arcD(cx,cy,R2,0,360):`M${cx} ${cy} L${pt(A)} ${arcD(cx,cy,R2,a0,a0+deg,false)} Z`;
   s+=`<path class="sec" d="${body}" fill="${o.fill||CC.fill}" stroke="none"/>`;
+  if(o.slices&&deg<360){const n=o.slices,inN=Math.round(deg/(360/n));for(let k=1;k<inN;k++){const p=P2(cx,cy,R2,a0+k*360/n);s+=`<line x1="${cx}" y1="${cy}" x2="${f1(p[0])}" y2="${f1(p[1])}" stroke="#e8590c" stroke-width="2" stroke-dasharray="5 4"/>`}}
   s+=`<path class="pa" d="${arcD(cx,cy,R2,a0,a0+deg)}" fill="none" stroke="${o.plain?CC.ink:CC.arc}" stroke-width="${o.plain?3:6}" stroke-linecap="round"/>`;
   if(deg<360)s+=`<g class="ps pr"><line x1="${cx}" y1="${cy}" x2="${f1(A[0])}" y2="${f1(A[1])}" stroke="${o.plain?CC.ink:CC.line}" stroke-width="${o.plain?3:5}"/><line x1="${cx}" y1="${cy}" x2="${f1(B[0])}" y2="${f1(B[1])}" stroke="${o.plain?CC.ink:CC.line}" stroke-width="${o.plain?3:5}"/></g>`;
   if(o.showDeg!==false&&deg<360){const m=a0+deg/2,am=P2(cx,cy,deg<60?40:30,m);s+=`<path d="${arcD(cx,cy,18,a0,a0+deg)}" fill="none" stroke="${CC.ink}" stroke-width="2"/>`+cfLab(am[0],am[1]+6,deg+'°',{fs:15,cls:'lb dg'})}
   if(o.r!=null){const m=P2(cx,cy,R2*.55,a0),off=a0===0?16:-10;s+=cfLab(m[0]+(a0===0?0:12),m[1]+off+4,o.r+u,{col:CC.line,fs:16})}
   if(o.d!=null){s+=cfLab(cx,cy+22,'直徑 '+o.d+u,{col:CC.line,fs:16})}
+  s+=snum;
   s+=`<circle cx="${cx}" cy="${cy}" r="4" fill="${CC.red}"/>`;
   s+=trPath(deg>=360?arcD(cx,cy,R2,0,360):`M${cx} ${cy} L${pt(A)} ${arcD(cx,cy,R2,a0,a0+deg,false)} Z`);
   if(o.top)s+=cfLab(150,20,o.top,{fs:16,col:CC.red});
@@ -5652,6 +5655,219 @@ if(GEN==='C'&&typeof txtHtml==='function'&&typeof fracHTML==='function'){
   if(typeof spoken==='function'){const _s=spoken;spoken=function(s){return _s(String(s).replace(/\[([^\[\]\/]+)\/([^\[\]]+)\]/g,'$2分之$1'))}}
 }
 })();
+</script>
+
+<!-- ===== 2026-11 修訂：扇形「乘以幾分之幾」改成「除以分母」，加上圓心角對照表 ===== -->
+<style id="patch-1120">
+.angt{width:100%;border-collapse:separate;border-spacing:0 .25em;font-weight:900;font-size:calc(var(--u)*1.05)}
+.angt th{font-size:calc(var(--u)*.85);color:#495057;padding:.1em .3em}
+.angt td{white-space:nowrap;background:#fff;padding:.25em .4em;text-align:center;border-top:2px solid #e9ecef;border-bottom:2px solid #e9ecef}
+.angt td:first-child{border-left:2px solid #e9ecef;border-radius:.5em 0 0 .5em;color:#d6453d}
+.angt td:last-child{border-right:2px solid #e9ecef;border-radius:0 .5em .5em 0;color:#1864ab}
+.angt tr.ar{cursor:pointer}
+.angt td.wy>div{display:flex;align-items:center;justify-content:center;gap:.35em;color:#495057;font-size:.82em;line-height:1.25;text-align:left}
+.mpie{width:2.2em;height:2.2em;flex:none}
+.cfWhy{text-align:center;font-weight:800;font-size:calc(var(--u)*.95);color:#495057;display:flex;align-items:center;justify-content:center;gap:.4em}
+.angt tr.ar.on td{background:#fff3bf;border-color:#fab005}
+.angt tr.sep td{background:none;border:none;padding:.15em;font-size:calc(var(--u)*.8);color:#868e96;text-align:left}
+.angpanel{max-width:min(96vw,calc(var(--u)*38));width:min(96vw,calc(var(--u)*38));max-height:92%;display:flex;flex-direction:column;gap:calc(var(--u)*.4)}
+.angpanel .angscroll{overflow:auto;min-height:0;flex:1 1 auto}
+.angpanel h2{margin:0;text-align:center}
+.angtip{text-align:center;font-weight:800;color:#495057;font-size:calc(var(--u)*.9)}
+.tblb{margin-left:.4em}
+.cfLook{display:flex;align-items:center;justify-content:center;gap:.3em;flex-wrap:wrap;font-weight:900;font-size:calc(var(--u)*1.05);background:#fff3bf;border-radius:.6em;padding:.2em .5em}
+.cfLook .arw{color:#868e96}
+.cfLook .hw{color:#1864ab;background:#d0ebff;border-radius:.4em;padding:0 .3em}
+</style>
+<script>
+/* ---- 圓心角對照表 ---- */
+const ANGT=[[360,1,1],[180,1,2],[120,1,3],[90,1,4],[72,1,5],[60,1,6],[45,1,8],[40,1,9],[36,1,10],[30,1,12],[240,2,3],[270,3,4],[300,5,6],[135,3,8],[150,5,12]];
+const ANGS2=ANGT.map(x=>x[0]).sort((a,b)=>a-b);
+function angFr(deg){const g=gcd(deg,360);return [deg/g,360/g]}
+const frT=(n,d)=>d===1?'一整個':`[${n}/${d}]`;
+const frSay=(n,d)=>d===1?'一整個':`${d}分之${n}`;
+function howT(n,d){return d===1?'圓周長本身':n===1?`÷${d}`:`÷${d}，再×${n}`}
+function howSay(n,d){return d===1?'就是圓周長':n===1?`把圓周長除以${d}`:`把圓周長先除以${d}，再乘以${n}`}
+const ex2=v=>Math.abs(Math.round(v*100)-v*100)<1e-6;
+/* 弧長的算法：乘以幾分之幾 → 除以分母（再乘以分子） */
+function arcPlan(C,deg){const [n,d]=angFr(deg),A=C*n/d,ap=ex2(A)?'＝':'≈',apS=ex2(A)?'等於':'大約是';
+  if(d===1)return {n,d,A,eq:[`弧長＝圓周長＝${nf(C)}`],say:[`一整個圓，弧長就是圓周長，${nf(C)}。`]};
+  if(n===1)return {n,d,A,eq:[`弧長：${nf(C)}÷${d}${ap}${nf(A)}`],say:[`${frSay(n,d)}圓，就是把圓周長平分成${d}份，拿其中1份。所以不用乘分數，直接把${nf(C)}除以${d}，${apS}${nf(A)}。`]};
+  const one=C/d;
+  if(ex2(one))return {n,d,A,eq:[`1份：${nf(C)}÷${d}＝${nf(one)}`,`${n}份：${nf(one)}×${n}${ap}${nf(A)}`],
+    say:[`${frSay(n,d)}圓，就是把圓周長平分成${d}份，拿其中${n}份。先除以${d}，找出1份：${nf(C)}除以${d}，等於${nf(one)}。`,`要拿${n}份，就是${n}個${nf(one)}加起來，所以乘以${n}：${nf(one)}乘以${n}，${apS}${nf(A)}。`]};
+  return {n,d,A,eq:[`${n}份合起來：${nf(C)}×${n}＝${nf(C*n)}`,`再分成${d}份：${nf(C*n)}÷${d}${ap}${nf(A)}`],
+    say:[`${frSay(n,d)}圓，是平分成${d}份、拿${n}份。${nf(C)}除以${d}除不完，所以換個順序：先乘以${n}，${nf(C)}乘以${n}，等於${nf(C*n)}。`,`再除以${d}：${nf(C*n)}除以${d}，${apS}${nf(A)}。先乘再除，答案一樣。`]};
+}
+/* 幾分之幾圓怎麼來：一整圈360°，看看可以放幾個這樣的角 */
+function miniPie(n,d){const R=20,c=22;if(d===1)return `<svg class="mpie" viewBox="0 0 44 44"><circle cx="${c}" cy="${c}" r="${R}" fill="#ffa94d" stroke="#495057" stroke-width="1.5"/></svg>`;
+  let h='';for(let i=0;i<d;i++){const a0=(-90+i*360/d)*Math.PI/180,a1=(-90+(i+1)*360/d)*Math.PI/180;
+    h+=`<path d="M${c},${c} L${(c+R*Math.cos(a0)).toFixed(1)},${(c+R*Math.sin(a0)).toFixed(1)} A${R},${R} 0 0 1 ${(c+R*Math.cos(a1)).toFixed(1)},${(c+R*Math.sin(a1)).toFixed(1)} Z" fill="${i<n?'#ffa94d':'#fff'}" stroke="#495057" stroke-width="1.2"/>`}
+  return `<svg class="mpie" viewBox="0 0 44 44">${h}</svg>`}
+function whyT(a,n,d){if(d===1)return '一整圈';const u=360/d;return n===1?`360÷${a}＝${d}`:`360÷${d}＝${u}\n${a}是${n}個${u}`}
+function whySay(a,n,d){if(d===1)return '360度就是一整圈。';const u=360/d;
+  return n===1?`一整圈360度裡，可以放${d}個${a}度，因為360除以${a}等於${d}。圓被平分成${d}份，${a}度是其中1份，所以是${d}分之1圓。`
+    :`先把一整圈平分成${d}份，1份是360除以${d}，等於${u}度。${a}度是${n}個${u}度，就是${d}份裡的${n}份，所以是${d}分之${n}圓。`}
+function angTableHTML(cur){
+  const row=([a,n,d])=>`<tr class="ar ${a===cur?'on':''}" data-a="${a}"><td>${a}°</td><td class="wy"><div>${miniPie(n,d)}<span>${whyT(a,n,d).split('\n').map(tokH).join('<br>')}</span></div></td><td>${tokH(frT(n,d))}圓</td><td>${tokH(howT(n,d))}</td></tr>`;
+  return `<table class="angt"><tr><th>圓心角</th><th>怎麼來</th><th>是幾分之幾圓</th><th>弧長怎麼算</th></tr>${ANGT.filter(x=>x[1]===1).map(row).join('')}<tr class="sep"><td colspan="4">拿好幾份的：先找1份是幾度，再看有幾份</td></tr>${ANGT.filter(x=>x[1]>1).map(row).join('')}</table>`}
+function angRowSay(a){const [n,d]=angFr(a);return d===1?'360度，是一整個圓，弧長就是圓周長。':whySay(a,n,d)+`弧長：${howSay(n,d)}。`}
+/* 對照表視窗；onPick：在扇形工廠裡，點一列就換成那個角度 */
+function openAngTable(cur,onPick){
+  let ov=document.getElementById('ovAng');if(!ov){ov=document.createElement('div');ov.className='ov';ov.id='ovAng';document.getElementById('app').appendChild(ov)}
+  ov.innerHTML=`<div class="panel angpanel"><h2>📋 圓心角對照表</h2><div class="angtip">一整圈是360°。點一列，聽聽看${onPick?'，扇形也會跟著變':''}。</div><div class="angscroll">${angTableHTML(cur)}</div><div class="clsbar2"></div><button class="btn g big" id="angOk">好了</button></div>`;
+  ov.classList.add('on');
+  ov.querySelectorAll('tr.ar').forEach(tr=>tr.onclick=()=>{const a=+tr.dataset.a;ov.querySelectorAll('tr.ar').forEach(x=>x.classList.toggle('on',x===tr));try{SFX.tap()}catch(e){}speakSeq([angRowSay(a)]);onPick&&onPick(a)});
+  ov.querySelector('#angOk').onclick=()=>{TTS.stop();ov.classList.remove('on')};
+  const on=ov.querySelector('tr.on');if(on)setTimeout(()=>on.scrollIntoView({block:'center'}),50);
+  speakSeq(['圓心角對照表。一整圈是360度。'+(cur&&cur<360?angRowSay(cur):'點一列，聽聽看。')]);
+}
+/* 題目上多一個「對照表」按鈕 */
+{const _bs=buildShell;buildShell=function(q,host,ctx){if(!q.tbl&&q.stem){const m=/圓心角是(\d+)°/.exec(q.stem);if(m)q.tbl=+m[1]}const r=_bs(q,host,ctx);if(q.tbl){const st=host.querySelector('.stem');if(st){const b=document.createElement('button');b.className='tchb tblb';b.textContent='📋 對照表';b.onclick=e=>{e.stopPropagation();if(!guard(300))return;TTS.stop();openAngTable(q.tbl)};st.appendChild(b)}}return r}}
+
+try{LV66_5.sub='查表：幾分之幾圓，就除以分母'}catch(e){}
+/* ---- 第5關：弧長（改成除以分母） ---- */
+function arcQ(r,deg,stem,o){
+  o=o||{};const f=frS(deg,360),C=r*2*3.14,P=arcPlan(C,deg),A=P.A,[n,d]=[P.n,P.d];
+  const q=mcLen(stem||`半徑${r}公分、圓心角${deg}°的扇形，弧長（彎彎的那條線）大約是多少公分？`,A,[C,A+r*2,r*3.14*deg/360,A*2],'',{why:`圓周長：${r}×2×3.14＝${nf(C)}；${deg}°是${f}圓 → ${howT(n,d)}：`+P.eq.map(x=>x.replace(/^.*?：/,'')).join('，')+'。',hint:`查對照表：${deg}°是${f}圓。先算整個圓周長，再${howT(n,d)}。`});
+  q.tbl=deg;
+  return TQ(q,o.fig||secFig({deg,r,slices:d<=12&&n<d?d:0}),[
+    {t:'弧長，就是扇形彎彎的那條線。',on:r0=>cfGlow(r0,'.pa')},
+    {t:`如果是一整個圓，圓周長是：${r}乘以2，再乘以3.14，等於${nf(C)}。`,on:(r0,eq)=>eq(`圓周長：${r}×2×3.14＝${nf(C)}`)},
+    {t:whySay(deg,n,d),on:(r0,eq)=>{cfGlow(r0,'.dg');eq(whyT(deg,n,d).replace('\n','，')+` → ${f}圓`)}},
+    {t:`查對照表也可以：圓心角${deg}度，是${frSay(n,d)}圓，弧長要${howT(n,d).replace('÷','除以').replace('×','乘以')}。`,on:(r0,eq)=>{cfGlow(r0,'.dg');eq(`查表：${deg}° → ${f}圓 → ${howT(n,d)}`)}},
+    ...P.say.map((t,i)=>({t,on:(r0,eq)=>{cfGlow(r0,'.pa');eq(P.eq[i])}}))]);
+}
+/* ---- 第6關：扇形周長（弧長也改成除以分母） ---- */
+function perQ(r,deg,stem,o){
+  o=o||{};const f=frS(deg,360),C=r*2*3.14,Pl=arcPlan(C,deg),A=Pl.A,P=A+2*r,half=deg===180&&o.d,[n,d]=[Pl.n,Pl.d];
+  const q=mcLen(stem||`半徑${r}公分、圓心角${deg}°的扇形，周長大約是多少公分？`,P,[A,A+r,C+2*r,A+4*r],'',{why:`弧長：${nf(C)} ${howT(n,d)}，得到${nf(A)}；周長＝弧長＋2條半徑：${nf(A)}＋${r}×2＝${nf(P)}。`,hint:`周長是彎彎的弧長，加上2條直直的半徑。弧長：查對照表，${deg}°是${f}圓，${howT(n,d)}。`});
+  q.tbl=deg;
+  return TQ(q,o.fig||secFig({deg,r,d:half?o.d:null}),[
+    {t:'扇形的周長，就是沿著扇形外圍走一圈。',gap:2800,on:r0=>cfTrace(r0,2400)},
+    {t:'外圍有彎彎的弧，還有2條直直的半徑。',on:r0=>{cfGlow(r0,'.pa');later(()=>cfGlow(r0,'.ps'),700)}},
+    {t:`先算整個圓周長：${r}乘以2乘以3.14，等於${nf(C)}。`,on:(r0,eq)=>eq(`圓周長：${r}×2×3.14＝${nf(C)}`)},
+    {t:whySay(deg,n,d),on:(r0,eq)=>{cfGlow(r0,'.dg');eq(whyT(deg,n,d).replace('\n','，')+` → ${f}圓`)}},
+    {t:`查對照表也可以：圓心角${deg}度，是${frSay(n,d)}圓。`,on:(r0,eq)=>{cfGlow(r0,'.dg');eq(`查表：${deg}° → ${f}圓 → ${howT(n,d)}`)}},
+    ...Pl.say.map((t,i)=>({t,on:(r0,eq)=>{cfGlow(r0,'.pa');eq(Pl.eq[i])}})),
+    {t:`再加上2條半徑：${r}乘以2，等於${r*2}。`,on:(r0,eq)=>{cfGlow(r0,'.ps');eq(`半徑：${r}×2＝${r*2}`)}},
+    {t:`合起來：${nf(A)}加${r*2}，等於${nf(P)}。`,on:(r0,eq)=>eq(`周長：${nf(A)}＋${r*2}＝${nf(P)}`)},
+    '別忘了2條半徑喔！']);
+}
+
+/* ---- 名師教室：扇形工廠（加上查表、除以分母） ---- */
+function clsFan(st){
+  st.classList.add('free');if(!ANGS2.includes(CLS6.ang))CLS6.ang=90;
+  st.innerHTML=`<div class="crow"><div class="fig" id="cfFig"></div><div class="cside"><div class="say" id="cfSay"></div>
+   <div class="rcbox"><div>半徑<button class="btn b" data-k="r" data-s="-1">－</button><b id="cfR"></b>公分<button class="btn r" data-k="r" data-s="1">＋</button></div>
+   <div>圓心角<button class="btn b" data-k="a" data-s="-1">－</button><b id="cfA"></b>°<button class="btn r" data-k="a" data-s="1">＋</button></div></div>
+   <div class="cfLook" id="cfLook"></div><div class="cfWhy" id="cfWhy"></div>
+   <div class="teq" id="cfEq"></div>
+   <div class="cbtns"><button class="btn g" id="cfWalk">🚶 走一圈</button><button class="btn y" id="cfTell">🔊 說明</button><button class="btn b" id="cfTbl">📋 對照表</button></div><div class="clsbar2"></div></div></div>`;
+  const calc=()=>{const r=CLS6.r,a=CLS6.ang,C=r*2*3.14,Pl=arcPlan(C,a),A=Pl.A;return {r,a,C,Pl,A,P:a>=360?C:A+2*r,ap:ex2(A)?'':'約'}};
+  const draw=()=>{const k=calc(),n=k.Pl.n,d=k.Pl.d;
+    $('#cfFig').innerHTML=secFig({deg:k.a,r:k.r,slices:k.a<360&&d<=12?d:0});
+    $('#cfR').textContent=k.r;$('#cfA').textContent=k.a;
+    $('#cfWhy').innerHTML=k.a>=360?'':miniPie(n,d)+'<span>'+tokH('怎麼來：'+whyT(k.a,n,d).replace('\n','，'))+'</span>';$('#cfLook').innerHTML=`<span>查表：${k.a}°</span><span class="arw">→</span><span>${tokH(frT(n,d))}圓</span><span class="arw">→</span><span class="hw">${tokH(howT(n,d))}</span>`;
+    $('#cfEq').innerHTML=k.a>=360?tokH(`一整個圓：圓周長＝${k.r}×2×3.14＝${nf(k.C)}`):
+      `<div>${tokH(`圓周長：${k.r}×2×3.14＝${nf(k.C)}`)}</div>${k.Pl.eq.map(x=>`<div class="ea">${tokH(x)}</div>`).join('')}<div class="es">${tokH(`周長：${nf(k.A)}＋${k.r}×2${ex2(k.P)?'＝':'≈'}${nf(k.P)}`)}</div>`;
+    $('#cfSay').innerHTML=tokH(k.a>=360?'這是一整個圓。':`半徑${k.r}公分、圓心角${k.a}度的扇形，是${frT(n,d)}圓。`)};
+  const tell=()=>{const k=calc(),fig=$('#cfFig');if(k.a>=360){speakSeq([{t:'一整個圓，周長就是圓周長。',on:()=>cfTrace(fig,2400)},`半徑${k.r}乘以2乘以3.14，等於${nf(k.C)}公分。`]);return}
+    const n=k.Pl.n,d=k.Pl.d;
+    speakSeq([{t:`先算一整個圓的圓周長：${k.r}乘以2乘以3.14，等於${nf(k.C)}。`,on:()=>cfTrace(fig,2400)},
+      {t:`圖上的虛線，把圓平分成${d}份，數一數：`+Array.from({length:d},(_,i)=>i+1).join('、')+`。`,on:()=>{const g=[...document.querySelectorAll('#cfFig .snum')];g.forEach((e,i)=>setTimeout(()=>{e.style.transition='transform .3s';e.style.transformBox='fill-box';e.style.transformOrigin='center';e.style.transform='scale(1.5)';try{SFX.tap()}catch(x){}setTimeout(()=>e.style.transform='',350)},i*450))}},
+      {t:`圓心角${k.a}度，是幾分之幾圓呢？`+whySay(k.a,n,d),on:()=>{cfGlow(fig,'.dg');const w=$('#cfWhy');w&&(w.style.background='#fff3bf');const l=$('#cfLook');l&&l.classList.remove('glw');void(l&&l.offsetWidth);l&&l.classList.add('glw')}},
+      ...k.Pl.say.map(t=>({t,on:()=>cfGlow(fig,'.pa')})),
+      {t:`周長，還要加上2條半徑：${nf(k.A)}加${k.r*2}，${ex2(k.P)?'等於':'大約是'}${nf(k.P)}公分。`,on:()=>cfGlow(fig,'.ps')}])};
+  $$('[data-k]',st).forEach(b=>b.onclick=()=>{if(!guard(150))return;const s=+b.dataset.s;
+    if(b.dataset.k==='r'){const r=CLS6.r;CLS6.r=Math.max(2,Math.min(30,s>0?(r<10?r+1:r+2):(r<=10?r-1:r-2)))}
+    else{const i=ANGS2.indexOf(CLS6.ang);CLS6.ang=ANGS2[Math.max(0,Math.min(ANGS2.length-1,i+s))]}
+    SFX.tap();TTS.stop();draw()});
+  $('#cfWalk').onclick=()=>{if(!guard(400))return;TTS.stop();cfTrace($('#cfFig'),2600);speakSeq(['沿著外圍走一圈，就是周長。彎彎的弧，加上2條直直的半徑。'])};
+  $('#cfTell').onclick=()=>{if(!guard(400))return;TTS.stop();tell()};
+  $('#cfTbl').onclick=()=>{if(!guard(400))return;TTS.stop();openAngTable(CLS6.ang,a=>{CLS6.ang=a;draw()})};
+  draw();speakSeq(['扇形工廠。改變半徑和圓心角，看看弧長和周長怎麼變。不會算幾分之幾，就按「對照表」查一查：90度是四分之一圓，弧長就把圓周長除以4。']);
+}
+</script>
+
+<!-- ===== 2026-11 修訂2：扇形工廠的說明，一步一步列出來 ===== -->
+<style id="patch-1120b">
+.cfSteps{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:calc(var(--u)*.3);overflow:auto;min-height:0;flex:1 1 auto}
+.cfSteps li{display:flex;align-items:center;gap:.45em;background:#fff;border-radius:.6em;padding:.25em .5em;border:2px solid #e9ecef;transition:opacity .3s,background .3s,border-color .3s;font-weight:900}
+.cfSteps .no{flex:none;width:1.6em;height:1.6em;border-radius:50%;background:#1864ab;color:#fff;display:flex;align-items:center;justify-content:center;font-size:calc(var(--u)*.85)}
+.cfSteps .lb{flex:none;font-size:calc(var(--u)*.85);color:#495057;min-width:5.2em}
+.cfSteps .eq{flex:1;font-size:calc(var(--u)*1.05);color:#1d2b3a;display:flex;align-items:center;gap:.3em;flex-wrap:wrap}
+.cfSteps .eq .mpie{width:1.8em;height:1.8em}
+.cfSteps li.arc .eq{color:#d9480f}.cfSteps li.per .eq{color:#1864ab}
+.cfSteps.play li{opacity:.18}
+.cfSteps.play li.done{opacity:.55}
+.cfSteps.play li.cur{opacity:1;background:#fff3bf;border-color:#fab005}
+#clsStage .cside.cfside{display:flex;flex-direction:column;gap:calc(var(--u)*.35);min-height:0;overflow:hidden}
+#clsStage .cfside .say{min-height:1.4em;font-size:calc(var(--u)*1)}
+#clsStage .cfside .rcbox>div{font-size:calc(var(--u)*.9)!important}
+#clsStage .cfside .rcbox b{font-size:calc(var(--u)*1.5)}
+#clsStage .cfside .cbtns .btn{min-height:calc(var(--u)*2.2)}
+
+/* 扇形工廠：步驟全部看得到 */
+#clsStage .cfside .rcbox{flex-direction:row!important;flex-wrap:wrap;justify-content:center;gap:calc(var(--u)*.3) calc(var(--u)*1)}
+#clsStage .cfside .rcbox .btn{min-height:calc(var(--u)*1.9)!important;padding:0 calc(var(--u)*.6)!important}
+#clsStage .cfside .say{font-size:calc(var(--u)*.92);min-height:0}
+.cfSteps{display:grid!important;grid-template-columns:1fr;align-content:start;overflow:visible!important;gap:calc(var(--u)*.25)}
+.cfSteps li{padding:.12em .4em!important;min-height:0;gap:.35em!important}
+.cfSteps .no{width:1.45em!important;height:1.45em!important;font-size:calc(var(--u)*.75)!important}
+.cfSteps .lb{font-size:calc(var(--u)*.75)!important;min-width:0!important;white-space:nowrap}
+.cfSteps .eq{font-size:calc(var(--u)*.95)!important;line-height:1.15;white-space:nowrap}
+.cfSteps .eq .mpie{width:1.4em!important;height:1.4em!important}
+.cfSteps .eq .frac{font-size:.85em}
+@media (min-aspect-ratio:13/10){.cfSteps.many{grid-template-columns:1fr 1fr}}
+</style>
+<script>
+/* 扇形工廠：把說明拆成一步一步的清單，說到哪一步，那一步就亮起來 */
+function fanSteps(r,a){
+  const C=r*2*3.14,[n,d]=angFr(a),u=360/d,A=C*n/d,P=A+2*r,f=frT(n,d),ap=v=>ex2(v)?'＝':'≈',apS=v=>ex2(v)?'等於':'大約是',out=[];
+  out.push({lb:'圓周長',eq:`${r}×2×3.14＝${nf(C)}`,say:`先算一整個圓的圓周長：${r}乘以2，再乘以3.14，等於${nf(C)}。`,glow:'all'});
+  if(d===1){out.push({cls:'per',lb:'周長',eq:`一整個圓＝${nf(C)}`,say:'一整個圓，周長就是圓周長。'});return out}
+  if(n===1)out.push({lb:'分幾份',eq:`${miniPie(n,d)}360÷${a}＝${d}`,say:`數一數，一整圈360度，可以放幾個${a}度？360除以${a}，等於${d}，平分成${d}份。`,slices:true});
+  else{out.push({lb:'1份幾度',eq:`${miniPie(n,d)}360÷${d}＝${u}`,say:`一整圈平分成${d}份，1份是360除以${d}，等於${u}度。`,slices:true});
+    out.push({lb:'有幾份',eq:`${a}＝${u}×${n}`,say:`${a}度，是${n}個${u}度，所以拿${n}份。`})}
+  out.push({lb:'幾分之幾圓',eq:`${tokH(f)}圓 → ${tokH(howT(n,d))}`,say:`${d}份拿${n}份，是${frSay(n,d)}圓。弧長要${howT(n,d).replace(/÷/g,'除以').replace(/×/g,'乘以')}。`,raw:true,glow:'.dg'});
+  if(n===1)out.push({cls:'arc',lb:'弧長',eq:`${nf(C)}÷${d}${ap(A)}${nf(A)}`,say:`算弧長：${nf(C)}除以${d}，${apS(A)}${nf(A)}。`,glow:'.pa'});
+  else{const one=C/d;
+    if(ex2(one)){out.push({cls:'arc',lb:'弧長 1份',eq:`${nf(C)}÷${d}＝${nf(one)}`,say:`算弧長，先找1份：${nf(C)}除以${d}，等於${nf(one)}。`,glow:'.pa'});
+      out.push({cls:'arc',lb:`弧長 ${n}份`,eq:`${nf(one)}×${n}${ap(A)}${nf(A)}`,say:`要${n}份，就是${n}個${nf(one)}加起來：${nf(one)}乘以${n}，${apS(A)}${nf(A)}。`,glow:'.pa'})}
+    else{out.push({cls:'arc',lb:`弧長 ${n}份合起來`,eq:`${nf(C)}×${n}＝${nf(C*n)}`,say:`${nf(C)}除以${d}除不完，換個順序，先乘以${n}：等於${nf(C*n)}。`,glow:'.pa'});
+      out.push({cls:'arc',lb:`再分成${d}份`,eq:`${nf(C*n)}÷${d}${ap(A)}${nf(A)}`,say:`再除以${d}：${apS(A)}${nf(A)}。先乘再除，答案一樣。`,glow:'.pa'})}}
+  out.push({cls:'per',lb:'周長',eq:`${nf(A)}＋${r}×2${ap(P)}${nf(P)}`,say:`最後，周長是弧長加上2條半徑：${nf(A)}加${r*2}，${apS(P)}${nf(P)}公分。`,glow:'.ps'});
+  return out;
+}
+function clsFan(st){
+  st.classList.add('free');if(!ANGS2.includes(CLS6.ang))CLS6.ang=90;
+  st.innerHTML=`<div class="crow"><div class="fig" id="cfFig"></div><div class="cside cfside"><div class="say" id="cfSay"></div>
+   <div class="rcbox"><div>半徑<button class="btn b" data-k="r" data-s="-1">－</button><b id="cfR"></b>公分<button class="btn r" data-k="r" data-s="1">＋</button></div>
+   <div>圓心角<button class="btn b" data-k="a" data-s="-1">－</button><b id="cfA"></b>°<button class="btn r" data-k="a" data-s="1">＋</button></div></div>
+   <ol class="cfSteps" id="cfSteps"></ol>
+   <div class="cbtns"><button class="btn g" id="cfWalk">🚶 走一圈</button><button class="btn y" id="cfTell">🔊 一步一步說明</button><button class="btn b" id="cfTbl">📋 對照表</button></div><div class="clsbar2"></div></div></div>`;
+  let steps=[];
+  const draw=()=>{const r=CLS6.r,a=CLS6.ang,[n,d]=angFr(a);
+    $('#cfFig').innerHTML=secFig({deg:a,r,slices:a<360&&d<=12?d:0});
+    $('#cfR').textContent=r;$('#cfA').textContent=a;
+    steps=fanSteps(r,a);const ol=$('#cfSteps');ol.classList.remove('play');ol.classList.toggle('many',steps.length>5);
+    ol.innerHTML=steps.map((s,i)=>`<li class="${s.cls||''}"><span class="no">${i+1}</span><span class="lb">${tokH(s.lb)}</span><span class="eq">${s.raw?s.eq:s.eq.replace(/^(<svg[\s\S]*?<\/svg>)?([\s\S]*)$/,(m,svg,t)=>(svg||'')+tokH(t))}</span></li>`).join('');
+    $('#cfSay').innerHTML=tokH(a>=360?'這是一整個圓。':`半徑${r}公分、圓心角${a}度的扇形，是${frT(n,d)}圓。`)};
+  const tell=()=>{const fig=$('#cfFig'),ol=$('#cfSteps'),lis=[...ol.children];ol.classList.add('play');lis.forEach(l=>l.classList.remove('cur','done'));
+    speakSeq(steps.map((s,i)=>({t:s.say,gap:700,on:()=>{lis.forEach((l,j)=>{l.classList.toggle('cur',j===i);l.classList.toggle('done',j<i)});lis[i].scrollIntoView({block:'nearest',behavior:'smooth'});$('#cfSay').innerHTML=tokH(`第${i+1}步：${s.lb}`);
+      if(s.glow==='all')cfTrace(fig,2400);else if(s.glow)cfGlow(fig,s.glow);
+      if(s.slices){[...document.querySelectorAll('#cfFig .snum')].forEach((e,k)=>setTimeout(()=>{e.style.transition='transform .3s';e.style.transformBox='fill-box';e.style.transformOrigin='center';e.style.transform='scale(1.5)';try{SFX.tap()}catch(x){}setTimeout(()=>e.style.transform='',350)},k*450))}}})),
+      ()=>{lis.forEach(l=>l.classList.remove('cur'));ol.classList.remove('play');$('#cfSay').innerHTML=tokH('全部的步驟都在上面，可以再看一次。')})};
+  $$('[data-k]',st).forEach(b=>b.onclick=()=>{if(!guard(150))return;const s=+b.dataset.s;
+    if(b.dataset.k==='r'){const r=CLS6.r;CLS6.r=Math.max(2,Math.min(30,s>0?(r<10?r+1:r+2):(r<=10?r-1:r-2)))}
+    else{const i=ANGS2.indexOf(CLS6.ang);CLS6.ang=ANGS2[Math.max(0,Math.min(ANGS2.length-1,i+s))]}
+    SFX.tap();TTS.stop();draw()});
+  $('#cfWalk').onclick=()=>{if(!guard(400))return;TTS.stop();cfTrace($('#cfFig'),2600);speakSeq(['沿著外圍走一圈，就是周長。彎彎的弧，加上2條直直的半徑。'])};
+  $('#cfTell').onclick=()=>{if(!guard(400))return;TTS.stop();tell()};
+  $('#cfTbl').onclick=()=>{if(!guard(400))return;TTS.stop();openAngTable(CLS6.ang,a=>{CLS6.ang=a;draw()})};
+  draw();speakSeq(['扇形工廠。改變半徑和圓心角，按「一步一步說明」，老師會一步一步算給你看。']);
+}
 </script>
 
 </body>
